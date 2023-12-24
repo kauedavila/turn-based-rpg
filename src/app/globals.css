@@ -8,6 +8,29 @@
   box-sizing: border-box;
 }
 
+.animate-jump-attack {
+  animation: jump-attack 0.5s ease-in-out;
+}
+
+@keyframes jump-attack {
+  0% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-500%) translateX(50%);
+  }
+  50% {
+    transform: translateY(0) translateX(200%);
+  }
+  75% {
+    transform: translateY(-25%) translateX(100%);
+  }
+
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+}
+
 .animate-melee-attack {
   animation: melee-attack 0.5s ease-in-out;
 }
@@ -36,16 +59,11 @@
 
 @keyframes melee-hit {
   0% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-10px);
+    transform: translateX(2.5%) translateY(0) scaleX(1.5) rotate(15deg);
+    filter: drop-shadow(0 0 2rem red);
   }
   50% {
-    transform: translateX(10px);
-  }
-  75% {
-    transform: translateX(-10px);
+    transform: translateX(-2.5%) scaleX(1) rotate(-15deg);
   }
   100% {
     transform: translateX(0);

@@ -7,20 +7,21 @@ const Character = ({ data }: CharacterData) => {
   const { id, name, health, attack, defense, speed, sprite, currentStats } =
     data;
 
+  const { state } = sprite || { state: "idle" };
+
   return (
     <div
       id={`character-${id}`}
-      className="relative flex flex-col items-center justify-center w-[50%] h-[25%]"
+      className="flex flex-col items-center justify-center"
     >
-      {sprite && (
+      {sprite && state !== undefined && (
         <Image
           id={`character-${id}-sprite`}
-          src={sprite}
+          src={sprite[state]}
           alt={name}
           width={200}
           height={200}
-          objectFit="contain"
-          className="w-1/2 h-1/2 object-contain"
+          className={`w-auto  ${currentStats?.health === 0 && "animate-death"}`}
         />
       )}
       <p className="text-white">{name}</p>

@@ -1,14 +1,46 @@
-import { CharacterData } from "@/app/battle/page";
+import { CharacterData, SpriteStates } from "@/app/battle/page";
 
 const calculateDamage = (attacker: CharacterData, defender: CharacterData) => {
   const damage = 1;
   return damage;
 };
 
+const handleSpriteState = (
+  attacker: CharacterData,
+  defender: CharacterData,
+  attackerState: SpriteStates,
+  defenderState: SpriteStates,
+  setBattleCharacters: (characters: CharacterData[]) => void
+) => {
+  setBattleCharacters([
+    {
+      ...attacker,
+      data: {
+        ...attacker.data,
+        sprite: {
+          ...attacker.data.sprite,
+          state: attackerState,
+        },
+      },
+    },
+    {
+      ...defender,
+      data: {
+        ...defender.data,
+        sprite: {
+          ...defender.data.sprite,
+          state: defenderState,
+        },
+      },
+    },
+  ]);
+};
+
 const handleAnimation = (
   type: string,
   attacker: CharacterData,
-  defender: CharacterData
+  defender: CharacterData,
+  setBattleCharacters: (characters: CharacterData[]) => void
 ) => {
   const attackerId = document.getElementById(
     `character-${attacker?.data.id}-sprite`
@@ -36,12 +68,25 @@ const handleAnimation = (
       hitDelay: 300,
       hitDuration: 500,
     },
+
+    {
+      type: "jump",
+      attack: "animate-jump-attack",
+      attackDelay: 0,
+      attackDuration: 500,
+      hit: "animate-melee-hit",
+      hitDelay: 300,
+      hitDuration: 500,
+    },
   ];
 
   const animation =
     animationData.find((data) => data.type === type) || defaultAnimation;
 
   attackerId?.classList.add(animation.attack);
+  setTimeout(() => {
+    handleSpriteState(attacker, defender, "attack", "hit", setBattleCharacters);
+  }, 10);
 
   setTimeout(() => {
     defenderId?.classList.add(animation.hit);
@@ -51,6 +96,7 @@ const handleAnimation = (
   }, animation.hitDelay);
   setTimeout(() => {
     attackerId?.classList.remove(animation.attack);
+    handleSpriteState(attacker, defender, "idle", "idle", setBattleCharacters);
   }, animation.attackDuration);
 };
 
@@ -71,7 +117,7 @@ const handleAttack = (
   //   alert(
   //     `${attacker.data.name} dealt ${damage} damage to ${defender.data.name}`
   //   );
-  handleAnimation(type, attacker, defender);
+  handleAnimation(type, attacker, defender, setBattleCharacters);
 
   return setBattleCharacters(characters);
 };
