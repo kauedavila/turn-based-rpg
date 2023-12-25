@@ -83,10 +83,10 @@ const handleAnimation = (
   const animation =
     animationData.find((data) => data.type === type) || defaultAnimation;
 
-  attackerId?.classList.add(animation.attack);
   setTimeout(() => {
+    attackerId?.classList.add(animation.attack);
     handleSpriteState(attacker, defender, "attack", "hit", setBattleCharacters);
-  }, 10);
+  }, animation.attackDelay);
 
   setTimeout(() => {
     defenderId?.classList.add(animation.hit);

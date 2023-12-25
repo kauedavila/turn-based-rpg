@@ -17,13 +17,13 @@
     transform: translateY(0) translateX(0);
   }
   25% {
-    transform: translateY(-500%) translateX(50%);
+    transform: translateY(-50vh) translateX(10vw);
   }
   50% {
-    transform: translateY(0) translateX(200%);
+    transform: translateY(0) translateX(40vw);
   }
   75% {
-    transform: translateY(-25%) translateX(100%);
+    transform: translateY(-25vh) translateX(10vw);
   }
 
   100% {
@@ -40,13 +40,13 @@
     transform: translateX(0);
   }
   25% {
-    transform: translateX(-10%);
+    transform: translateX(-2vw);
   }
   50% {
-    transform: translateX(200%);
+    transform: translateX(40vw);
   }
   75% {
-    transform: translateX(-10%);
+    transform: translateX(-2vw);
   }
   100% {
     transform: translateX(0);

@@ -12,23 +12,22 @@ const Character = ({ data }: CharacterData) => {
   return (
     <div
       id={`character-${id}`}
-      className="flex flex-col items-center justify-center"
+      className="flex flex-col items-start justify-center"
     >
-      {sprite && state !== undefined && (
-        <Image
-          id={`character-${id}-sprite`}
-          src={sprite[state]}
-          alt={name}
-          width={200}
-          height={200}
-          className={`w-auto  ${currentStats?.health === 0 && "animate-death"}`}
-        />
-      )}
-      <p className="text-white">{name}</p>
-      <p className="text-white">
-        HP: {currentStats?.health} / {health}
-      </p>
-      <div className="absolute hidden animate-bounce" />
+      <div className="w-full">
+        {sprite && state !== undefined && (
+          <Image
+            id={`character-${id}-sprite`}
+            src={sprite[state]}
+            alt={name}
+            width={200}
+            height={200}
+            className={`w-auto  ${
+              currentStats?.health === 0 && "animate-death"
+            }`}
+          />
+        )}
+      </div>
     </div>
   );
 };
