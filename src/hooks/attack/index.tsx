@@ -1,38 +1,77 @@
 import { CharacterData } from "@/app/battle/page";
 
 export const defaultAnimation = {
-  attack: "",
+  attackName: "melee",
+  attackAnimation: "animate-melee-attack",
   attackDelay: 0,
-  attackDuration: 0,
-  hit: "",
-  hitDelay: 0,
-  hitDuration: 0,
+  attackDuration: 1000,
+  hitAnimation: "animate-melee-hit",
+  hitDelay: 500,
+  hitDuration: 500,
 };
 
-export const animationData = [
+export type AnimationData = {
+  attackName: string;
+  attackAnimation: string;
+  attackDelay: number;
+  attackDuration: number;
+  hitAnimation: string;
+  hitDelay: number;
+  hitDuration: number;
+};
+
+export const animationData: AnimationData[] = [
   {
-    type: "melee",
-    attack: "animate-melee-attack",
+    attackName: "melee",
+    attackAnimation: "animate-melee-attack",
     attackDelay: 0,
     attackDuration: 1000,
-    hit: "animate-melee-hit",
+    hitAnimation: "animate-melee-hit",
     hitDelay: 500,
     hitDuration: 500,
   },
 
   {
-    type: "jump",
-    attack: "animate-jump-attack",
+    attackName: "jump",
+    attackAnimation: "animate-jump-attack",
     attackDelay: 0,
     attackDuration: 500,
-    hit: "animate-melee-hit",
+    hitAnimation: "animate-melee-hit",
     hitDelay: 300,
     hitDuration: 500,
   },
 ];
 
-const calculateDamage = (attacker: CharacterData, defender: CharacterData) => {
-  const damage = 1;
+const attackData = [
+  {
+    attackName: "melee",
+    properties: ["close", "physical", "endowable"],
+    element: "neutral",
+  },
+];
+
+const calculateDamage = (
+  attackName: string,
+  attacker: CharacterData,
+  defender: CharacterData
+) => {
+  let power = 0;
+  switch (attackName) {
+    case "melee":
+      power = 40;
+      break;
+    case "jump":
+      power = 40;
+      break;
+    default:
+      power = 10;
+      break;
+  }
+  const damage =
+    (((2 * 5) / 5) * power * attacker.data.currentStats.attack) /
+      defender.data.currentStats.defense /
+      50 +
+    2;
   return damage;
 };
 
@@ -55,7 +94,7 @@ const handleSpriteState = (
 };
 
 const handleAnimation = (
-  type: string,
+  attackName: string,
   attacker: CharacterData,
   defender: CharacterData,
   setBattleCharacters: (characters: CharacterData[]) => void
@@ -68,51 +107,57 @@ const handleAnimation = (
   ) as HTMLElement;
 
   const animation =
-    animationData.find((data) => data.type === type) || defaultAnimation;
+    animationData.find((data) => data.attackName === attackName) ||
+    defaultAnimation;
 
   setTimeout(() => {
-    attackerId?.classList.add(animation.attack);
+    attackerId?.classList.add(animation.attackAnimation);
     handleSpriteState(attacker, "attack", setBattleCharacters);
   }, animation.attackDelay);
 
   setTimeout(() => {
-    defenderId?.classList.add(animation.hit);
+    defenderId?.classList.add(animation.hitAnimation);
     handleSpriteState(defender, "hit", setBattleCharacters);
 
     setTimeout(() => {
-      defenderId?.classList.remove(animation.hit);
+      defenderId?.classList.remove(animation.hitAnimation);
     }, animation.hitDuration);
   }, animation.hitDelay);
   setTimeout(() => {
-    attackerId?.classList.remove(animation.attack);
+    attackerId?.classList.remove(animation.attackAnimation);
     handleSpriteState(attacker, "idle", setBattleCharacters);
     handleSpriteState(defender, "idle", setBattleCharacters);
   }, animation.attackDuration);
 };
 
 const handleAttack = (
-  type: string,
+  attackName: string,
   attacker: CharacterData,
   defender: CharacterData,
   setBattleCharacters: (characters: CharacterData[]) => void
 ) => {
-  const damage = calculateDamage(attacker, defender);
+  const damage = calculateDamage(attackName, attacker, defender);
   const currentHealth = defender?.data?.currentStats?.health;
-  defender.data.currentStats = {
-    ...defender?.data.currentStats,
-    health: currentHealth ? currentHealth - damage : 0,
+
+  const animation = animationData.find(
+    (data) => data.attackName === attackName
+  ) || {
+    attackDuration: 0,
+    attackDelay: 0,
+    hitDelay: 0,
+    hitDuration: 0,
   };
 
-  handleAnimation(type, attacker, defender, setBattleCharacters);
+  handleAnimation(attackName, attacker, defender, setBattleCharacters);
 
-  return setBattleCharacters((prev) =>
-    prev.map((character) => {
-      if (character.data.id === defender.data.id) {
-        character = defender;
-      }
-      return character;
-    })
-  );
+  setTimeout(() => {
+    defender.data.currentStats = {
+      ...defender?.data.currentStats,
+      health: currentHealth ? currentHealth - damage : 0,
+    };
+  }, animation.hitDelay + animation.attackDelay);
+
+  return;
 };
 
 export default handleAttack;

@@ -54,7 +54,9 @@ const handleTurn = (
 
   handleAttack("melee", attacker, defender, setBattleCharacters);
 
-  const animation = animationData.find((data) => data.type === "melee") || {
+  const animation = animationData.find(
+    (data) => data.attackName === "melee"
+  ) || {
     attackDuration: 0,
     attackDelay: 0,
   };
@@ -130,7 +132,7 @@ export default function Home() {
             shouldFlip: true,
             idle: {
               url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/d9o65e7-395aabda-8f13-44ff-9cad-31676da7e9c8.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZDlvNjVlNy0zOTVhYWJkYS04ZjEzLTQ0ZmYtOWNhZC0zMTY3NmRhN2U5YzgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.qvpBLdc1n1SYs0SVAQjSRW5kNfgd538fThIE3gEbOLQ",
-              flip: false,
+              flip: true,
             },
             attack: {
               url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/d9o65e7-395aabda-8f13-44ff-9cad-31676da7e9c8.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZDlvNjVlNy0zOTVhYWJkYS04ZjEzLTQ0ZmYtOWNhZC0zMTY3NmRhN2U5YzgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.qvpBLdc1n1SYs0SVAQjSRW5kNfgd538fThIE3gEbOLQ",
@@ -149,6 +151,16 @@ export default function Home() {
       },
     ];
   }, []);
+
+  const handleHPColor = (healthPercentage: number) => {
+    if (healthPercentage > 50) {
+      return "green";
+    } else if (healthPercentage > 25) {
+      return "yellow";
+    } else {
+      return "red";
+    }
+  };
 
   useEffect(() => {
     const characters = loadCharacters();
@@ -175,31 +187,44 @@ export default function Home() {
           className="w-full h-[20%] absolute top-0 flex justify-between items-start gap-[10%]"
         >
           {battleCharacters.map((character, index) => {
+            const healthPercentage = Math.max(
+              Math.floor(
+                ((character.data.currentStats?.health ?? 0) /
+                  character.data.health) *
+                  100
+              ),
+              0
+            );
             return (
               <>
                 <div
                   key={character.data.id}
-                  className={
-                    index === 0
-                      ? "flex flex-col items-start w-full"
-                      : "flex flex-col items-end w-full"
-                  }
+                  className={`flex flex-col w-full ${
+                    index === 0 ? "items-start" : "items-end"
+                  }`}
                 >
                   <div
-                    className="w-full h-4 bg-red-900
+                    className={`flex flex-col w-full h-6 bg-red-900 box-border
+                    border-2 border-solid border-slate-500 rounded-md
+                     transition-all duration-500 ${
+                       index === 0 ? "items-start" : "items-end"
+                     }`}
+                  >
+                    <div
+                      className="w-full h-full bg-amber-500
                     transition-all duration-500"
-                    style={{
-                      width: `${Math.max(
-                        Math.floor(
-                          ((character.data.currentStats?.health ?? 0) /
-                            character.data.health) *
-                            100
-                        ),
-                        0
-                      )}%`,
-                    }}
-                  />
-                  <p className="text-white">{character.data.name}</p>
+                      style={{
+                        width: `${healthPercentage}%`,
+                        backgroundColor: handleHPColor(healthPercentage),
+                      }}
+                    />
+                  </div>
+                  <details className="text-white z-10">
+                    <summary>{character.data.name}</summary>
+                    <p>ATK: {character.data.currentStats?.attack}</p>
+                    <p>DEF: {character.data.currentStats?.defense}</p>
+                    <p>SPD: {character.data.currentStats?.speed}</p>
+                  </details>
                 </div>
                 {index === 0 && <p className="text-white">VS</p>}
               </>

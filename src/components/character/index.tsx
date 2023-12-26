@@ -17,10 +17,7 @@ const Character = ({
     >
       <div
         style={{
-          transform:
-            position === "right" || sprite[sprite.state].flip === true
-              ? "scaleX(-1)"
-              : "scaleX(1)",
+          transform: position === "right" ? "scaleX(-1)" : "scaleX(1)",
         }}
       >
         {sprite && sprite.state !== undefined && (
