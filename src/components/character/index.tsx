@@ -3,28 +3,36 @@
 import { CharacterData } from "@/app/battle/page";
 import Image from "next/image";
 
-const Character = ({ data }: CharacterData) => {
+const Character = ({
+  data,
+  position,
+}: CharacterData & { position: string }) => {
   const { id, name, health, attack, defense, speed, sprite, currentStats } =
     data;
-
-  const { state } = sprite || { state: "idle" };
 
   return (
     <div
       id={`character-${id}`}
       className="flex flex-col items-start justify-center"
     >
-      <div className="w-full">
-        {sprite && state !== undefined && (
+      <div
+        className="w-full"
+        style={{
+          transform:
+            position === "right" && sprite.shouldFlip
+              ? "scaleX(-1)"
+              : "scaleX(1)",
+        }}
+      >
+        {sprite && sprite.state !== undefined && (
           <Image
             id={`character-${id}-sprite`}
-            src={sprite[state]}
+            src={sprite[sprite.state]}
             alt={name}
             width={200}
             height={200}
-            className={`w-auto  ${
-              currentStats?.health === 0 && "animate-death"
-            }`}
+            className={`w-auto
+            `}
           />
         )}
       </div>

@@ -32,7 +32,7 @@
 }
 
 .animate-melee-attack {
-  animation: melee-attack 0.5s ease-in-out;
+  animation: melee-attack 1s ease-in-out;
 }
 
 @keyframes melee-attack {
@@ -46,7 +46,7 @@
     transform: translateX(40vw);
   }
   75% {
-    transform: translateX(-2vw);
+    transform: translateX(-2vw) rotate(10deg);
   }
   100% {
     transform: translateX(0);
@@ -59,11 +59,10 @@
 
 @keyframes melee-hit {
   0% {
-    transform: translateX(2.5%) translateY(0) scaleX(1.5) rotate(15deg);
-    filter: drop-shadow(0 0 2rem red);
+    transform: translateX(2.5%) translateY(0) scaleX(1.25) rotate(5deg);
   }
   50% {
-    transform: translateX(-2.5%) scaleX(1) rotate(-15deg);
+    transform: translateX(-2.5%) scaleX(1) rotate(-5deg);
   }
   100% {
     transform: translateX(0);

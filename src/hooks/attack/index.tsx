@@ -1,4 +1,35 @@
-import { CharacterData, SpriteStates } from "@/app/battle/page";
+import { CharacterData } from "@/app/battle/page";
+
+export const defaultAnimation = {
+  attack: "",
+  attackDelay: 0,
+  attackDuration: 0,
+  hit: "",
+  hitDelay: 0,
+  hitDuration: 0,
+};
+
+export const animationData = [
+  {
+    type: "melee",
+    attack: "animate-melee-attack",
+    attackDelay: 0,
+    attackDuration: 1000,
+    hit: "animate-melee-hit",
+    hitDelay: 500,
+    hitDuration: 500,
+  },
+
+  {
+    type: "jump",
+    attack: "animate-jump-attack",
+    attackDelay: 0,
+    attackDuration: 500,
+    hit: "animate-melee-hit",
+    hitDelay: 300,
+    hitDuration: 500,
+  },
+];
 
 const calculateDamage = (attacker: CharacterData, defender: CharacterData) => {
   const damage = 1;
@@ -8,32 +39,27 @@ const calculateDamage = (attacker: CharacterData, defender: CharacterData) => {
 const handleSpriteState = (
   attacker: CharacterData,
   defender: CharacterData,
-  attackerState: SpriteStates,
-  defenderState: SpriteStates,
+  attackerState: string,
+  defenderState: string,
   setBattleCharacters: (characters: CharacterData[]) => void
 ) => {
-  setBattleCharacters([
-    {
-      ...attacker,
-      data: {
-        ...attacker.data,
-        sprite: {
-          ...attacker.data.sprite,
-          state: attackerState,
-        },
-      },
-    },
-    {
-      ...defender,
-      data: {
-        ...defender.data,
-        sprite: {
-          ...defender.data.sprite,
-          state: defenderState,
-        },
-      },
-    },
-  ]);
+  const newBattleCharacters = [attacker, defender];
+  newBattleCharacters.forEach((character) => {
+    character.data.sprite = {
+      ...character.data.sprite,
+      state:
+        character.data.id === attacker.data.id ? attackerState : defenderState,
+    };
+  });
+
+  setBattleCharacters((prev) =>
+    prev.map((character) => {
+      const newCharacter = newBattleCharacters.find(
+        (newCharacter) => newCharacter.data.id === character.data.id
+      );
+      return newCharacter || character;
+    })
+  );
 };
 
 const handleAnimation = (
@@ -48,37 +74,6 @@ const handleAnimation = (
   const defenderId = document.getElementById(
     `character-${defender?.data.id}-sprite`
   ) as HTMLElement;
-
-  const defaultAnimation = {
-    attack: "",
-    attackDelay: 0,
-    attackDuration: 0,
-    hit: "",
-    hitDelay: 0,
-    hitDuration: 0,
-  };
-
-  const animationData = [
-    {
-      type: "melee",
-      attack: "animate-melee-attack",
-      attackDelay: 0,
-      attackDuration: 500,
-      hit: "animate-melee-hit",
-      hitDelay: 300,
-      hitDuration: 500,
-    },
-
-    {
-      type: "jump",
-      attack: "animate-jump-attack",
-      attackDelay: 0,
-      attackDuration: 500,
-      hit: "animate-melee-hit",
-      hitDelay: 300,
-      hitDuration: 500,
-    },
-  ];
 
   const animation =
     animationData.find((data) => data.type === type) || defaultAnimation;
