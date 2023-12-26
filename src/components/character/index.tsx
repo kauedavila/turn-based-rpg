@@ -16,10 +16,9 @@ const Character = ({
       className="flex flex-col items-start justify-center"
     >
       <div
-        className="w-full"
         style={{
           transform:
-            position === "right" && sprite.shouldFlip
+            position === "right" || sprite[sprite.state].flip === true
               ? "scaleX(-1)"
               : "scaleX(1)",
         }}
@@ -27,12 +26,11 @@ const Character = ({
         {sprite && sprite.state !== undefined && (
           <Image
             id={`character-${id}-sprite`}
-            src={sprite[sprite.state]}
+            src={sprite[sprite.state].url}
             alt={name}
             width={200}
             height={200}
-            className={`w-auto
-            `}
+            className="w-auto"
           />
         )}
       </div>

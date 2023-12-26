@@ -37,27 +37,19 @@ const calculateDamage = (attacker: CharacterData, defender: CharacterData) => {
 };
 
 const handleSpriteState = (
-  attacker: CharacterData,
-  defender: CharacterData,
-  attackerState: string,
-  defenderState: string,
+  target: CharacterData,
+  state: string,
   setBattleCharacters: (characters: CharacterData[]) => void
 ) => {
-  const newBattleCharacters = [attacker, defender];
-  newBattleCharacters.forEach((character) => {
-    character.data.sprite = {
-      ...character.data.sprite,
-      state:
-        character.data.id === attacker.data.id ? attackerState : defenderState,
-    };
-  });
-
   setBattleCharacters((prev) =>
     prev.map((character) => {
-      const newCharacter = newBattleCharacters.find(
-        (newCharacter) => newCharacter.data.id === character.data.id
-      );
-      return newCharacter || character;
+      if (character.data.id === target.data.id) {
+        character.data.sprite = {
+          ...character.data.sprite,
+          state,
+        };
+      }
+      return character;
     })
   );
 };
@@ -80,41 +72,47 @@ const handleAnimation = (
 
   setTimeout(() => {
     attackerId?.classList.add(animation.attack);
-    handleSpriteState(attacker, defender, "attack", "hit", setBattleCharacters);
+    handleSpriteState(attacker, "attack", setBattleCharacters);
   }, animation.attackDelay);
 
   setTimeout(() => {
     defenderId?.classList.add(animation.hit);
+    handleSpriteState(defender, "hit", setBattleCharacters);
+
     setTimeout(() => {
       defenderId?.classList.remove(animation.hit);
     }, animation.hitDuration);
   }, animation.hitDelay);
   setTimeout(() => {
     attackerId?.classList.remove(animation.attack);
-    handleSpriteState(attacker, defender, "idle", "idle", setBattleCharacters);
+    handleSpriteState(attacker, "idle", setBattleCharacters);
+    handleSpriteState(defender, "idle", setBattleCharacters);
   }, animation.attackDuration);
 };
 
 const handleAttack = (
   type: string,
-  battleCharacters: CharacterData[],
+  attacker: CharacterData,
+  defender: CharacterData,
   setBattleCharacters: (characters: CharacterData[]) => void
 ) => {
-  const characters = [...battleCharacters];
-  const attacker = characters[0];
-  const defender = characters[1];
   const damage = calculateDamage(attacker, defender);
   const currentHealth = defender?.data?.currentStats?.health;
   defender.data.currentStats = {
     ...defender?.data.currentStats,
     health: currentHealth ? currentHealth - damage : 0,
   };
-  //   alert(
-  //     `${attacker.data.name} dealt ${damage} damage to ${defender.data.name}`
-  //   );
+
   handleAnimation(type, attacker, defender, setBattleCharacters);
 
-  return setBattleCharacters(characters);
+  return setBattleCharacters((prev) =>
+    prev.map((character) => {
+      if (character.data.id === defender.data.id) {
+        character = defender;
+      }
+      return character;
+    })
+  );
 };
 
 export default handleAttack;

@@ -1,7 +1,14 @@
 "use client";
 import Character from "@/components/character";
-import handleAttack from "@/hooks/attack";
+import handleAttack, { animationData } from "@/hooks/attack";
 import { useCallback, useEffect, useMemo, useState } from "react";
+
+type spriteData = {
+  url?: string;
+  flip?: boolean;
+  width?: number;
+  height?: number;
+};
 
 export type CharacterData = {
   data: {
@@ -13,13 +20,10 @@ export type CharacterData = {
     speed: number;
     sprite?: {
       state?: string;
-      shouldFlip?: boolean;
-      idle?: string;
-      attack?: string;
-      hit?: string;
-      death?: string;
-      width?: number;
-      height?: number;
+      idle?: spriteData;
+      attack?: spriteData;
+      hit?: spriteData;
+      death?: spriteData;
     };
     currentStats?: {
       health?: number;
@@ -37,6 +41,29 @@ export type BattleData = {
   stage?: {
     background?: string;
   };
+};
+
+const handleTurn = (
+  battleCharacters: CharacterData[],
+  setBattleCharacters: (characters: CharacterData[]) => void,
+  setBattleData: (data: BattleData) => void
+) => {
+  const characters = [...battleCharacters];
+  let attacker = characters[0];
+  let defender = characters[1];
+
+  handleAttack("melee", attacker, defender, setBattleCharacters);
+
+  const animation = animationData.find((data) => data.type === "melee") || {
+    attackDuration: 0,
+    attackDelay: 0,
+  };
+
+  setTimeout(() => {
+    let attacker = characters[1];
+    let defender = characters[0];
+    handleAttack("melee", attacker, defender, setBattleCharacters);
+  }, 500 + animation?.attackDuration + animation?.attackDelay);
 };
 
 export default function Home() {
@@ -70,12 +97,23 @@ export default function Home() {
           sprite: {
             state: "idle",
             shouldFlip: true,
-            idle: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/de0t018-77e46de6-cf20-4295-8a38-a1622963c9a0.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZGUwdDAxOC03N2U0NmRlNi1jZjIwLTQyOTUtOGEzOC1hMTYyMjk2M2M5YTAucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.Og9CqG-t0VEeu8RJiMDADNa45pfA3rEzCuq0leSodpQ",
-            attack:
-              "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/de0t018-77e46de6-cf20-4295-8a38-a1622963c9a0.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZGUwdDAxOC03N2U0NmRlNi1jZjIwLTQyOTUtOGEzOC1hMTYyMjk2M2M5YTAucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.Og9CqG-t0VEeu8RJiMDADNa45pfA3rEzCuq0leSodpQ",
-            hit: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png",
-            death:
-              "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png",
+            idle: {
+              url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/de0t018-77e46de6-cf20-4295-8a38-a1622963c9a0.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZGUwdDAxOC03N2U0NmRlNi1jZjIwLTQyOTUtOGEzOC1hMTYyMjk2M2M5YTAucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.Og9CqG-t0VEeu8RJiMDADNa45pfA3rEzCuq0leSodpQ",
+              flip: false,
+            },
+            attack: {
+              url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/de0t018-77e46de6-cf20-4295-8a38-a1622963c9a0.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZGUwdDAxOC03N2U0NmRlNi1jZjIwLTQyOTUtOGEzOC1hMTYyMjk2M2M5YTAucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.Og9CqG-t0VEeu8RJiMDADNa45pfA3rEzCuq0leSodpQ",
+              flip: false,
+            },
+
+            hit: {
+              url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/de0t018-77e46de6-cf20-4295-8a38-a1622963c9a0.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZGUwdDAxOC03N2U0NmRlNi1jZjIwLTQyOTUtOGEzOC1hMTYyMjk2M2M5YTAucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.Og9CqG-t0VEeu8RJiMDADNa45pfA3rEzCuq0leSodpQ",
+              flip: false,
+            },
+            death: {
+              url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/de0t018-77e46de6-cf20-4295-8a38-a1622963c9a0.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZGUwdDAxOC03N2U0NmRlNi1jZjIwLTQyOTUtOGEzOC1hMTYyMjk2M2M5YTAucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.Og9CqG-t0VEeu8RJiMDADNa45pfA3rEzCuq0leSodpQ",
+              flip: false,
+            },
           },
         },
       },
@@ -90,12 +128,22 @@ export default function Home() {
           sprite: {
             state: "idle",
             shouldFlip: true,
-            idle: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/d9o65e7-395aabda-8f13-44ff-9cad-31676da7e9c8.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZDlvNjVlNy0zOTVhYWJkYS04ZjEzLTQ0ZmYtOWNhZC0zMTY3NmRhN2U5YzgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.qvpBLdc1n1SYs0SVAQjSRW5kNfgd538fThIE3gEbOLQ",
-            attack:
-              "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/d9o65e7-395aabda-8f13-44ff-9cad-31676da7e9c8.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZDlvNjVlNy0zOTVhYWJkYS04ZjEzLTQ0ZmYtOWNhZC0zMTY3NmRhN2U5YzgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.qvpBLdc1n1SYs0SVAQjSRW5kNfgd538fThIE3gEbOLQ",
-            hit: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/d9o65e7-395aabda-8f13-44ff-9cad-31676da7e9c8.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZDlvNjVlNy0zOTVhYWJkYS04ZjEzLTQ0ZmYtOWNhZC0zMTY3NmRhN2U5YzgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.qvpBLdc1n1SYs0SVAQjSRW5kNfgd538fThIE3gEbOLQ",
-            death:
-              "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png",
+            idle: {
+              url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/d9o65e7-395aabda-8f13-44ff-9cad-31676da7e9c8.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZDlvNjVlNy0zOTVhYWJkYS04ZjEzLTQ0ZmYtOWNhZC0zMTY3NmRhN2U5YzgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.qvpBLdc1n1SYs0SVAQjSRW5kNfgd538fThIE3gEbOLQ",
+              flip: false,
+            },
+            attack: {
+              url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/d9o65e7-395aabda-8f13-44ff-9cad-31676da7e9c8.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZDlvNjVlNy0zOTVhYWJkYS04ZjEzLTQ0ZmYtOWNhZC0zMTY3NmRhN2U5YzgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.qvpBLdc1n1SYs0SVAQjSRW5kNfgd538fThIE3gEbOLQ",
+              flip: false,
+            },
+            hit: {
+              url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/d9o65e7-395aabda-8f13-44ff-9cad-31676da7e9c8.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZDlvNjVlNy0zOTVhYWJkYS04ZjEzLTQ0ZmYtOWNhZC0zMTY3NmRhN2U5YzgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.qvpBLdc1n1SYs0SVAQjSRW5kNfgd538fThIE3gEbOLQ",
+              flip: false,
+            },
+            death: {
+              url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/d9o65e7-395aabda-8f13-44ff-9cad-31676da7e9c8.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZDlvNjVlNy0zOTVhYWJkYS04ZjEzLTQ0ZmYtOWNhZC0zMTY3NmRhN2U5YzgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.qvpBLdc1n1SYs0SVAQjSRW5kNfgd538fThIE3gEbOLQ",
+              flip: false,
+            },
           },
         },
       },
@@ -178,9 +226,9 @@ export default function Home() {
       >
         <button
           id="attack"
-          className="bg-gray-900 w-full h-auto flex justify-center items-center "
+          className="bg-gray-900 w-full h-auto flex justify-center items-center"
           onClick={(e) =>
-            handleAttack("melee", battleCharacters, setBattleCharacters)
+            handleTurn(battleCharacters, setBattleCharacters, setBattleData)
           }
         >
           <p className="text-white">Attack</p>
