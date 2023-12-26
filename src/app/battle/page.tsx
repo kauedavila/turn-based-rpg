@@ -1,76 +1,55 @@
 "use client";
 import Character from "@/components/character";
-import handleAttack, { animationData } from "@/hooks/attack";
+import handleAttack, { animationData } from "@/functions/attack";
+import templateCharacters from "@/templates/characters";
+import { BattleData, CharacterData } from "@/types";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-type spriteData = {
-  url?: string;
-  flip?: boolean;
-  width?: number;
-  height?: number;
-};
-
-export type CharacterData = {
-  data: {
-    id: number;
-    name: string;
-    health: number;
-    attack: number;
-    defense: number;
-    speed: number;
-    sprite?: {
-      state?: string;
-      idle?: spriteData;
-      attack?: spriteData;
-      hit?: spriteData;
-      death?: spriteData;
-    };
-    currentStats?: {
-      health?: number;
-      attack?: number;
-      defense?: number;
-      speed?: number;
-    };
-  };
-};
-
-export type BattleData = {
-  timer?: number;
-  turn?: number;
-  attacker?: number;
-  stage?: {
-    background?: string;
-  };
-};
-
 const handleTurn = (
+  action: string,
   battleCharacters: CharacterData[],
   setBattleCharacters: (characters: CharacterData[]) => void,
+  battleData: BattleData,
   setBattleData: (data: BattleData) => void
 ) => {
   const characters = [...battleCharacters];
-  let attacker = characters[0];
-  let defender = characters[1];
+  const interval = 1000;
 
-  handleAttack("melee", attacker, defender, setBattleCharacters);
+  let speedPriority = battleCharacters.sort(
+    (a, b) => b.data.currentStats?.speed - a.data.currentStats?.speed
+  );
 
-  const animation = animationData.find(
-    (data) => data.attackName === "melee"
-  ) || {
+  let animation = animationData.find((data) => data.attackName === action) || {
     attackDuration: 0,
     attackDelay: 0,
   };
 
+  let delay = animation?.attackDuration + animation?.attackDelay;
+  let attacker = speedPriority[0];
+  let defender = speedPriority[1];
+
+  handleAttack(action, attacker, defender, setBattleCharacters);
+
   setTimeout(() => {
-    let attacker = characters[1];
-    let defender = characters[0];
+    let attacker = speedPriority[1];
+    let defender = speedPriority[0];
     handleAttack("melee", attacker, defender, setBattleCharacters);
-  }, 500 + animation?.attackDuration + animation?.attackDelay);
+  }, delay);
+
+  setTimeout(() => {
+    setBattleData({
+      ...battleData,
+      turn: battleData.turn && battleData.turn + 1,
+    });
+  }, delay * 2);
 };
 
 export default function Home() {
   const [battleCharacters, setBattleCharacters] = useState<CharacterData[]>([]);
-  const [battleData, setBattleData] = useState<BattleData>({});
+  const [battleData, setBattleData] = useState<BattleData>({
+    timer: 0,
+    turn: 1,
+  });
 
   const calculateCurrentStats = (characters: CharacterData[]) => {
     characters.forEach((character) => {
@@ -85,71 +64,7 @@ export default function Home() {
   };
 
   const loadCharacters = useCallback(() => {
-    return [
-      {
-        data: {
-          id: 1,
-          name: "Scorpion",
-          health: 39,
-          attack: 52,
-          defense: 43,
-          speed: 65,
-          width: 96,
-          height: 96,
-          sprite: {
-            state: "idle",
-            shouldFlip: true,
-            idle: {
-              url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/de0t018-77e46de6-cf20-4295-8a38-a1622963c9a0.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZGUwdDAxOC03N2U0NmRlNi1jZjIwLTQyOTUtOGEzOC1hMTYyMjk2M2M5YTAucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.Og9CqG-t0VEeu8RJiMDADNa45pfA3rEzCuq0leSodpQ",
-              flip: false,
-            },
-            attack: {
-              url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/de0t018-77e46de6-cf20-4295-8a38-a1622963c9a0.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZGUwdDAxOC03N2U0NmRlNi1jZjIwLTQyOTUtOGEzOC1hMTYyMjk2M2M5YTAucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.Og9CqG-t0VEeu8RJiMDADNa45pfA3rEzCuq0leSodpQ",
-              flip: false,
-            },
-
-            hit: {
-              url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/de0t018-77e46de6-cf20-4295-8a38-a1622963c9a0.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZGUwdDAxOC03N2U0NmRlNi1jZjIwLTQyOTUtOGEzOC1hMTYyMjk2M2M5YTAucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.Og9CqG-t0VEeu8RJiMDADNa45pfA3rEzCuq0leSodpQ",
-              flip: false,
-            },
-            death: {
-              url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/de0t018-77e46de6-cf20-4295-8a38-a1622963c9a0.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZGUwdDAxOC03N2U0NmRlNi1jZjIwLTQyOTUtOGEzOC1hMTYyMjk2M2M5YTAucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.Og9CqG-t0VEeu8RJiMDADNa45pfA3rEzCuq0leSodpQ",
-              flip: false,
-            },
-          },
-        },
-      },
-      {
-        data: {
-          id: 2,
-          name: "Subzero",
-          health: 44,
-          attack: 48,
-          defense: 65,
-          speed: 43,
-          sprite: {
-            state: "idle",
-            shouldFlip: true,
-            idle: {
-              url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/d9o65e7-395aabda-8f13-44ff-9cad-31676da7e9c8.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZDlvNjVlNy0zOTVhYWJkYS04ZjEzLTQ0ZmYtOWNhZC0zMTY3NmRhN2U5YzgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.qvpBLdc1n1SYs0SVAQjSRW5kNfgd538fThIE3gEbOLQ",
-              flip: true,
-            },
-            attack: {
-              url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/d9o65e7-395aabda-8f13-44ff-9cad-31676da7e9c8.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZDlvNjVlNy0zOTVhYWJkYS04ZjEzLTQ0ZmYtOWNhZC0zMTY3NmRhN2U5YzgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.qvpBLdc1n1SYs0SVAQjSRW5kNfgd538fThIE3gEbOLQ",
-              flip: false,
-            },
-            hit: {
-              url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/d9o65e7-395aabda-8f13-44ff-9cad-31676da7e9c8.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZDlvNjVlNy0zOTVhYWJkYS04ZjEzLTQ0ZmYtOWNhZC0zMTY3NmRhN2U5YzgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.qvpBLdc1n1SYs0SVAQjSRW5kNfgd538fThIE3gEbOLQ",
-              flip: false,
-            },
-            death: {
-              url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a633598-5ed3-4ec1-b0f1-2231281343bf/d9o65e7-395aabda-8f13-44ff-9cad-31676da7e9c8.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhNjMzNTk4LTVlZDMtNGVjMS1iMGYxLTIyMzEyODEzNDNiZlwvZDlvNjVlNy0zOTVhYWJkYS04ZjEzLTQ0ZmYtOWNhZC0zMTY3NmRhN2U5YzgucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.qvpBLdc1n1SYs0SVAQjSRW5kNfgd538fThIE3gEbOLQ",
-              flip: false,
-            },
-          },
-        },
-      },
-    ];
+    return templateCharacters;
   }, []);
 
   const handleHPColor = (healthPercentage: number) => {
@@ -226,7 +141,9 @@ export default function Home() {
                     <p>SPD: {character.data.currentStats?.speed}</p>
                   </details>
                 </div>
-                {index === 0 && <p className="text-white">VS</p>}
+                {index === 0 && (
+                  <p className="text-white w-40">Turn {battleData.turn}</p>
+                )}
               </>
             );
           })}
@@ -249,15 +166,23 @@ export default function Home() {
         className="bg-red-500 w-[10%] h-full absolute right-0 flex flex-col justify-center gap-2 px-2 items-center opacity-25 hover:opacity-90 transition-opacity duration-500 backdrop-filter backdrop-blur-sm hover:backdrop-blur-md
           "
       >
-        <button
-          id="attack"
-          className="bg-gray-900 w-full h-auto flex justify-center items-center"
-          onClick={(e) =>
-            handleTurn(battleCharacters, setBattleCharacters, setBattleData)
-          }
-        >
-          <p className="text-white">Attack</p>
-        </button>
+        {battleCharacters[0]?.data.moves?.map((move) => (
+          <button
+            key={move.name}
+            className="w-full h-8 bg-gray-900 text-white rounded-md"
+            onClick={() => {
+              handleTurn(
+                move.name ?? "melee",
+                battleCharacters,
+                setBattleCharacters,
+                battleData,
+                setBattleData
+              );
+            }}
+          >
+            <p className="first-letter:uppercase text-center">{move.name}</p>
+          </button>
+        ))}
       </div>
     </main>
   );

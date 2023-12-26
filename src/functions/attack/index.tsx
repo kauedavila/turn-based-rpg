@@ -1,4 +1,4 @@
-import { CharacterData } from "@/app/battle/page";
+import { AnimationData, CharacterData } from "@/types";
 
 export const defaultAnimation = {
   attackName: "melee",
@@ -8,16 +8,6 @@ export const defaultAnimation = {
   hitAnimation: "animate-melee-hit",
   hitDelay: 500,
   hitDuration: 500,
-};
-
-export type AnimationData = {
-  attackName: string;
-  attackAnimation: string;
-  attackDelay: number;
-  attackDuration: number;
-  hitAnimation: string;
-  hitDelay: number;
-  hitDuration: number;
 };
 
 export const animationData: AnimationData[] = [
@@ -47,31 +37,42 @@ const attackData = [
     attackName: "melee",
     properties: ["close", "physical", "endowable"],
     element: "neutral",
+    power: 40,
   },
 ];
+
+const defaultAttack = {
+  attackName: "melee",
+  properties: ["close", "physical", "endowable"],
+  element: "neutral",
+  power: 40,
+};
 
 const calculateDamage = (
   attackName: string,
   attacker: CharacterData,
   defender: CharacterData
 ) => {
-  let power = 0;
-  switch (attackName) {
-    case "melee":
-      power = 40;
-      break;
-    case "jump":
-      power = 40;
-      break;
+  const move =
+    attackData.find((data) => data.attackName === attackName) || defaultAttack;
+
+  const { attack: attackerAtk, defense: attackerDef } = attacker.data
+    .currentStats || { attack: 0, defense: 0 };
+
+  const { defense: defenderDef } = defender.data.currentStats || {
+    attack: 0,
+    defense: 0,
+  };
+
+  if (!attackerAtk || !attackerDef || !defenderDef) return 0;
+
+  let damage = 0;
+  switch (move.attackName) {
     default:
-      power = 10;
+      damage =
+        (((2 * 5) / 5) * move.power * attackerAtk) / defenderDef / 50 + 2;
       break;
   }
-  const damage =
-    (((2 * 5) / 5) * power * attacker.data.currentStats.attack) /
-      defender.data.currentStats.defense /
-      50 +
-    2;
   return damage;
 };
 
