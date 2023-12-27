@@ -26,12 +26,22 @@ const handleTurn = (
       return speedB - speedA;
     });
 
-  let animation = animationData.find((data) => data.attackName === action) || {
+  const enemyAction = "melee";
+
+  let animationA = animationData.find((data) => data.attackName === action) || {
     attackDuration: 0,
     attackDelay: 0,
   };
 
-  let delay = animation?.attackDuration + animation?.attackDelay;
+  let animationB = animationData.find(
+    (data) => data.attackName === enemyAction
+  ) || {
+    attackDuration: 0,
+    attackDelay: 0,
+  };
+
+  let delayA = 500 + animationA?.attackDuration + animationA?.attackDelay;
+  let delayB = 500 + animationB?.attackDuration + animationB?.attackDelay;
 
   setBattleData({
     ...battleData,
@@ -52,7 +62,7 @@ const handleTurn = (
       );
     } else
       handleAttack(
-        "melee",
+        enemyAction,
         attacker,
         defender,
         battleCharacters,
@@ -74,13 +84,13 @@ const handleTurn = (
       );
     } else
       handleAttack(
-        "melee",
+        enemyAction,
         attacker,
         defender,
         battleCharacters,
         setBattleCharacters
       );
-  }, delay);
+  }, delayA);
 
   setTimeout(() => {
     setBattleData({
@@ -88,7 +98,7 @@ const handleTurn = (
       turn: battleData.turn && battleData.turn + 1,
       waiting: false,
     });
-  }, delay * 2);
+  }, delayA + delayB);
 };
 
 export default function Home() {
