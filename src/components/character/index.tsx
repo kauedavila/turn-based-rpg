@@ -10,6 +10,9 @@ const Character = ({
   const { id, name, health, attack, defense, speed, sprite, currentStats } =
     data;
 
+  const spriteState = sprite?.state ?? "idle";
+  const url = sprite?.[spriteState]?.url ?? "";
+
   return (
     <div
       id={`character-${id}`}
@@ -20,10 +23,10 @@ const Character = ({
           transform: position === "right" ? "scaleX(-1)" : "scaleX(1)",
         }}
       >
-        {sprite && sprite.state !== undefined && (
+        {sprite !== undefined && sprite.state !== undefined && (
           <Image
             id={`character-${id}-sprite`}
-            src={sprite[sprite.state].url}
+            src={url}
             alt={name}
             width={200}
             height={200}

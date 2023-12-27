@@ -12,14 +12,19 @@ const handleTurn = (
   battleData: BattleData,
   setBattleData: (data: BattleData) => void
 ) => {
-  const interval = 1000;
+  if (battleData.waiting) return;
 
   const characters = [...battleCharacters];
   const speedPriority = battleCharacters
     .map((character) => {
       return character;
     })
-    .sort((a, b) => b.data.currentStats?.speed - a.data.currentStats?.speed);
+    .filter((character) => character.data.currentStats !== undefined)
+    .sort((a, b) => {
+      const speedA = a.data.currentStats?.speed ?? 0;
+      const speedB = b.data.currentStats?.speed ?? 0;
+      return speedB - speedA;
+    });
 
   let animation = animationData.find((data) => data.attackName === action) || {
     attackDuration: 0,
@@ -28,13 +33,31 @@ const handleTurn = (
 
   let delay = animation?.attackDuration + animation?.attackDelay;
 
+  setBattleData({
+    ...battleData,
+    waiting: true,
+  });
+
   setTimeout(() => {
     let attacker = speedPriority[0];
     let defender = speedPriority[1];
 
     if (attacker == characters[0]) {
-      handleAttack(action, attacker, defender, setBattleCharacters);
-    } else handleAttack("jump", attacker, defender, setBattleCharacters);
+      handleAttack(
+        action,
+        attacker,
+        defender,
+        battleCharacters,
+        setBattleCharacters
+      );
+    } else
+      handleAttack(
+        "melee",
+        attacker,
+        defender,
+        battleCharacters,
+        setBattleCharacters
+      );
   }, 100);
 
   setTimeout(() => {
@@ -42,16 +65,30 @@ const handleTurn = (
     let defender = speedPriority[0];
 
     if (attacker == characters[0]) {
-      handleAttack(action, attacker, defender, setBattleCharacters);
-    } else handleAttack("jump", attacker, defender, setBattleCharacters);
+      handleAttack(
+        action,
+        attacker,
+        defender,
+        battleCharacters,
+        setBattleCharacters
+      );
+    } else
+      handleAttack(
+        "melee",
+        attacker,
+        defender,
+        battleCharacters,
+        setBattleCharacters
+      );
   }, delay);
 
-  // setTimeout(() => {
-  //   setBattleData({
-  //     ...battleData,
-  //     turn: battleData.turn && battleData.turn + 1,
-  //   });
-  // }, delay * 2);
+  setTimeout(() => {
+    setBattleData({
+      ...battleData,
+      turn: battleData.turn && battleData.turn + 1,
+      waiting: false,
+    });
+  }, delay * 2);
 };
 
 export default function Home() {
@@ -74,7 +111,7 @@ export default function Home() {
   };
 
   const loadCharacters = useCallback(() => {
-    return templateCharacters;
+    return templateCharacters as CharacterData[];
   }, []);
 
   const handleHPColor = (healthPercentage: number) => {
@@ -170,29 +207,41 @@ export default function Home() {
             />
           ))}
         </div>
-      </div>
-      <div
-        id="battle-actions"
-        className="bg-red-500 w-[10%] h-full absolute right-0 flex flex-col justify-center gap-2 px-2 items-center opacity-25 hover:opacity-90 transition-opacity duration-500 backdrop-filter backdrop-blur-sm hover:backdrop-blur-md
-          "
-      >
-        {battleCharacters[0]?.data.moves?.map((move) => (
-          <button
-            key={move.name}
-            className="w-full h-8 bg-gray-900 text-white rounded-md"
-            onClick={() => {
-              handleTurn(
-                move.name ?? "melee",
-                battleCharacters,
-                setBattleCharacters,
-                battleData,
-                setBattleData
-              );
-            }}
+        {battleData.waiting ? null : (
+          <div
+            id="battle-actions"
+            className="bg-white w-fit h-fit absolute left-0 bottom-0 flex flex-col justify-center items-center border-4 rounded-md border-black"
           >
-            <p className="first-letter:uppercase text-center">{move.name}</p>
-          </button>
-        ))}
+            <details
+              className="w-full h-auto text-left bg-gray-900 text-white  
+              hover:bg-gray-700 transition-all duration-300 cursor-pointer 
+              "
+            >
+              <summary className="px-10 py-2 border border-black ">
+                Attack
+              </summary>
+              {battleCharacters[0]?.data.moves?.map((move) => (
+                <button
+                  key={move.name}
+                  className="h-auto text-left bg-gray-900 text-white border border-black px-10 py-2 first-letter:capitalize
+              hover:bg-gray-700 transition-all duration-300
+              "
+                  onClick={() => {
+                    handleTurn(
+                      move.name ?? "melee",
+                      battleCharacters,
+                      setBattleCharacters,
+                      battleData,
+                      setBattleData
+                    );
+                  }}
+                >
+                  {move.name}
+                </button>
+              ))}
+            </details>
+          </div>
+        )}
       </div>
     </main>
   );

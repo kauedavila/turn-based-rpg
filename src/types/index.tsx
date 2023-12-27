@@ -5,6 +5,8 @@ type spriteData = {
   height?: number;
 };
 
+export type spriteStates = "idle" | "attack" | "hit" | "death";
+
 export type CharacterData = {
   data: {
     id: number;
@@ -18,7 +20,8 @@ export type CharacterData = {
       level?: number;
     }[];
     sprite?: {
-      state?: string;
+      [key: string]: string | spriteData | undefined;
+      state?: spriteStates;
       idle?: spriteData;
       attack?: spriteData;
       hit?: spriteData;
@@ -36,7 +39,7 @@ export type CharacterData = {
 export type BattleData = {
   timer?: number;
   turn?: number;
-  attacker?: number;
+  waiting?: boolean;
   stage?: {
     background?: string;
   };
