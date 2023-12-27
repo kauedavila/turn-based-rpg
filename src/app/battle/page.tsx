@@ -12,12 +12,14 @@ const handleTurn = (
   battleData: BattleData,
   setBattleData: (data: BattleData) => void
 ) => {
-  const characters = [...battleCharacters];
   const interval = 1000;
 
-  let speedPriority = battleCharacters.sort(
-    (a, b) => b.data.currentStats?.speed - a.data.currentStats?.speed
-  );
+  const characters = [...battleCharacters];
+  const speedPriority = battleCharacters
+    .map((character) => {
+      return character;
+    })
+    .sort((a, b) => b.data.currentStats?.speed - a.data.currentStats?.speed);
 
   let animation = animationData.find((data) => data.attackName === action) || {
     attackDuration: 0,
@@ -25,23 +27,31 @@ const handleTurn = (
   };
 
   let delay = animation?.attackDuration + animation?.attackDelay;
-  let attacker = speedPriority[0];
-  let defender = speedPriority[1];
 
-  handleAttack(action, attacker, defender, setBattleCharacters);
+  setTimeout(() => {
+    let attacker = speedPriority[0];
+    let defender = speedPriority[1];
+
+    if (attacker == characters[0]) {
+      handleAttack(action, attacker, defender, setBattleCharacters);
+    } else handleAttack("jump", attacker, defender, setBattleCharacters);
+  }, 100);
 
   setTimeout(() => {
     let attacker = speedPriority[1];
     let defender = speedPriority[0];
-    handleAttack("melee", attacker, defender, setBattleCharacters);
+
+    if (attacker == characters[0]) {
+      handleAttack(action, attacker, defender, setBattleCharacters);
+    } else handleAttack("jump", attacker, defender, setBattleCharacters);
   }, delay);
 
-  setTimeout(() => {
-    setBattleData({
-      ...battleData,
-      turn: battleData.turn && battleData.turn + 1,
-    });
-  }, delay * 2);
+  // setTimeout(() => {
+  //   setBattleData({
+  //     ...battleData,
+  //     turn: battleData.turn && battleData.turn + 1,
+  //   });
+  // }, delay * 2);
 };
 
 export default function Home() {

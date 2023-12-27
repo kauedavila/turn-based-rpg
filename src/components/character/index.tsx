@@ -1,6 +1,6 @@
 "use client";
 
-import { CharacterData } from "@/app/battle/page";
+import { CharacterData } from "@/types";
 import Image from "next/image";
 
 const Character = ({

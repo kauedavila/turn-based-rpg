@@ -6,9 +6,7 @@ const templateCharacters = [
       health: 39,
       attack: 52,
       defense: 43,
-      speed: 65,
-      width: 96,
-      height: 96,
+      speed: 30,
       moves: [
         {
           name: "melee",
