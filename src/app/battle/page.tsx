@@ -16,81 +16,66 @@ const handleTurn = (
 
   const characters = [...battleCharacters];
   const speedPriority = battleCharacters
-    .map((character) => {
-      return character;
-    })
     .filter((character) => character.data.currentStats !== undefined)
-    .sort((a, b) => {
-      const speedA = a.data.currentStats?.speed ?? 0;
-      const speedB = b.data.currentStats?.speed ?? 0;
-      return speedB - speedA;
-    });
+    .sort(
+      (a, b) =>
+        (b.data.currentStats?.speed ?? 0) - (a.data.currentStats?.speed ?? 0)
+    );
 
   const enemyAction = "melee";
 
-  let animationA = animationData.find((data) => data.attackName === action) || {
-    attackDuration: 0,
-    attackDelay: 0,
+  const getAnimation = (attackName: string) =>
+    animationData.find((data) => data.attackName === attackName) || {
+      attackDuration: 0,
+      attackDelay: 0,
+    };
+
+  const animationA = getAnimation(action);
+  const animationB = getAnimation(enemyAction);
+
+  const delayA = 500 + animationA.attackDuration + animationA.attackDelay;
+  const delayB = 500 + animationB.attackDuration + animationB.attackDelay;
+
+  setBattleData({ ...battleData, waiting: true });
+
+  const performAttack = (
+    attacker: CharacterData,
+    defender: CharacterData,
+    attackType: string
+  ) => {
+    handleAttack(
+      attackType,
+      attacker,
+      defender,
+      battleCharacters,
+      setBattleCharacters
+    );
   };
 
-  let animationB = animationData.find(
-    (data) => data.attackName === enemyAction
-  ) || {
-    attackDuration: 0,
-    attackDelay: 0,
+  const scheduleAttack = (
+    attacker: CharacterData,
+    defender: CharacterData,
+    attackType: string,
+    delay: number
+  ) => {
+    setTimeout(() => {
+      performAttack(attacker, defender, attackType);
+    }, delay);
   };
 
-  let delayA = 500 + animationA?.attackDuration + animationA?.attackDelay;
-  let delayB = 500 + animationB?.attackDuration + animationB?.attackDelay;
+  scheduleAttack(
+    speedPriority[0],
+    speedPriority[1],
+    speedPriority[0] === characters[0] ? action : enemyAction,
+    100
+  );
 
-  setBattleData({
-    ...battleData,
-    waiting: true,
-  });
-
-  setTimeout(() => {
-    let attacker = speedPriority[0];
-    let defender = speedPriority[1];
-
-    if (attacker == characters[0]) {
-      handleAttack(
-        action,
-        attacker,
-        defender,
-        battleCharacters,
-        setBattleCharacters
-      );
-    } else
-      handleAttack(
-        enemyAction,
-        attacker,
-        defender,
-        battleCharacters,
-        setBattleCharacters
-      );
-  }, 100);
-
-  setTimeout(() => {
-    let attacker = speedPriority[1];
-    let defender = speedPriority[0];
-
-    if (attacker == characters[0]) {
-      handleAttack(
-        action,
-        attacker,
-        defender,
-        battleCharacters,
-        setBattleCharacters
-      );
-    } else
-      handleAttack(
-        enemyAction,
-        attacker,
-        defender,
-        battleCharacters,
-        setBattleCharacters
-      );
-  }, delayA);
+  scheduleAttack(
+    speedPriority[1],
+    speedPriority[0],
+    speedPriority[1] === characters[0] ? action : enemyAction,
+    delayA
+  );
 
   setTimeout(() => {
     setBattleData({
