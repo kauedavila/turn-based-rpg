@@ -1,3 +1,5 @@
+export type ScreenList = "menu" | "battle";
+
 type spriteData = {
   url?: string;
   flip?: boolean;
