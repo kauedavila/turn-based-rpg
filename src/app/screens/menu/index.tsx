@@ -21,7 +21,14 @@ export default function Menu({
           backgroundPosition: "bottom",
         }}
       >
-        <div id="menu-hud"></div>
+        <div id="menu-hud">
+          <button
+            onClick={() => setScreen("battle")}
+            className="bg-white text-black font-bold p-4 rounded-lg shadow-lg"
+          >
+            Start
+          </button>
+        </div>
       </div>
     </main>
   );

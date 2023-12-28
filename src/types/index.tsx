@@ -1,13 +1,23 @@
 export type ScreenList = "menu" | "battle";
 
-type spriteData = {
+export type SpriteDataType = {
+  [key: string]: string | SpriteStateDataType | undefined;
+  name: string;
+  state?: SpriteStates;
+  idle?: SpriteStateDataType;
+  attack?: SpriteStateDataType;
+  hit?: SpriteStateDataType;
+  death?: SpriteStateDataType;
+};
+
+export type SpriteStateDataType = {
   url?: string;
   flip?: boolean;
   width?: number;
   height?: number;
 };
 
-export type spriteStates = "idle" | "attack" | "hit" | "death";
+export type SpriteStates = "idle" | "attack" | "hit" | "death";
 
 export type CharacterData = {
   data: {
@@ -21,14 +31,7 @@ export type CharacterData = {
       name?: string;
       level?: number;
     }[];
-    sprite?: {
-      [key: string]: string | spriteData | undefined;
-      state?: spriteStates;
-      idle?: spriteData;
-      attack?: spriteData;
-      hit?: spriteData;
-      death?: spriteData;
-    };
+    spriteName?: string;
     currentStats?: {
       health?: number;
       attack?: number;

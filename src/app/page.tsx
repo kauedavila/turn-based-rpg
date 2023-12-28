@@ -5,7 +5,7 @@ import { ScreenList } from "@/types";
 import { useState } from "react";
 
 export default function Home() {
-  const [screen, setScreen] = useState<ScreenList>("menu");
+  const [screen, setScreen] = useState<ScreenList>("battle");
   return (
     <>
       {screen === "menu" && <Menu screen={screen} setScreen={setScreen} />}
