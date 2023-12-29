@@ -1,10 +1,10 @@
-import { CharacterData } from "@/types";
+import { EnemyData } from "@/types";
 
-const templateCharacters: CharacterData[] = [
+const templateEnemies: EnemyData[] = [
   {
     data: {
       id: 1,
-      name: "Saga",
+      name: "Subzero",
       health: 100,
       attack: 5,
       defense: 5,
@@ -16,9 +16,9 @@ const templateCharacters: CharacterData[] = [
         },
       ],
       sprite: {
-        name: "Scorpion",
+        name: "Subzero",
       },
     },
   },
 ];
-export default templateCharacters;
+export default templateEnemies;

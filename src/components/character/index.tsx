@@ -1,6 +1,6 @@
 "use client";
 
-import { spritesData } from "@/templates/characters";
+import templateSprites from "@/templates/sprites";
 import { CharacterData, SpriteDataType } from "@/types";
 import Image from "next/image";
 
@@ -8,8 +8,9 @@ const Character = ({
   data,
   position,
 }: CharacterData & { position: string }) => {
-  const { id, name, health, attack, defense, speed, sprite, currentStats } =
-    data;
+  const { id, name, sprite } = data;
+
+  const spritesData = templateSprites as SpriteDataType[];
 
   const currentSprite = spritesData.find(
     (item) => item.name === sprite?.name

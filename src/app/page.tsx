@@ -5,7 +5,7 @@ import { CharacterData, ScreenList } from "@/types";
 import { useState } from "react";
 
 export default function Home() {
-  const [screen, setScreen] = useState<ScreenList>("battle");
+  const [screen, setScreen] = useState<ScreenList>("menu");
   const [battleCharacters, setBattleCharacters] = useState<CharacterData[]>([]);
 
   return (

@@ -44,6 +44,8 @@ export type CharacterData = {
   };
 };
 
+export type EnemyData = CharacterData;
+
 export type BattleData = {
   timer?: number;
   turn?: number;

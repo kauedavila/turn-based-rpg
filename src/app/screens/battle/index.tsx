@@ -2,6 +2,7 @@
 import Character from "@/components/character";
 import handleTurn from "@/functions/handleTurn";
 import templateCharacters from "@/templates/characters";
+import templateEnemies from "@/templates/enemies";
 import { BattleData, CharacterData, ScreenList } from "@/types";
 import { useCallback, useEffect, useState } from "react";
 
@@ -33,10 +34,6 @@ export default function Battle({
     setBattleCharacters(characters);
   };
 
-  const loadCharacters = useCallback(() => {
-    return templateCharacters as CharacterData[];
-  }, []);
-
   const handleHPColor = (healthPercentage: number) => {
     if (healthPercentage > 50) {
       return "green";
@@ -48,9 +45,7 @@ export default function Battle({
   };
 
   useEffect(() => {
-    const characters = loadCharacters();
-    setBattleCharacters(characters);
-    calculateCurrentStats(characters);
+    calculateCurrentStats(battleCharacters);
   }, []);
 
   return (

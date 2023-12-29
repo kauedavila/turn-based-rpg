@@ -1,23 +1,6 @@
-import templateCharacters, { spritesData } from "@/templates/characters";
 import { CharacterData, ScreenList } from "@/types";
-import Image from "next/image";
-import { useCallback } from "react";
 
-export default function Menu({
-  screen,
-  setScreen,
-  battleCharacters,
-  setBattleCharacters,
-}: {
-  screen: ScreenList;
-  setScreen: (screen: ScreenList) => void;
-  battleCharacters: CharacterData[];
-  setBattleCharacters: (characters: CharacterData[]) => void;
-}) {
-  const loadCharacters = useCallback(() => {
-    return templateCharacters as CharacterData[];
-  }, []);
-
+export default function Menu() {
   return (
     <main
       id="battle-page"
