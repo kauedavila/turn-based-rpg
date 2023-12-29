@@ -5,6 +5,7 @@ const templateEnemies: EnemyData[] = [
     data: {
       id: 1,
       name: "Subzero",
+      level: 1,
       health: 100,
       attack: 5,
       defense: 5,

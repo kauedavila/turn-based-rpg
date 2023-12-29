@@ -1,31 +1,35 @@
 "use client";
-import Battle from "@/app/screens/battle";
 import Menu from "@/app/screens/menu";
-import { CharacterData, ScreenList } from "@/types";
-import { useState } from "react";
+import { useScreen } from "@/stores/screen";
+import { useCharacter } from "@/stores/character";
+import { useEffect } from "react";
+import templateCharacters from "@/templates/characters";
+import { useParty } from "@/stores/useParty";
 
 export default function Home() {
-  const [screen, setScreen] = useState<ScreenList>("menu");
-  const [battleCharacters, setBattleCharacters] = useState<CharacterData[]>([]);
+  // const [battleCharacters, setBattleCharacters] = useState<CharacterData[]>([]);
+
+  const screen = useScreen((state: any) => state?.screen);
+  const setScreen = useScreen((state: any) => state?.setScreen);
+  const setParty = useParty((state: any) => state?.setParty);
+
+  useEffect(() => {
+    setScreen("menu");
+    setParty(templateCharacters);
+  }, []);
 
   return (
-    <>
-      {screen === "menu" && (
-        <Menu
-          screen={screen}
-          setScreen={setScreen}
-          battleCharacters={battleCharacters}
-          setBattleCharacters={setBattleCharacters}
-        />
-      )}
-      {screen === "battle" && (
+    <main
+      id="battle-page"
+      className="flex flex-col justify-center items-center h-screen bg-black"
+    >
+      {screen === "menu" && <Menu />}
+      {/* {screen === "battle" && (
         <Battle
-          screen={screen}
-          setScreen={setScreen}
           battleCharacters={battleCharacters}
           setBattleCharacters={setBattleCharacters}
         />
-      )}
-    </>
+      )} */}
+    </main>
   );
 }

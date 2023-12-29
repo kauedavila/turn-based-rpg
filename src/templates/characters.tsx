@@ -5,6 +5,7 @@ const templateCharacters: CharacterData[] = [
     data: {
       id: 1,
       name: "Saga",
+      level: 1,
       health: 100,
       attack: 5,
       defense: 5,
