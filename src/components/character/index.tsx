@@ -8,15 +8,15 @@ const Character = ({
   data,
   position,
 }: CharacterData & { position: string }) => {
-  const { id, name, health, attack, defense, speed, spriteName, currentStats } =
+  const { id, name, health, attack, defense, speed, sprite, currentStats } =
     data;
 
-  const sprite = spritesData.find(
-    (sprite) => sprite.name === spriteName
+  const currentSprite = spritesData.find(
+    (item) => item.name === sprite?.name
   ) as SpriteDataType;
 
-  const spriteState = sprite?.state ?? "idle";
-  const url = sprite?.[spriteState]?.url ?? "";
+  const spriteState = currentSprite?.state ?? "idle";
+  const url = currentSprite?.[spriteState]?.url ?? "";
 
   return (
     <div

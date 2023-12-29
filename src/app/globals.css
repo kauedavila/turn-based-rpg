@@ -68,3 +68,15 @@
     transform: translateX(0);
   }
 }
+
+/* Health Flashing */
+
+.animate-health-flash {
+  animation: health-flash 1s infinite;
+}
+
+@keyframes health-flash {
+  50% {
+    background-color: rgb(51, 0, 0);
+  }
+}

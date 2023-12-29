@@ -8,11 +8,14 @@ import { useCallback, useEffect, useState } from "react";
 export default function Battle({
   screen,
   setScreen,
+  battleCharacters,
+  setBattleCharacters,
 }: {
   screen: ScreenList;
   setScreen: (screen: ScreenList) => void;
+  battleCharacters: CharacterData[];
+  setBattleCharacters: (characters: CharacterData[]) => void;
 }) {
-  const [battleCharacters, setBattleCharacters] = useState<CharacterData[]>([]);
   const [battleData, setBattleData] = useState<BattleData>({
     timer: 0,
     turn: 1,
@@ -38,9 +41,9 @@ export default function Battle({
     if (healthPercentage > 50) {
       return "green";
     } else if (healthPercentage > 25) {
-      return "yellow";
+      return "#f5c71a";
     } else {
-      return "red";
+      return "#eb244b";
     }
   };
 
@@ -86,18 +89,26 @@ export default function Battle({
                   }`}
                 >
                   <div
-                    className={`flex flex-col w-full h-6 bg-red-900 box-border
+                    className={`relative flex flex-col w-full h-6 bg-red-900 box-border
                     border-2 border-solid border-slate-500 rounded-md
                      transition-all duration-500 ${
                        index === 0 ? "items-start" : "items-end"
                      }`}
                   >
                     <div
-                      className="w-full h-full bg-amber-500
-                    transition-all duration-500"
+                      className={`absolute w-full h-full transition-all duration-500 z-10 ${
+                        healthPercentage > 10 ? "" : "animate-health-flash"
+                      }`}
                       style={{
                         width: `${healthPercentage}%`,
                         backgroundColor: handleHPColor(healthPercentage),
+                      }}
+                    />
+                    <div
+                      className="absolute w-full h-full transition-all duration-1000"
+                      style={{
+                        width: `${healthPercentage}%`,
+                        backgroundColor: "#dc143c",
                       }}
                     />
                   </div>

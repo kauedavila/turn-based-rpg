@@ -38,11 +38,11 @@ const templateCharacters: CharacterData[] = [
   {
     data: {
       id: 1,
-      name: "Scorpion",
-      health: 39,
-      attack: 52,
-      defense: 43,
-      speed: 30,
+      name: "Saga",
+      health: 100,
+      attack: 5,
+      defense: 5,
+      speed: 5,
       moves: [
         {
           name: "melee",
@@ -53,18 +53,22 @@ const templateCharacters: CharacterData[] = [
           level: 1,
         },
       ],
-      spriteName: "Scorpion",
+      sprite: {
+        name: "Scorpion",
+      },
     },
   },
   {
     data: {
       id: 2,
       name: "Subzero",
-      health: 44,
-      attack: 48,
-      defense: 65,
-      speed: 43,
-      spriteName: "Subzero",
+      health: 100,
+      attack: 5,
+      defense: 5,
+      speed: 5,
+      sprite: {
+        name: "Subzero",
+      },
       moves: [
         {
           name: "melee",

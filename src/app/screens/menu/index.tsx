@@ -1,12 +1,23 @@
-import { ScreenList } from "@/types";
+import templateCharacters, { spritesData } from "@/templates/characters";
+import { CharacterData, ScreenList } from "@/types";
+import Image from "next/image";
+import { useCallback } from "react";
 
 export default function Menu({
   screen,
   setScreen,
+  battleCharacters,
+  setBattleCharacters,
 }: {
   screen: ScreenList;
   setScreen: (screen: ScreenList) => void;
+  battleCharacters: CharacterData[];
+  setBattleCharacters: (characters: CharacterData[]) => void;
 }) {
+  const loadCharacters = useCallback(() => {
+    return templateCharacters as CharacterData[];
+  }, []);
+
   return (
     <main
       id="battle-page"
@@ -20,16 +31,18 @@ export default function Menu({
           backgroundSize: "cover",
           backgroundPosition: "bottom",
         }}
-      >
-        <div id="menu-hud">
-          <button
-            onClick={() => setScreen("battle")}
-            className="bg-white text-black font-bold p-4 rounded-lg shadow-lg"
-          >
-            Start
-          </button>
-        </div>
-      </div>
+      ></div>
     </main>
   );
 }
+
+// const CreateCharacter = () => {
+//   return (
+//     <main className="flex items-center justify-center w-full h-auto backdrop-blur">
+//       <div className="w-1/2 h-fit flex flex-col justify-center items-center bg-gray-100 rounded-md shadow-md">
+//         <h1 className="text-3xl font-bold">Create Character</h1>
+//         <form></form>
+//       </div>
+//     </main>
+//   );
+// };

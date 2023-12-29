@@ -31,7 +31,10 @@ export type CharacterData = {
       name?: string;
       level?: number;
     }[];
-    spriteName?: string;
+    sprite?: {
+      name?: string;
+      state?: SpriteStates;
+    };
     currentStats?: {
       health?: number;
       attack?: number;

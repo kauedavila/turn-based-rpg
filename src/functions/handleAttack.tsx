@@ -1,4 +1,4 @@
-import { AnimationData, CharacterData, spriteStates } from "@/types";
+import { AnimationData, CharacterData, SpriteStates } from "@/types";
 
 export const defaultAnimation = {
   attackName: "melee",
@@ -73,12 +73,15 @@ const calculateDamage = (
         (((2 * 5) / 5) * move.power * attackerAtk) / defenderDef / 50 + 2;
       break;
   }
-  return damage;
+
+  damage = Math.round(damage);
+
+  return damage * 3;
 };
 
 const handleSpriteState = (
   target: CharacterData,
-  state: spriteStates,
+  state: SpriteStates,
   battleCharacters: CharacterData[],
   setBattleCharacters: (characters: CharacterData[]) => void
 ) => {
