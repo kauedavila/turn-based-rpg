@@ -5,6 +5,7 @@ import { useCharacter } from "@/stores/character";
 import { useEffect } from "react";
 import templateCharacters from "@/templates/characters";
 import { useParty } from "@/stores/useParty";
+import Battle from "./screens/battle";
 
 export default function Home() {
   // const [battleCharacters, setBattleCharacters] = useState<CharacterData[]>([]);
@@ -23,12 +24,7 @@ export default function Home() {
       className="flex flex-col justify-center items-center h-screen bg-black"
     >
       {screen === "menu" && <Menu />}
-      {/* {screen === "battle" && (
-        <Battle
-          battleCharacters={battleCharacters}
-          setBattleCharacters={setBattleCharacters}
-        />
-      )} */}
+      {screen === "battle" && <Battle />}
     </main>
   );
 }

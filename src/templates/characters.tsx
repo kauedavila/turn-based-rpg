@@ -44,7 +44,7 @@ const templateCharacters: CharacterData[] = [
   {
     data: {
       id: 3,
-      name: "Yasuo",
+      name: "Guts",
       level: 1,
       health: 100,
       attack: 5,
@@ -57,7 +57,7 @@ const templateCharacters: CharacterData[] = [
         },
       ],
       sprite: {
-        name: "Yasuo",
+        name: "Guts",
       },
     },
   },

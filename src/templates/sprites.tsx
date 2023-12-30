@@ -33,9 +33,9 @@ export const templateSprites: SpriteDataType[] = [
     },
   },
   {
-    name: "Yasuo",
+    name: "Guts",
     idle: {
-      url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f76d9910-0432-4cfe-9876-5e56c6d5334f/da5vmuh-27d5aa71-55c5-45aa-affb-334cc8c840f8.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2Y3NmQ5OTEwLTA0MzItNGNmZS05ODc2LTVlNTZjNmQ1MzM0ZlwvZGE1dm11aC0yN2Q1YWE3MS01NWM1LTQ1YWEtYWZmYi0zMzRjYzhjODQwZjguZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.3uX6U_iPR4KfXhBy2dKjLfYyWWk3TvjjxMLvUWEoPdQ",
+      url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/4c85d0fa-3382-4b99-9a1b-4eee74dcd38c/ddenfjd-412cbcf5-eb4f-4fdd-a129-25ba7a5cf515.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzRjODVkMGZhLTMzODItNGI5OS05YTFiLTRlZWU3NGRjZDM4Y1wvZGRlbmZqZC00MTJjYmNmNS1lYjRmLTRmZGQtYTEyOS0yNWJhN2E1Y2Y1MTUucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.IvkilAfQC9bFbKWDHWZXH6u2tGuG_bW3xxxU37Ryaaw",
     },
     attack: {
       url: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/08f945a5-1c9f-425f-8ec3-968631138eea/dfn5kfx-c14c914a-e66d-4da5-a1d1-f2325c9b0036.png/v1/fill/w_1280,h_1280/dark_magician_by_ahmedaak_dfn5kfx-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTI4MCIsInBhdGgiOiJcL2ZcLzA4Zjk0NWE1LTFjOWYtNDI1Zi04ZWMzLTk2ODYzMTEzOGVlYVwvZGZuNWtmeC1jMTRjOTE0YS1lNjZkLTRkYTUtYTFkMS1mMjMyNWM5YjAwMzYucG5nIiwid2lkdGgiOiI8PTEyODAifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.87ibFgMLO9l17G7xFVXycEuLud_PimoAzF-8RufBjeU",

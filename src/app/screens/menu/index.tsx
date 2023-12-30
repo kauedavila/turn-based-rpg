@@ -1,3 +1,5 @@
+import { useBattleCharacters } from "@/stores/battleCharacters";
+import { useScreen } from "@/stores/screen";
 import { useParty } from "@/stores/useParty";
 import templateCharacters from "@/templates/characters";
 import templateSprites from "@/templates/sprites";
@@ -7,6 +9,20 @@ import { useState } from "react";
 export default function Menu() {
   const party = useParty((state: any) => state?.party);
   const [selectingCharacter, setSelectingCharacter] = useState<number>(0);
+  const battleCharacters = useBattleCharacters(
+    (state: any) => state?.battleCharacters
+  );
+  const setBattleCharacters = useBattleCharacters(
+    (state: any) => state?.setBattleCharacters
+  );
+  const setScreen = useScreen((state: any) => state?.setScreen);
+
+  const handleBattle = () => {
+    const playerCharacter = party[0];
+    const enemyCharacter = party[1];
+    setBattleCharacters([playerCharacter, enemyCharacter]);
+    setScreen("battle");
+  };
 
   return (
     <div
@@ -95,6 +111,17 @@ export default function Menu() {
               </div>
             );
           })}
+      </div>
+      <div
+        id="battle-button"
+        className="flex justify-center items-center w-full h-full"
+      >
+        <button
+          className="w-[25%] h-[25%] bg-gray-700 rounded-full text-white text-2xl font-bold cursor-pointer aspect-square hover:scale-105 transition-all duration-300 ease-in-out"
+          onClick={handleBattle}
+        >
+          Battle
+        </button>
       </div>
     </div>
   );
