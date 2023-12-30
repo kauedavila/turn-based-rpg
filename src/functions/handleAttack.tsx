@@ -12,6 +12,15 @@ export const defaultAnimation = {
 
 export const animationData: AnimationData[] = [
   {
+    attackName: "switch",
+    attackAnimation: "a",
+    attackDelay: 0,
+    attackDuration: 0,
+    hitAnimation: "a",
+    hitDelay: 0,
+    hitDuration: 0,
+  },
+  {
     attackName: "melee",
     attackAnimation: "animate-melee-attack",
     attackDelay: 0,
@@ -34,7 +43,19 @@ export const animationData: AnimationData[] = [
 
 const attackData = [
   {
+    attackName: "switch",
+    properties: [],
+    element: "none",
+    power: 0,
+  },
+  {
     attackName: "melee",
+    properties: ["close", "physical", "endowable"],
+    element: "neutral",
+    power: 40,
+  },
+  {
+    attackName: "jump",
     properties: ["close", "physical", "endowable"],
     element: "neutral",
     power: 40,
@@ -64,7 +85,8 @@ const calculateDamage = (
     defense: 0,
   };
 
-  if (!attackerAtk || !attackerDef || !defenderDef) return 0;
+  if (!attackerAtk || !attackerDef || !defenderDef || move.power === 0)
+    return 0;
 
   let damage = 0;
   switch (move.attackName) {
@@ -75,7 +97,6 @@ const calculateDamage = (
   }
 
   damage = Math.round(damage);
-
   return damage * 3;
 };
 

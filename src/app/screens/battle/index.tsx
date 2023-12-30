@@ -163,11 +163,13 @@ export default function Battle({}: {}) {
               "
                   onClick={() => {
                     handleTurn(
+                      "attack",
                       move.name ?? "melee",
                       battleCharacters,
                       setBattleCharacters,
                       battleData,
-                      setBattleData
+                      setBattleData,
+                      party
                     );
                   }}
                 >
@@ -181,29 +183,28 @@ export default function Battle({}: {}) {
               hover:bg-gray-700 transition-all duration-300 cursor-pointer"
           >
             <summary className="px-10 py-2 border border-black">Switch</summary>
-            {party
-              ?.filter(
-                (character: CharacterData) =>
-                  character.data.id !== battleCharacters[0]?.data.id
-              )
-              ?.map((character: CharacterData, index: number) => (
+            <div className="flex">
+              {party?.map((character: CharacterData, index: number) => (
                 <button
                   key={index}
                   className=" text-left bg-gray-800 text-white border border-black px-10 py-2 first-letter:capitalize
-              hover:bg-gray-700 transition-all duration-300
-              "
+              hover:bg-gray-700 transition-all duration-300"
                   onClick={() => {
-                    const newBattleCharacters = battleCharacters.map(
-                      (item: CharacterData) => item
+                    handleTurn(
+                      "switch",
+                      index.toString(),
+                      battleCharacters,
+                      setBattleCharacters,
+                      battleData,
+                      setBattleData,
+                      party
                     );
-                    newBattleCharacters[0] = character;
-                    console.log(newBattleCharacters);
-                    setBattleCharacters(newBattleCharacters);
                   }}
                 >
                   {character.data.name}
                 </button>
               ))}
+            </div>
           </details>
           <button
             className="w-full h-auto text-left bg-gray-900 text-white border border-black px-10 py-2 first-letter:capitalize

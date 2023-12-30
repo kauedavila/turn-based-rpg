@@ -3,10 +3,12 @@ import handleAttack, { animationData } from "./handleAttack";
 
 const handleTurn = (
   action: string,
+  value: string,
   battleCharacters: CharacterData[],
   setBattleCharacters: (characters: CharacterData[]) => void,
   battleData: BattleData,
-  setBattleData: (data: BattleData) => void
+  setBattleData: (data: BattleData) => void,
+  party: CharacterData[]
 ) => {
   if (battleData.waiting) return;
 
@@ -17,6 +19,10 @@ const handleTurn = (
       (a, b) =>
         (b.data.currentStats?.speed ?? 0) - (a.data.currentStats?.speed ?? 0)
     );
+
+  if (action == "attack") {
+    action = value;
+  }
 
   const enemyAction = "melee";
 
@@ -79,6 +85,14 @@ const handleTurn = (
   );
 
   setTimeout(() => {
+    if (action === "switch") {
+      const newBattleCharacters = battleCharacters.map(
+        (item: CharacterData) => item
+      );
+      newBattleCharacters[0] = party[Number(value)];
+      setBattleCharacters(newBattleCharacters);
+    }
+
     setBattleData({
       ...battleData,
       turn: battleData.turn && battleData.turn + 1,
