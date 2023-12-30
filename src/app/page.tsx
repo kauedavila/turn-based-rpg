@@ -15,7 +15,6 @@ export default function Home() {
 
   useEffect(() => {
     setScreen("menu");
-    setParty(templateCharacters);
   }, []);
 
   return (
