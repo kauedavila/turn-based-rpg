@@ -189,7 +189,7 @@ export default function Battle({}: {}) {
               {party?.map((character: CharacterData, index: number) => (
                 <button
                   key={index}
-                  className="relative text-left bg-gray-800 text-white border border-black px-10 py-2 first-letter:capitalize
+                  className="relative text-left bg-red-900 text-white border border-black px-10 py-2 first-letter:capitalize
               hover:bg-gray-700 transition-all duration-300"
                   style={{
                     display:
@@ -209,10 +209,20 @@ export default function Battle({}: {}) {
                     );
                   }}
                 >
-                  <p className="z-20">{character.data.name}</p>
+                  <p className="relative z-10">{character.data.name}</p>
                   <div
-                    className="absolute bottom-0 left-0 w-full h-full bg-green-500 opacity-20"
+                    className="absolute bottom-0 left-0 w-full h-full"
                     style={{
+                      backgroundColor: handleHPColor(
+                        Math.max(
+                          Math.floor(
+                            ((character.data.currentStats?.health ?? 0) /
+                              character.data.health) *
+                              100
+                          ),
+                          0
+                        )
+                      ),
                       width: `${Math.max(
                         Math.floor(
                           ((character.data.currentStats?.health ?? 0) /
