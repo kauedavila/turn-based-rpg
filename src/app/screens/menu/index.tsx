@@ -1,7 +1,7 @@
 import { useParty } from "@/stores/useParty";
 import templateCharacters from "@/templates/characters";
 import templateSprites from "@/templates/sprites";
-import { SpriteStates } from "@/types";
+import { CharacterData, SpriteStates } from "@/types";
 import { useState } from "react";
 
 export default function Menu() {
@@ -125,11 +125,11 @@ const SelectCharacter = ({
     >
       <div
         id="select-character"
-        className="flex flex-col  w-[75%] h-[75%] bg-gray-300 rounded-md shadow-lg p-4"
+        className="flex flex-col w-[75%] h-[75%] bg-gray-300 rounded-md shadow-lg p-4"
       >
         <div
           id="select-character-close"
-          className="flex justify-end w-full "
+          className="flex justify-end w-full"
           onClick={() => setSelectingCharacter(0)}
         >
           <p
@@ -139,29 +139,50 @@ const SelectCharacter = ({
             x
           </p>
         </div>
-        <div className="grid grid-cols-10">
-          {templateCharacters.map((character, index) => {
+        <div className="grid grid-cols-6 gap-2">
+          {templateCharacters.map((character: CharacterData, index) => {
             const sprite = templateSprites.find(
-              (item) => item.name === character?.data.sprite.name
+              (item) => item.name === character?.data?.sprite?.name
             );
 
             const spriteState: SpriteStates =
-              character?.data?.sprite.state ?? "idle";
+              character?.data?.sprite?.state ?? "idle";
 
             const spriteUrl = sprite?.[spriteState]?.url;
+            const characterInParty: boolean = party.find(
+              (item: CharacterData) => item?.data?.id === character?.data?.id
+            )
+              ? true
+              : false;
 
             return (
               <div
                 key={index}
                 id={`party-list-character-${character?.data.id}-sprite`}
-                className="w-full h-auto aspect-square border border-black rounded-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer hover:border-gray-800 hover:bg-gray-700"
+                className={
+                  characterInParty
+                    ? "w-full h-auto aspect-square border  rounded-md bg-gray-700 cursor-not-allowed filter grayscale"
+                    : "w-full h-auto aspect-square border border-black rounded-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer bg-gray-500 hover:border-gray-800 hover:bg-gray-700"
+                }
                 style={{
                   backgroundImage: `url(${spriteUrl})`,
                   backgroundSize: "cover",
                   backgroundPosition: "top",
                 }}
-                onClick={() => handleAddToParty(index)}
-              ></div>
+                onClick={() => !characterInParty && handleAddToParty(index)}
+              >
+                <div
+                  id={`party-list-character-${character?.data.id}-data`}
+                  className="flex flex-col h-full justify-between p-1 text-white"
+                >
+                  <p>
+                    <strong>{character?.data.name}</strong>
+                  </p>
+                  <p className="text-xs self-end ">
+                    <strong>LV</strong>: {character?.data.level}
+                  </p>
+                </div>
+              </div>
             );
           })}
         </div>
