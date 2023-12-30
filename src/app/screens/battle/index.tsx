@@ -71,14 +71,15 @@ export default function Battle({}: {}) {
       >
         {battleCharacters.length > 0 &&
           battleCharacters?.map((character: CharacterData, index: number) => {
-            const healthPercentage = Math.max(
-              Math.floor(
-                ((character.data.currentStats?.health ?? 0) /
-                  character.data.health) *
-                  100
-              ),
-              0
-            );
+            const healthPercentage =
+              Math.max(
+                Math.floor(
+                  ((character.data.currentStats?.health ?? 0) /
+                    character.data.health) *
+                    100
+                ),
+                0
+              ) || 100;
             return (
               <React.Fragment key={index}>
                 <div
@@ -175,68 +176,75 @@ export default function Battle({}: {}) {
                     );
                   }}
                 >
-                  {move.name}
+                  {move.name.replace("_", " ")}
                 </button>
               ))}
             </div>
           </details>
-          <details
-            className="text-left bg-gray-900 text-white  
+          {party.length > 1 && (
+            <details
+              className="text-left bg-gray-900 text-white  
               hover:bg-gray-700 transition-all duration-300 cursor-pointer"
-          >
-            <summary className="px-10 py-2 border border-black">Switch</summary>
-            <div className="flex">
-              {party?.map((character: CharacterData, index: number) => (
-                <button
-                  key={index}
-                  className="relative text-left bg-red-900 text-white border border-black px-10 py-2 first-letter:capitalize
+            >
+              <summary className="px-10 py-2 border border-black">
+                Switch
+              </summary>
+              <div className="flex">
+                {party?.map((character: CharacterData, index: number) => (
+                  <button
+                    key={index}
+                    className="w-full relative text-left bg-red-900 text-white border border-black px-10 py-2 first-letter:capitalize
               hover:bg-gray-700 transition-all duration-300"
-                  style={{
-                    display:
-                      character.data.id === battleCharacters[0]?.data.id
-                        ? "none"
-                        : "block",
-                  }}
-                  onClick={() => {
-                    handleTurn(
-                      "switch",
-                      index.toString(),
-                      battleCharacters,
-                      setBattleCharacters,
-                      battleData,
-                      setBattleData,
-                      party
-                    );
-                  }}
-                >
-                  <p className="relative z-10">{character.data.name}</p>
-                  <div
-                    className="absolute bottom-0 left-0 w-full h-full"
                     style={{
-                      backgroundColor: handleHPColor(
-                        Math.max(
-                          Math.floor(
-                            ((character.data.currentStats?.health ?? 0) /
-                              character.data.health) *
-                              100
-                          ),
-                          0
-                        )
-                      ),
-                      width: `${Math.max(
-                        Math.floor(
-                          ((character.data.currentStats?.health ?? 0) /
-                            character.data.health) *
-                            100
-                        ),
-                        0
-                      )}%`,
+                      display:
+                        character.data.id === battleCharacters[0]?.data.id
+                          ? "none"
+                          : "block",
                     }}
-                  ></div>
-                </button>
-              ))}
-            </div>
-          </details>
+                    onClick={() => {
+                      handleTurn(
+                        "switch",
+                        index.toString(),
+                        battleCharacters,
+                        setBattleCharacters,
+                        battleData,
+                        setBattleData,
+                        party
+                      );
+                    }}
+                  >
+                    <p className="relative z-10">{character.data.name}</p>
+                    <div
+                      className="absolute bottom-0 left-0 w-full h-full"
+                      style={{
+                        backgroundColor: handleHPColor(
+                          Math.max(
+                            Math.floor(
+                              ((character.data.currentStats?.health ?? 0) /
+                                character.data.health) *
+                                100
+                            ),
+                            0
+                          ) || 100
+                        ),
+                        width: `${
+                          Math.max(
+                            Math.floor(
+                              ((character.data.currentStats?.health ?? 0) /
+                                character.data.health) *
+                                100
+                            ),
+                            0
+                          ) || 100
+                        }%`,
+                      }}
+                    ></div>
+                  </button>
+                ))}
+              </div>
+            </details>
+          )}
+
           <button
             className="w-full h-auto text-left bg-gray-900 text-white border border-black px-10 py-2 first-letter:capitalize
               hover:bg-gray-700 transition-all duration-300"

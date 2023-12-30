@@ -69,6 +69,37 @@
   }
 }
 
+.animate-throw_rock-attack {
+  animation: throw_rock-attack 0.5s ease-in-out;
+}
+
+@keyframes throw_rock-attack {
+  0% {
+    transform: rotate(-15deg) scaleX(1.5);
+  }
+
+  50% {
+    transform: rotate(15deg) scaleX(0.5);
+  }
+
+  100% {
+    transform: rotate(0);
+  }
+}
+.animate-throw_rock-projectile {
+  animation: throw_rock-projectile 0.5s;
+}
+
+@keyframes throw_rock-projectile {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(100vw);
+  }
+}
+
 /* Health Flashing */
 
 .animate-health-flash {

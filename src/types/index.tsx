@@ -69,4 +69,5 @@ export type AnimationData = {
   hitAnimation: string;
   hitDelay: number;
   hitDuration: number;
+  projectile?: string;
 };

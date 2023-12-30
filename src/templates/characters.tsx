@@ -16,7 +16,7 @@ const templateCharacters: CharacterData[] = [
           level: 1,
         },
         {
-          name: "jump",
+          name: "throw_rock",
           level: 1,
         },
       ],

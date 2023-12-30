@@ -17,6 +17,8 @@ export default function Menu() {
   const setScreen = useScreen((state: any) => state?.setScreen);
 
   const handleBattle = () => {
+    if (party.length === 0)
+      return alert("You need at least one character in your party to battle");
     const playerCharacter = party[0];
     const enemyCharacter = templateEnemies[0];
     setBattleCharacters([playerCharacter, enemyCharacter]);

@@ -1,73 +1,7 @@
+import { animationData, defaultAnimation } from "@/templates/animations";
+import { attackData, defaultAttack } from "@/templates/attacks";
+import { templateProjectiles } from "@/templates/projectiles";
 import { AnimationData, CharacterData, SpriteStates } from "@/types";
-
-export const defaultAnimation = {
-  attackName: "melee",
-  attackAnimation: "animate-melee-attack",
-  attackDelay: 0,
-  attackDuration: 1000,
-  hitAnimation: "animate-melee-hit",
-  hitDelay: 500,
-  hitDuration: 500,
-};
-
-export const animationData: AnimationData[] = [
-  {
-    attackName: "switch",
-    attackAnimation: "a",
-    attackDelay: 0,
-    attackDuration: 0,
-    hitAnimation: "a",
-    hitDelay: 0,
-    hitDuration: 0,
-  },
-  {
-    attackName: "melee",
-    attackAnimation: "animate-melee-attack",
-    attackDelay: 0,
-    attackDuration: 1000,
-    hitAnimation: "animate-melee-hit",
-    hitDelay: 500,
-    hitDuration: 500,
-  },
-
-  {
-    attackName: "jump",
-    attackAnimation: "animate-jump-attack",
-    attackDelay: 0,
-    attackDuration: 500,
-    hitAnimation: "animate-melee-hit",
-    hitDelay: 300,
-    hitDuration: 500,
-  },
-];
-
-const attackData = [
-  {
-    attackName: "switch",
-    properties: [],
-    element: "none",
-    power: 0,
-  },
-  {
-    attackName: "melee",
-    properties: ["close", "physical", "endowable"],
-    element: "neutral",
-    power: 40,
-  },
-  {
-    attackName: "jump",
-    properties: ["close", "physical", "endowable"],
-    element: "neutral",
-    power: 40,
-  },
-];
-
-const defaultAttack = {
-  attackName: "melee",
-  properties: ["close", "physical", "endowable"],
-  element: "neutral",
-  power: 40,
-};
 
 const calculateDamage = (
   attackName: string,
@@ -136,12 +70,34 @@ const handleAnimation = (
     `character-${defenderPosition}-sprite`
   ) as HTMLElement;
 
-  const animation =
+  const animation: AnimationData =
     animationData.find((data) => data.attackName === attackName) ||
     defaultAnimation;
 
+  const projectile = templateProjectiles.find(
+    (item) => item.name === animation?.projectile
+  );
+
+  console.log(projectile);
+
+  const projectilesIds: any = [];
+  if (projectile) {
+    for (let i = 0; i < projectile.projectiles.length; i++) {
+      const projectileId = document.getElementById(
+        `projectile-${projectile.projectiles[i]?.name}`
+      ) as HTMLElement;
+      projectilesIds.push(projectileId);
+    }
+  }
+
   setTimeout(() => {
     attackerId?.classList.add(animation.attackAnimation);
+
+    projectilesIds?.forEach((projectileId: any, index: number) => {
+      projectileId?.classList.add(projectile?.projectiles[0]?.className);
+      projectileId?.classList.remove("hidden");
+    });
+
     handleSpriteState(
       attacker,
       "attack",
@@ -162,6 +118,10 @@ const handleAnimation = (
     attackerId?.classList.remove(animation.attackAnimation);
     handleSpriteState(attacker, "idle", battleCharacters, setBattleCharacters);
     handleSpriteState(defender, "idle", battleCharacters, setBattleCharacters);
+    projectilesIds?.forEach((projectileId: any, index: number) => {
+      projectileId?.classList.remove(projectile?.projectiles[0]?.className);
+      projectileId?.classList.add("hidden");
+    });
   }, animation.attackDuration);
 };
 

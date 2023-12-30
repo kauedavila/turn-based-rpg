@@ -1,5 +1,6 @@
 import { BattleData, CharacterData } from "@/types";
-import handleAttack, { animationData } from "./handleAttack";
+import handleAttack from "./handleAttack";
+import { animationData } from "@/templates/animations";
 
 const handleTurn = (
   action: string,
