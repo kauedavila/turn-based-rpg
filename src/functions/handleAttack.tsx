@@ -173,7 +173,7 @@ const handleAttack = (
       ...defender?.data.currentStats,
       health: currentHealth ? currentHealth - damage : 0,
     };
-  }, animation.hitDelay + animation.attackDelay);
+  }, animation.attackDelay);
 
   return;
 };
