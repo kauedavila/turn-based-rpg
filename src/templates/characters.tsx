@@ -15,6 +15,10 @@ const templateCharacters: CharacterData[] = [
           name: "melee",
           level: 1,
         },
+        {
+          name: "jump",
+          level: 1,
+        },
       ],
       sprite: {
         name: "Scorpion",

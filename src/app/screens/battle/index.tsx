@@ -138,25 +138,35 @@ export default function Battle({}: {}) {
             <summary className="px-10 py-2 border border-black ">
               Attack
             </summary>
-            {battleCharacters[0]?.data.moves?.map((move: any) => (
-              <button
-                key={move.name}
-                className="h-auto text-left bg-gray-900 text-white border border-black px-10 py-2 first-letter:capitalize
+            <div
+              className="grid grid-cols-2"
+              style={{
+                gridTemplateColumns:
+                  battleCharacters[0]?.data.moves?.length > 1
+                    ? "1fr 1fr"
+                    : "1fr",
+              }}
+            >
+              {battleCharacters[0]?.data.moves?.map((move: any) => (
+                <button
+                  key={move.name}
+                  className="w-full h-auto text-left bg-gray-900 text-white border border-black px-10 py-2 first-letter:capitalize
               hover:bg-gray-700 transition-all duration-300
               "
-                onClick={() => {
-                  handleTurn(
-                    move.name ?? "melee",
-                    battleCharacters,
-                    setBattleCharacters,
-                    battleData,
-                    setBattleData
-                  );
-                }}
-              >
-                {move.name}
-              </button>
-            ))}
+                  onClick={() => {
+                    handleTurn(
+                      move.name ?? "melee",
+                      battleCharacters,
+                      setBattleCharacters,
+                      battleData,
+                      setBattleData
+                    );
+                  }}
+                >
+                  {move.name}
+                </button>
+              ))}
+            </div>
           </details>
         </div>
       )}
