@@ -50,8 +50,10 @@ export default function Battle({}: {}) {
   };
 
   useEffect(() => {
-    calculateCurrentStats();
-  }, []);
+    battleCharacters.forEach((character: CharacterData) => {
+      character.data.currentStats === undefined && calculateCurrentStats();
+    });
+  }, [battleCharacters]);
 
   return (
     <div
@@ -187,8 +189,14 @@ export default function Battle({}: {}) {
               {party?.map((character: CharacterData, index: number) => (
                 <button
                   key={index}
-                  className=" text-left bg-gray-800 text-white border border-black px-10 py-2 first-letter:capitalize
+                  className="relative text-left bg-gray-800 text-white border border-black px-10 py-2 first-letter:capitalize
               hover:bg-gray-700 transition-all duration-300"
+                  style={{
+                    display:
+                      character.data.id === battleCharacters[0]?.data.id
+                        ? "none"
+                        : "block",
+                  }}
                   onClick={() => {
                     handleTurn(
                       "switch",
@@ -201,7 +209,20 @@ export default function Battle({}: {}) {
                     );
                   }}
                 >
-                  {character.data.name}
+                  <p className="z-20">{character.data.name}</p>
+                  <div
+                    className="absolute bottom-0 left-0 w-full h-full bg-green-500 opacity-20"
+                    style={{
+                      width: `${Math.max(
+                        Math.floor(
+                          ((character.data.currentStats?.health ?? 0) /
+                            character.data.health) *
+                            100
+                        ),
+                        0
+                      )}%`,
+                    }}
+                  ></div>
                 </button>
               ))}
             </div>

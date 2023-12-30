@@ -2,6 +2,7 @@ import { useBattleCharacters } from "@/stores/battleCharacters";
 import { useScreen } from "@/stores/screen";
 import { useParty } from "@/stores/useParty";
 import templateCharacters from "@/templates/characters";
+import templateEnemies from "@/templates/enemies";
 import templateSprites from "@/templates/sprites";
 import { CharacterData, SpriteStates } from "@/types";
 import { useState } from "react";
@@ -17,7 +18,7 @@ export default function Menu() {
 
   const handleBattle = () => {
     const playerCharacter = party[0];
-    const enemyCharacter = templateCharacters[2];
+    const enemyCharacter = templateEnemies[0];
     setBattleCharacters([playerCharacter, enemyCharacter]);
     setScreen("battle");
   };
