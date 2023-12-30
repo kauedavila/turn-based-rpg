@@ -2,6 +2,7 @@
 import Character from "@/components/character";
 import handleTurn from "@/functions/handleTurn";
 import { useBattleCharacters } from "@/stores/battleCharacters";
+import { useScreen } from "@/stores/screen";
 import { BattleData, CharacterData } from "@/types";
 import { useEffect, useState } from "react";
 
@@ -12,6 +13,8 @@ export default function Battle({}: {}) {
   const setBattleCharacters = useBattleCharacters(
     (state: any) => state?.setBattleCharacters
   );
+  const setScreen = useScreen((state: any) => state?.setScreen);
+
   const [battleData, setBattleData] = useState<BattleData>({
     timer: 0,
     turn: 1,
@@ -36,6 +39,11 @@ export default function Battle({}: {}) {
     } else {
       return "#eb244b";
     }
+  };
+
+  const handleFlee = () => {
+    confirm("Are you sure you want to flee?") === true &&
+      (setScreen("menu"), setBattleCharacters([]));
   };
 
   useEffect(() => {
@@ -128,16 +136,13 @@ export default function Battle({}: {}) {
       {battleData.waiting ? null : (
         <div
           id="battle-actions"
-          className="bg-white w-fit h-fit absolute left-0 bottom-0 flex flex-col justify-center items-center border-4 rounded-md border-black"
+          className="flex flex-col absolute left-0 bottom-0 border-2 rounded-tr-md border-black"
         >
           <details
-            className="w-full h-auto text-left bg-gray-900 text-white  
-              hover:bg-gray-700 transition-all duration-300 cursor-pointer 
-              "
+            className="text-left bg-gray-900 text-white  
+              hover:bg-gray-700 transition-all duration-300 cursor-pointer"
           >
-            <summary className="px-10 py-2 border border-black ">
-              Attack
-            </summary>
+            <summary className="px-10 py-2 border border-black">Attack</summary>
             <div
               className="grid grid-cols-2"
               style={{
@@ -150,7 +155,7 @@ export default function Battle({}: {}) {
               {battleCharacters[0]?.data.moves?.map((move: any) => (
                 <button
                   key={move.name}
-                  className="w-full h-auto text-left bg-gray-900 text-white border border-black px-10 py-2 first-letter:capitalize
+                  className=" text-left bg-gray-800 text-white border border-black px-10 py-2 first-letter:capitalize
               hover:bg-gray-700 transition-all duration-300
               "
                   onClick={() => {
@@ -168,6 +173,13 @@ export default function Battle({}: {}) {
               ))}
             </div>
           </details>
+          <button
+            className="w-full h-auto text-left bg-gray-900 text-white border border-black px-10 py-2 first-letter:capitalize
+              hover:bg-gray-700 transition-all duration-300"
+            onClick={handleFlee}
+          >
+            Flee
+          </button>
         </div>
       )}
     </div>
