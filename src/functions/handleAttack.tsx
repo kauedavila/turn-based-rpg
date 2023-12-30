@@ -59,7 +59,7 @@ const calculateDamage = (
   const { attack: attackerAtk, defense: attackerDef } = attacker.data
     .currentStats || { attack: 0, defense: 0 };
 
-  const { defense: defenderDef } = defender.data.currentStats || {
+  const { defense: defenderDef } = defender?.data.currentStats || {
     attack: 0,
     defense: 0,
   };
@@ -103,13 +103,16 @@ const handleAnimation = (
   attacker: CharacterData,
   defender: CharacterData,
   battleCharacters: CharacterData[],
-  setBattleCharacters: (characters: CharacterData[]) => void
+  setBattleCharacters: (characters: CharacterData[]) => void,
+  attackerPosition?: string
 ) => {
+  const defenderPosition = attackerPosition === "left" ? "right" : "left";
+
   const attackerId = document.getElementById(
-    `character-${attacker?.data.id}-sprite`
+    `character-${attackerPosition}-sprite`
   ) as HTMLElement;
   const defenderId = document.getElementById(
-    `character-${defender?.data.id}-sprite`
+    `character-${defenderPosition}-sprite`
   ) as HTMLElement;
 
   const animation =
@@ -146,7 +149,8 @@ const handleAttack = (
   attacker: CharacterData,
   defender: CharacterData,
   battleCharacters: CharacterData[],
-  setBattleCharacters: (characters: CharacterData[]) => void
+  setBattleCharacters: (characters: CharacterData[]) => void,
+  attackerPosition?: string
 ) => {
   const damage = calculateDamage(attackName, attacker, defender);
   const currentHealth = defender?.data?.currentStats?.health;
@@ -165,7 +169,8 @@ const handleAttack = (
     attacker,
     defender,
     battleCharacters,
-    setBattleCharacters
+    setBattleCharacters,
+    attackerPosition
   );
 
   setTimeout(() => {

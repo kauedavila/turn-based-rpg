@@ -9,9 +9,7 @@ import { useState } from "react";
 export default function Menu() {
   const party = useParty((state: any) => state?.party);
   const [selectingCharacter, setSelectingCharacter] = useState<number>(0);
-  const battleCharacters = useBattleCharacters(
-    (state: any) => state?.battleCharacters
-  );
+
   const setBattleCharacters = useBattleCharacters(
     (state: any) => state?.setBattleCharacters
   );
@@ -19,7 +17,7 @@ export default function Menu() {
 
   const handleBattle = () => {
     const playerCharacter = party[0];
-    const enemyCharacter = party[1];
+    const enemyCharacter = templateCharacters[2];
     setBattleCharacters([playerCharacter, enemyCharacter]);
     setScreen("battle");
   };

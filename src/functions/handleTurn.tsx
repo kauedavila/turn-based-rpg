@@ -37,14 +37,16 @@ const handleTurn = (
   const performAttack = (
     attacker: CharacterData,
     defender: CharacterData,
-    attackType: string
+    attackType: string,
+    attackerPosition?: string
   ) => {
     handleAttack(
       attackType,
       attacker,
       defender,
       battleCharacters,
-      setBattleCharacters
+      setBattleCharacters,
+      attackerPosition
     );
   };
 
@@ -52,10 +54,11 @@ const handleTurn = (
     attacker: CharacterData,
     defender: CharacterData,
     attackType: string,
-    delay: number
+    delay: number,
+    attackerPosition?: string
   ) => {
     setTimeout(() => {
-      performAttack(attacker, defender, attackType);
+      performAttack(attacker, defender, attackType, attackerPosition);
     }, delay);
   };
 
@@ -63,14 +66,16 @@ const handleTurn = (
     speedPriority[0],
     speedPriority[1],
     speedPriority[0] === characters[0] ? action : enemyAction,
-    100
+    100,
+    speedPriority[0] === characters[0] ? "left" : "right"
   );
 
   scheduleAttack(
     speedPriority[1],
     speedPriority[0],
     speedPriority[1] === characters[0] ? action : enemyAction,
-    delayA
+    delayA,
+    speedPriority[1] === characters[0] ? "left" : "right"
   );
 
   setTimeout(() => {

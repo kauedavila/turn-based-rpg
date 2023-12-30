@@ -3,8 +3,9 @@ import Character from "@/components/character";
 import handleTurn from "@/functions/handleTurn";
 import { useBattleCharacters } from "@/stores/battleCharacters";
 import { useScreen } from "@/stores/screen";
+import { useParty } from "@/stores/useParty";
 import { BattleData, CharacterData } from "@/types";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function Battle({}: {}) {
   const battleCharacters = useBattleCharacters(
@@ -13,6 +14,8 @@ export default function Battle({}: {}) {
   const setBattleCharacters = useBattleCharacters(
     (state: any) => state?.setBattleCharacters
   );
+
+  const party = useParty((state: any) => state?.party);
   const setScreen = useScreen((state: any) => state?.setScreen);
 
   const [battleData, setBattleData] = useState<BattleData>({
@@ -75,9 +78,9 @@ export default function Battle({}: {}) {
               0
             );
             return (
-              <>
+              <React.Fragment key={index}>
                 <div
-                  key={character.data.id}
+                  key={index}
                   className={`flex flex-col w-full ${
                     index === 0 ? "items-start" : "items-end"
                   }`}
@@ -116,7 +119,7 @@ export default function Battle({}: {}) {
                 {index === 0 && (
                   <p className="text-white w-40">Turn {battleData.turn}</p>
                 )}
-              </>
+              </React.Fragment>
             );
           })}
       </div>
@@ -127,7 +130,7 @@ export default function Battle({}: {}) {
         {battleCharacters.length > 0 &&
           battleCharacters?.map((character: CharacterData, index: number) => (
             <Character
-              key={character.data.id}
+              key={index}
               data={character.data}
               position={index === 0 ? "left" : "right"}
             />
@@ -172,6 +175,35 @@ export default function Battle({}: {}) {
                 </button>
               ))}
             </div>
+          </details>
+          <details
+            className="text-left bg-gray-900 text-white  
+              hover:bg-gray-700 transition-all duration-300 cursor-pointer"
+          >
+            <summary className="px-10 py-2 border border-black">Switch</summary>
+            {party
+              ?.filter(
+                (character: CharacterData) =>
+                  character.data.id !== battleCharacters[0]?.data.id
+              )
+              ?.map((character: CharacterData, index: number) => (
+                <button
+                  key={index}
+                  className=" text-left bg-gray-800 text-white border border-black px-10 py-2 first-letter:capitalize
+              hover:bg-gray-700 transition-all duration-300
+              "
+                  onClick={() => {
+                    const newBattleCharacters = battleCharacters.map(
+                      (item: CharacterData) => item
+                    );
+                    newBattleCharacters[0] = character;
+                    console.log(newBattleCharacters);
+                    setBattleCharacters(newBattleCharacters);
+                  }}
+                >
+                  {character.data.name}
+                </button>
+              ))}
           </details>
           <button
             className="w-full h-auto text-left bg-gray-900 text-white border border-black px-10 py-2 first-letter:capitalize

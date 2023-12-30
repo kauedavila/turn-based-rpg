@@ -21,7 +21,7 @@ const Character = ({
 
   return (
     <div
-      id={`character-${id}`}
+      id={`character-${position}`}
       className="flex flex-col items-start justify-center"
     >
       <div
@@ -31,7 +31,7 @@ const Character = ({
       >
         {url && (
           <Image
-            id={`character-${id}-sprite`}
+            id={`character-${position}-sprite`}
             src={url}
             alt={name}
             width={200}
