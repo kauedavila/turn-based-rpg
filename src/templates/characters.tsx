@@ -39,6 +39,10 @@ const templateCharacters: CharacterData[] = [
           name: "melee",
           level: 1,
         },
+        {
+          name: "throw_rock",
+          level: 1,
+        },
       ],
       sprite: {
         name: "Subzero",
@@ -57,6 +61,10 @@ const templateCharacters: CharacterData[] = [
       moves: [
         {
           name: "melee",
+          level: 1,
+        },
+        {
+          name: "throw_rock",
           level: 1,
         },
       ],

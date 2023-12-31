@@ -46,7 +46,14 @@ export default function Battle({}: {}) {
 
   const handleFlee = () => {
     confirm("Are you sure you want to flee?") === true &&
-      (setScreen("menu"), setBattleCharacters([]));
+      (party.forEach((character: CharacterData) => {
+        character.data.currentStats = undefined;
+      }),
+      battleCharacters.forEach((character: CharacterData) => {
+        character.data.currentStats = undefined;
+      }),
+      setScreen("menu"),
+      setBattleCharacters(battleCharacters));
   };
 
   useEffect(() => {

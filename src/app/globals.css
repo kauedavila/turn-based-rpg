@@ -75,11 +75,11 @@
 
 @keyframes throw_rock-attack {
   0% {
-    transform: rotate(-15deg) scaleX(1.5);
+    transform: rotate(-15deg) scaleX(1.25);
   }
 
   50% {
-    transform: rotate(15deg) scaleX(0.5);
+    transform: rotate(15deg) scaleX(0.75);
   }
 
   100% {
@@ -87,7 +87,7 @@
   }
 }
 .animate-throw_rock-projectile {
-  animation: throw_rock-projectile 0.5s;
+  animation: throw_rock-projectile 0.6s;
 }
 
 @keyframes throw_rock-projectile {

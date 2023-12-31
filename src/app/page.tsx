@@ -12,7 +12,6 @@ export default function Home() {
 
   const screen = useScreen((state: any) => state?.screen);
   const setScreen = useScreen((state: any) => state?.setScreen);
-  const setParty = useParty((state: any) => state?.setParty);
 
   useEffect(() => {
     setScreen("menu");
