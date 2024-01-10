@@ -19,14 +19,18 @@ export default function Menu() {
   const handleBattle = () => {
     if (party.length === 0)
       return alert("You need at least one character in your party to battle");
-    const playerCharacter = party[0];
+    const playerCharacter = party.find(
+      (character: CharacterData) => character !== undefined
+    );
     const enemyCharacter = templateEnemies[0];
 
     party.forEach((character: CharacterData) => {
+      if (!character) return;
       character.data.currentStats = undefined;
     });
 
     [playerCharacter, enemyCharacter].forEach((character: CharacterData) => {
+      if (!character) return;
       character.data.currentStats = undefined;
     });
 

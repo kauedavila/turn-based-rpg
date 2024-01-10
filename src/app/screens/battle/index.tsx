@@ -65,7 +65,7 @@ export default function Battle({}: {}) {
   return (
     <div
       id="battle-screen"
-      className="relative bg-gray-900 h-[75%] w-[75%] flex  overflow-hidden"
+      className="relative bg-gray-900 h-[75%] w-[75%] flex overflow-hidden"
       style={{
         backgroundImage: `url(https://64.media.tumblr.com/03a31af62efcd3f59b81237c40e2f2c6/225a8a6ba496dec7-ec/s500x750/8c25533f4c7a21964c50abe94c8bb26350307f98.gif)`,
         backgroundSize: "cover",
@@ -204,7 +204,7 @@ export default function Battle({}: {}) {
               hover:bg-gray-700 transition-all duration-300"
                     style={{
                       display:
-                        character.data.id === battleCharacters[0]?.data.id
+                        character?.data.id === battleCharacters[0]?.data.id
                           ? "none"
                           : "block",
                     }}
@@ -220,15 +220,15 @@ export default function Battle({}: {}) {
                       );
                     }}
                   >
-                    <p className="relative z-10">{character.data.name}</p>
+                    <p className="relative z-10">{character?.data.name}</p>
                     <div
                       className="absolute bottom-0 left-0 w-full h-full"
                       style={{
                         backgroundColor: handleHPColor(
                           Math.max(
                             Math.floor(
-                              ((character.data.currentStats?.health ?? 0) /
-                                character.data.health) *
+                              ((character?.data.currentStats?.health ?? 0) /
+                                character?.data.health) *
                                 100
                             ),
                             0
@@ -237,8 +237,8 @@ export default function Battle({}: {}) {
                         width: `${
                           Math.max(
                             Math.floor(
-                              ((character.data.currentStats?.health ?? 0) /
-                                character.data.health) *
+                              ((character?.data.currentStats?.health ?? 0) /
+                                character?.data.health) *
                                 100
                             ),
                             0
