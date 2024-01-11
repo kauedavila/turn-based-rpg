@@ -6,10 +6,14 @@ import templateEnemies from "@/templates/enemies";
 import templateSprites from "@/templates/sprites";
 import { CharacterData, SpriteStates } from "@/types";
 import { useState } from "react";
+import { GiSkills, GiSpellBook } from "react-icons/gi";
+import CharStats from "./charStats";
+import CharMoves from "./charMoves";
 
 export default function Menu() {
   const party = useParty((state: any) => state?.party);
   const [selectingCharacter, setSelectingCharacter] = useState<number>(0);
+  const [characterStatTab, setCharacterStatTab] = useState<number>(0);
 
   const setBattleCharacters = useBattleCharacters(
     (state: any) => state?.setBattleCharacters
@@ -38,6 +42,19 @@ export default function Menu() {
     setScreen("battle");
   };
 
+  const characterTabs = [
+    {
+      index: 0,
+      name: "Stats",
+      icon: <GiSkills className="text-white" size={24} />,
+    },
+    {
+      index: 1,
+      name: "Skills",
+      icon: <GiSpellBook className="text-white" size={24} />,
+    },
+  ];
+
   return (
     <div
       id="menu-screen"
@@ -56,7 +73,7 @@ export default function Menu() {
       )}
       <div
         id="party-list"
-        className="flex flex-col self-start place-self-start items-start justify-start w-[25%] h-full bg-white rounded-r-md border-r-2 border-gray-700 bg-opacity-50"
+        className="grid grid-rows-3 grid-cols-1 self-start place-self-start items-start justify-start w-[50%] h-full bg-white rounded-r-md border-r-2 border-gray-700 bg-opacity-50"
       >
         {Array(3)
           .fill(0)
@@ -75,11 +92,11 @@ export default function Menu() {
               <div
                 key={index}
                 id={`party-list-character-${character?.data.id}`}
-                className="flex w-full h-full justify-center border-b-2 border-gray-700 pt-2"
+                className="flex w-full h-full justify-center border-b-2 border-gray-700 pt-2 px-2"
               >
                 {!character ? (
                   <div
-                    className="flex items-center place-self-center  justify-center border border-gray-900 bg-gray-600 w-[50%] rounded-full h-auto aspect-square
+                    className="flex items-center place-self-center justify-center border border-gray-900 bg-gray-600 w-[25%] rounded-full h-auto aspect-square
                 cursor-pointer hover:bg-gray-700 hover:border-gray-800 hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out"
                     onClick={() => setSelectingCharacter(index + 1)}
                   >
@@ -95,30 +112,33 @@ export default function Menu() {
                         backgroundSize: "cover",
                         backgroundPosition: "top",
                       }}
-                    ></div>
+                    />
+                    {characterStatTab === 0 && (
+                      <CharStats character={character} />
+                    )}
+                    {characterStatTab === 1 && (
+                      <CharMoves character={character} />
+                    )}
+
                     <div
-                      id={`party-list-character-${character?.data.id}-data`}
-                      className="flex flex-col
-                items-start justify-start w-full h-auto pb-2"
+                      id={`party-list-character-${character?.data.id}-actions`}
+                      className="flex flex-col gap-1"
                     >
-                      <p>
-                        <strong>{character?.data.name}</strong>
-                      </p>
-                      <p>
-                        <strong>LV</strong>: {character?.data.level}
-                      </p>
-                      <p>
-                        <strong>HP</strong>: {character?.data.health}
-                      </p>
-                      <p>
-                        <strong>ATK</strong>: {character?.data.attack}
-                      </p>
-                      <p>
-                        <strong>DEF</strong>: {character?.data.defense}
-                      </p>
-                      <p>
-                        <strong>SPD</strong>: {character?.data.speed}
-                      </p>
+                      {characterTabs.map((tab) => (
+                        <button
+                          key={tab.index}
+                          className={`p-1 w-full h-auto bg-gray-700 rounded-md text-white 
+                          cursor-pointer aspect-square 
+                           ${
+                             characterStatTab === tab.index
+                               ? "border-2 border-white"
+                               : ""
+                           }`}
+                          onClick={() => setCharacterStatTab(tab.index)}
+                        >
+                          {tab.icon}
+                        </button>
+                      ))}
                     </div>
                   </>
                 )}
