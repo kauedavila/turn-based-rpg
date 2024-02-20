@@ -14,12 +14,7 @@ const handleTurn = (
   if (battleData.waiting) return;
 
   const characters = [...battleCharacters];
-  const speedPriority = battleCharacters
-    .filter((character) => character.data.currentStats !== undefined)
-    .sort(
-      (a, b) =>
-        (b.data.currentStats?.speed ?? 0) - (a.data.currentStats?.speed ?? 0)
-    );
+  const speedPriority = battleCharacters.filter((character) => character.data.currentStats !== undefined).sort((a, b) => (b.data.currentStats?.speed ?? 0) - (a.data.currentStats?.speed ?? 0));
 
   if (action == "attack") {
     action = value;
@@ -41,57 +36,24 @@ const handleTurn = (
 
   setBattleData({ ...battleData, waiting: true });
 
-  const performAttack = (
-    attacker: CharacterData,
-    defender: CharacterData,
-    attackType: string,
-    attackerPosition?: string
-  ) => {
-    handleAttack(
-      attackType,
-      attacker,
-      defender,
-      battleCharacters,
-      setBattleCharacters,
-      attackerPosition
-    );
+  const performAttack = (attacker: CharacterData, defender: CharacterData, attackType: string, attackerPosition?: string) => {
+    handleAttack(attackType, attacker, defender, battleCharacters, setBattleCharacters, attackerPosition);
   };
 
-  const scheduleAttack = (
-    attacker: CharacterData,
-    defender: CharacterData,
-    attackType: string,
-    delay: number,
-    attackerPosition?: string
-  ) => {
+  const scheduleAttack = (attacker: CharacterData, defender: CharacterData, attackType: string, delay: number, attackerPosition?: string) => {
     setTimeout(() => {
       performAttack(attacker, defender, attackType, attackerPosition);
     }, delay);
   };
 
-  scheduleAttack(
-    speedPriority[0],
-    speedPriority[1],
-    speedPriority[0] === characters[0] ? action : enemyAction,
-    100,
-    speedPriority[0] === characters[0] ? "left" : "right"
-  );
+  scheduleAttack(speedPriority[0], speedPriority[1], speedPriority[0] === characters[0] ? action : enemyAction, 100, speedPriority[0] === characters[0] ? "left" : "right");
 
-  scheduleAttack(
-    speedPriority[1],
-    speedPriority[0],
-    speedPriority[1] === characters[0] ? action : enemyAction,
-    delayA,
-    speedPriority[1] === characters[0] ? "left" : "right"
-  );
+  scheduleAttack(speedPriority[1], speedPriority[0], speedPriority[1] === characters[0] ? action : enemyAction, delayA, speedPriority[1] === characters[0] ? "left" : "right");
 
   setTimeout(() => {
     if (action === "switch") {
-      const newBattleCharacters = battleCharacters.map(
-        (item: CharacterData) => item
-      );
-      newBattleCharacters[0] = party[Number(value)];
-      setBattleCharacters(newBattleCharacters);
+      battleCharacters[0] = party[Number(value)];
+      setBattleCharacters(battleCharacters);
     }
 
     setBattleData({
