@@ -3,30 +3,22 @@ import { attackData, defaultAttack } from "@/templates/attacks";
 import { templateProjectiles } from "@/templates/projectiles";
 import { AnimationData, CharacterData, SpriteStates } from "@/types";
 
-const calculateDamage = (
-  attackName: string,
-  attacker: CharacterData,
-  defender: CharacterData
-) => {
-  const move =
-    attackData.find((data) => data.attackName === attackName) || defaultAttack;
+const calculateDamage = (attackName: string, attacker: CharacterData, defender: CharacterData) => {
+  const move = attackData.find((data) => data.attackName === attackName) || defaultAttack;
 
-  const { attack: attackerAtk, defense: attackerDef } = attacker.data
-    .currentStats || { attack: 0, defense: 0 };
+  const { attack: attackerAtk, defense: attackerDef } = attacker.data.currentStats || { attack: 0, defense: 0 };
 
   const { defense: defenderDef } = defender?.data.currentStats || {
     attack: 0,
     defense: 0,
   };
 
-  if (!attackerAtk || !attackerDef || !defenderDef || move.power === 0)
-    return 0;
+  if (!attackerAtk || !attackerDef || !defenderDef || move.power === 0) return 0;
 
   let damage = 0;
   switch (move.attackName) {
     default:
-      damage =
-        (((2 * 5) / 5) * move.power * attackerAtk) / defenderDef / 50 + 2;
+      damage = (((2 * 5) / 5) * move.power * attackerAtk) / defenderDef / 50 + 2;
       break;
   }
 
@@ -34,12 +26,7 @@ const calculateDamage = (
   return damage * 3;
 };
 
-const handleSpriteState = (
-  target: CharacterData,
-  state: SpriteStates,
-  battleCharacters: CharacterData[],
-  setBattleCharacters: (characters: CharacterData[]) => void
-) => {
+const handleSpriteState = (target: CharacterData, state: SpriteStates, battleCharacters: CharacterData[], setBattleCharacters: (characters: CharacterData[]) => void) => {
   setBattleCharacters(
     battleCharacters.map((character) => {
       if (character.data.id === target.data.id) {
@@ -63,29 +50,17 @@ const handleAnimation = (
 ) => {
   const defenderPosition = attackerPosition === "left" ? "right" : "left";
 
-  const attackerId = document.getElementById(
-    `character-${attackerPosition}-sprite`
-  ) as HTMLElement;
-  const defenderId = document.getElementById(
-    `character-${defenderPosition}-sprite`
-  ) as HTMLElement;
+  const attackerId = document.getElementById(`character-${attackerPosition}-sprite`) as HTMLElement;
+  const defenderId = document.getElementById(`character-${defenderPosition}-sprite`) as HTMLElement;
 
-  const animation: AnimationData =
-    animationData.find((data) => data.attackName === attackName) ||
-    defaultAnimation;
+  const animation: AnimationData = animationData.find((data) => data.attackName === attackName) || defaultAnimation;
 
-  const projectile = templateProjectiles.find(
-    (item) => item.name === animation?.projectile
-  );
-
-  console.log(projectile);
+  const projectile = templateProjectiles.find((item) => item.name === animation?.projectile);
 
   const projectilesIds: any = [];
   if (projectile) {
     for (let i = 0; i < projectile.projectiles.length; i++) {
-      const projectileId = document.getElementById(
-        `projectile-${projectile.projectiles[i]?.name}`
-      ) as HTMLElement;
+      const projectileId = document.getElementById(`projectile-${projectile.projectiles[i]?.name}`) as HTMLElement;
       projectilesIds.push(projectileId);
     }
   }
@@ -98,12 +73,7 @@ const handleAnimation = (
       projectileId?.classList.remove("hidden");
     });
 
-    handleSpriteState(
-      attacker,
-      "attack",
-      battleCharacters,
-      setBattleCharacters
-    );
+    handleSpriteState(attacker, "attack", battleCharacters, setBattleCharacters);
   }, animation.attackDelay);
 
   setTimeout(() => {
@@ -136,23 +106,14 @@ const handleAttack = (
   const damage = calculateDamage(attackName, attacker, defender);
   const currentHealth = defender?.data?.currentStats?.health;
 
-  const animation = animationData.find(
-    (data) => data.attackName === attackName
-  ) || {
+  const animation = animationData.find((data) => data.attackName === attackName) || {
     attackDuration: 0,
     attackDelay: 0,
     hitDelay: 0,
     hitDuration: 0,
   };
 
-  handleAnimation(
-    attackName,
-    attacker,
-    defender,
-    battleCharacters,
-    setBattleCharacters,
-    attackerPosition
-  );
+  handleAnimation(attackName, attacker, defender, battleCharacters, setBattleCharacters, attackerPosition);
 
   setTimeout(() => {
     defender.data.currentStats = {
