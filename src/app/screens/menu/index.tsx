@@ -16,7 +16,7 @@ export default function Menu() {
   const setScreen = useScreen((state: any) => state?.setScreen);
 
   const handleBattle = () => {
-    if (party.length === 0) return alert("You need at least one character in your party to battle");
+    if (party.length !== 3 || party.includes(undefined)) return alert("Complete your party in order to procceed!");
     const playerCharacter = party.find((character: CharacterData) => character !== undefined);
     const enemyCharacter = templateEnemies[0];
 
@@ -62,7 +62,7 @@ export default function Menu() {
                     <p className="text-gray-100 text-4xl m-0 p-0">+</p>
                   </div>
                 ) : (
-                  <CharacterMenuData character={character} />
+                  <CharacterMenuData character={character} index={index} />
                 )}
               </div>
             );

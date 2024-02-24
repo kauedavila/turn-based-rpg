@@ -95,12 +95,7 @@ export default function Battle({}: {}) {
                       }}
                     />
                   </div>
-                  <details className="text-white z-10">
-                    <summary>{character.data.name}</summary>
-                    <p>ATK: {character.data.currentStats?.attack}</p>
-                    <p>DEF: {character.data.currentStats?.defense}</p>
-                    <p>SPD: {character.data.currentStats?.speed}</p>
-                  </details>
+                  <p className="text-white z-10">{character.data.name}</p>
                 </div>
                 {index === 0 && <p className="text-white w-40">Turn {battleData.turn}</p>}
               </React.Fragment>
