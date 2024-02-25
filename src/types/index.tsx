@@ -24,6 +24,7 @@ export type CharacterData = {
     id: number;
     name: string;
     level: number;
+    experience: number;
     health: number;
     attack: number;
     defense: number;
@@ -45,12 +46,12 @@ export type CharacterData = {
   };
 };
 
+export type EnemyData = CharacterData;
+
 export type PartyDataType = CharacterData[] &
   {
     partyId: number;
   }[];
-
-export type EnemyData = CharacterData;
 
 export type BattleData = {
   timer?: number;

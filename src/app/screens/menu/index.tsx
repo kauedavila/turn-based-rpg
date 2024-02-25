@@ -1,19 +1,54 @@
 import { useBattleCharacters } from "@/stores/battleCharacters";
 import { useScreen } from "@/stores/screen";
 import { useParty } from "@/stores/useParty";
+import { useCharacters } from "@/stores/useCharacter";
 import templateCharacters from "@/templates/characters";
 import templateEnemies from "@/templates/enemies";
 import templateSprites from "@/templates/sprites";
 import { CharacterData, SpriteStates } from "@/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CharacterMenuData from "@/components/characterMenuData";
+import { useSprites } from "@/stores/useSprite";
 
 export default function Menu() {
   const party = useParty((state: any) => state?.party);
   const [selectingCharacter, setSelectingCharacter] = useState<number>(0);
 
+  const characters = useCharacters((state: any) => state?.characters);
+  const setCharacters = useCharacters((state: any) => state?.setCharacters);
+
   const setBattleCharacters = useBattleCharacters((state: any) => state?.setBattleCharacters);
   const setScreen = useScreen((state: any) => state?.setScreen);
+
+  const sprites = useSprites((state: any) => state?.sprites);
+  const setSprites = useSprites((state: any) => state?.setSprites);
+
+  useEffect(() => {
+    const fetchSprites = async () => {
+      const data = await fetch("http://localhost:1337/api/sprites?populate=*", {
+        headers: { Authorization: `bearer ${process.env.NEXT_PUBLIC_API_TOKEN_SALT}` },
+      })
+        .then((response) => response.json())
+        .catch((error) => console.error(error));
+      data ? setSprites(data.data) : setSprites(templateSprites);
+    };
+
+    fetchSprites();
+  }, []);
+
+  useEffect(() => {
+    const fetchCharacters = async () => {
+      const data = await fetch("http://localhost:1337/api/characters", {
+        headers: { Authorization: `bearer ${process.env.NEXT_PUBLIC_API_TOKEN_SALT}` },
+      })
+        .then((response) => response.json())
+        .catch((error) => console.error(error));
+
+      data ? setCharacters(data.data) : setCharacters(templateCharacters);
+    };
+
+    fetchCharacters();
+  }, []);
 
   const handleBattle = () => {
     if (party.length !== 3 || party.includes(undefined)) return alert("Complete your party in order to procceed!");
@@ -52,7 +87,7 @@ export default function Menu() {
             const character = party[index];
 
             return (
-              <div key={index} id={`party-list-character-${character?.data.id}`} className="flex w-full h-full justify-center border-b-2 border-gray-700 pt-2 px-2">
+              <div key={index} id={`party-list-character-${character?.id}`} className="flex w-full h-full justify-center border-b-2 border-gray-700 pt-2 px-2">
                 {!character ? (
                   <div
                     className="flex items-center place-self-center justify-center border border-gray-900 bg-gray-600 w-[25%] rounded-full h-auto aspect-square
@@ -83,10 +118,14 @@ export default function Menu() {
 const SelectCharacter = ({ selectingCharacter, setSelectingCharacter }: { selectingCharacter: number; setSelectingCharacter: any }) => {
   const party = useParty((state: any) => state?.party);
   const setParty = useParty((state: any) => state?.setParty);
+  const characters = useCharacters((state: any) => state?.characters);
+
+  const sprites = useSprites((state: any) => state?.sprites);
+  const setSprites = useSprites((state: any) => state?.setSprites);
 
   const handleAddToParty = (index: number) => {
     setSelectingCharacter(0);
-    const character = templateCharacters[index];
+    const character = characters[index].attributes;
     const newParty = [...party];
     newParty[selectingCharacter - 1] = character;
     setParty(newParty);
@@ -104,36 +143,34 @@ const SelectCharacter = ({ selectingCharacter, setSelectingCharacter }: { select
           </p>
         </div>
         <div className="grid grid-cols-6 gap-2">
-          {templateCharacters.map((character: CharacterData, index) => {
-            const sprite = templateSprites.find((item) => item.name === character?.data?.sprite?.name);
+          {characters?.map((character: any, index: number) => {
+            const sprite = sprites?.find((item) => item?.attributes?.name === character?.attributes?.sprite?.name)?.attributes;
+            const spriteUrl = sprite?.idle.data.attributes.url.toString();
 
-            const spriteState: SpriteStates = character?.data?.sprite?.state ?? "idle";
-
-            const spriteUrl = sprite?.[spriteState]?.url;
-            const characterInParty: boolean = party.find((item: CharacterData) => item?.data?.id === character?.data?.id) ? true : false;
+            const characterInParty: boolean = party.find((item: CharacterData) => item?.data?.id === character?.attributes?.id) ? true : false;
 
             return (
               <div
                 key={index}
-                id={`party-list-character-${character?.data.id}-sprite`}
+                id={`party-list-character-${character?.attributes?.id}-sprite`}
                 className={
                   characterInParty
                     ? "w-full h-auto aspect-square border  rounded-md bg-gray-700 cursor-not-allowed filter grayscale"
                     : "w-full h-auto aspect-square border border-black rounded-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer bg-gray-500 hover:border-gray-800 hover:bg-gray-700"
                 }
                 style={{
-                  backgroundImage: `url(${spriteUrl})`,
+                  backgroundImage: `url(http://localhost:1337${spriteUrl})`,
                   backgroundSize: "cover",
                   backgroundPosition: "top",
                 }}
                 onClick={() => !characterInParty && handleAddToParty(index)}
               >
-                <div id={`party-list-character-${character?.data.id}-data`} className="flex flex-col h-full justify-between p-1 text-white">
+                <div id={`party-list-character-${character?.attributes?.id}-data`} className="flex flex-col h-full justify-between p-1 text-white">
                   <p>
-                    <strong>{character?.data.name}</strong>
+                    <strong>{character?.attributes?.name}</strong>
                   </p>
                   <p className="text-xs self-end ">
-                    <strong>LV</strong>: {character?.data.level}
+                    <strong>LV</strong>: {character?.attributes?.level}
                   </p>
                 </div>
               </div>

@@ -2,11 +2,10 @@ import CharMoves from "@/app/screens/menu/charMoves";
 import CharStats from "@/app/screens/menu/charStats";
 import CharRemove from "@/app/screens/menu/charRemove";
 
-import templateSprites from "@/templates/sprites";
-import { SpriteStates } from "@/types";
 import { useState } from "react";
 import { GiSkills, GiSpellBook } from "react-icons/gi";
 import { IoIosCloseCircle } from "react-icons/io";
+import { useSprites } from "@/stores/useSprite";
 
 const characterTabs = [
   {
@@ -28,16 +27,17 @@ const characterTabs = [
 
 export default function CharacterMenuData({ character, index }: any) {
   const [characterStatTab, setCharacterStatTab] = useState<number>(0);
-  const sprite = templateSprites.find((item) => item.name === character?.data?.sprite.name);
-  const spriteState: SpriteStates = character?.data?.sprite.state ?? "idle";
-  const spriteUrl = sprite?.[spriteState]?.url;
+  const sprites = useSprites((state: any) => state?.sprites);
+
+  const sprite = sprites?.find((item) => item?.attributes?.name === character?.attributes?.sprite?.name)?.attributes;
+  const spriteUrl = sprite?.idle.data.attributes.url.toString();
 
   return (
     <div className="flex justify-between items-between w-full gap-4">
       <div
         className="w-full h-auto aspect-square"
         style={{
-          backgroundImage: `url(${spriteUrl})`,
+          backgroundImage: `url(http://localhost:1337${spriteUrl})`,
           backgroundSize: "cover",
           backgroundPosition: "top",
         }}
