@@ -14,7 +14,6 @@ const Character = ({ data, position }: CharacterData & { position: string }) => 
   const projectilesData = templateProjectiles;
 
   const currentSprite = sprites.find((item) => item.attributes.name === sprite?.name) as SpriteDataType;
-  console.log(sprite?.name);
 
   // const spriteState = currentSprite?.state ?? "idle";
   const spriteState = "idle";

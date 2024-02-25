@@ -7,15 +7,11 @@ const CharMoves = ({ character }: any) => {
         className="flex flex-col gap-1 
                 items-start justify-start w-full h-auto "
       >
-        {character?.data?.moves?.map((move: any, index: number) => {
-          const attack = attackData.find(
-            (attack) => attack.attackName === move.name
-          );
+        <h1 className="font-bold">Moves</h1>
+        {character?.moves?.map((move: any, index: number) => {
+          const attack = attackData.find((attack) => attack.attackName === move.name);
           return (
-            <div
-              key={index}
-              className="p-1 w-full h-auto bg-gray-700 rounded-md text-white text-sm cursor-pointer"
-            >
+            <div key={index} className="p-1 w-full h-auto bg-gray-700 rounded-md text-white text-sm cursor-pointer">
               <strong>{attack?.attackDisplayName}</strong>
             </div>
           );

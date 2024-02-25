@@ -50,10 +50,20 @@ export default function Menu() {
     fetchCharacters();
   }, []);
 
-  const handleBattle = () => {
+  const fetchEnemy = async () => {
+    const data = await fetch("http://localhost:1337/api/enemies", {
+      headers: { Authorization: `bearer ${process.env.NEXT_PUBLIC_API_TOKEN_SALT}` },
+    })
+      .then((response) => response.json())
+      .catch((error) => console.error(error));
+
+    return data ? data.data[0].attributes : templateEnemies;
+  };
+
+  const handleBattle = async () => {
     if (party.length !== 3 || party.includes(undefined)) return alert("Complete your party in order to procceed!");
     const playerCharacter = party.find((character: CharacterData) => character !== undefined);
-    const enemyCharacter = templateEnemies[0];
+    const enemyCharacter = await fetchEnemy();
 
     party.forEach((character: CharacterData) => {
       if (!character) return;
