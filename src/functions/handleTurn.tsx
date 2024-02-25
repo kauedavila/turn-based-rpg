@@ -14,7 +14,7 @@ const handleTurn = (
   if (battleData.waiting) return;
 
   const characters = [...battleCharacters];
-  const speedPriority = battleCharacters.filter((character) => character.data.currentStats !== undefined).sort((a, b) => (b.data.currentStats?.speed ?? 0) - (a.data.currentStats?.speed ?? 0));
+  const speedPriority = battleCharacters.filter((character) => character.currentStats !== undefined).sort((a, b) => (b.currentStats?.speed ?? 0) - (a.currentStats?.speed ?? 0));
 
   if (action == "attack") {
     action = value;

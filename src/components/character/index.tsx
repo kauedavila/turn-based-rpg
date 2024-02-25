@@ -5,17 +5,20 @@ import templateSprites from "@/templates/sprites";
 import { CharacterData, SpriteDataType } from "@/types";
 import Image from "next/image";
 import CharacterImage from "./characterImage";
+import { useSprites } from "@/stores/useSprite";
 
 const Character = ({ data, position }: CharacterData & { position: string }) => {
   const { id, name, sprite } = data;
+  const sprites = useSprites((state: any) => state?.sprites);
 
-  const spritesData = templateSprites as SpriteDataType[];
   const projectilesData = templateProjectiles;
 
-  const currentSprite = spritesData.find((item) => item.name === sprite?.name) as SpriteDataType;
+  const currentSprite = sprites.find((item) => item.attributes.name === sprite?.name) as SpriteDataType;
+  console.log(sprite?.name);
 
-  const spriteState = currentSprite?.state ?? "idle";
-  const url = currentSprite?.[spriteState]?.url ?? "";
+  // const spriteState = currentSprite?.state ?? "idle";
+  const spriteState = "idle";
+  const spriteUrl = currentSprite?.attributes?.[spriteState]?.data.attributes.url ?? "";
 
   return (
     <div id={`character-${position}`} className="relative flex flex-col items-start justify-center w-auto h-auto">
@@ -24,8 +27,7 @@ const Character = ({ data, position }: CharacterData & { position: string }) => 
           transform: position === "right" ? "scaleX(-1)" : "scaleX(1)",
         }}
       >
-        {url && <Image id={`character-${position}-sprite`} src={url} alt={name} width={200} height={200} className="w-auto" />}
-        {/* <CharacterImage id={`character-${position}-sprite`} /> */}
+        {spriteUrl && <Image id={`character-${position}-sprite`} src={`http://localhost:1337${spriteUrl}`} alt={name} width={400} height={400} className="w-auto" />}
       </div>
       {Array(projectilesData[0].projectiles.length)
         .fill(0)

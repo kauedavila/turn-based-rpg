@@ -6,9 +6,9 @@ import { AnimationData, CharacterData, SpriteStates } from "@/types";
 const calculateDamage = (attackName: string, attacker: CharacterData, defender: CharacterData) => {
   const move = attackData.find((data) => data.attackName === attackName) || defaultAttack;
 
-  const { attack: attackerAtk, defense: attackerDef } = attacker.data.currentStats || { attack: 0, defense: 0 };
+  const { attack: attackerAtk, defense: attackerDef } = attacker.currentStats || { attack: 0, defense: 0 };
 
-  const { defense: defenderDef } = defender?.data.currentStats || {
+  const { defense: defenderDef } = defender?.currentStats || {
     attack: 0,
     defense: 0,
   };
@@ -29,9 +29,9 @@ const calculateDamage = (attackName: string, attacker: CharacterData, defender: 
 const handleSpriteState = (target: CharacterData, state: SpriteStates, battleCharacters: CharacterData[], setBattleCharacters: (characters: CharacterData[]) => void) => {
   setBattleCharacters(
     battleCharacters.map((character) => {
-      if (character.data.id === target.data.id) {
-        character.data.sprite = {
-          ...character.data.sprite,
+      if (character.id === target.id) {
+        character.sprite = {
+          ...character.sprite,
           state,
         };
       }
@@ -104,7 +104,7 @@ const handleAttack = (
   attackerPosition?: string
 ) => {
   const damage = calculateDamage(attackName, attacker, defender);
-  const currentHealth = defender?.data?.currentStats?.health;
+  const currentHealth = defender?.currentStats?.health;
 
   const animation = animationData.find((data) => data.attackName === attackName) || {
     attackDuration: 0,
@@ -116,8 +116,8 @@ const handleAttack = (
   handleAnimation(attackName, attacker, defender, battleCharacters, setBattleCharacters, attackerPosition);
 
   setTimeout(() => {
-    defender.data.currentStats = {
-      ...defender?.data.currentStats,
+    defender.currentStats = {
+      ...defender?.currentStats,
       health: currentHealth ? currentHealth - damage : 0,
     };
   }, animation.attackDelay);

@@ -57,12 +57,12 @@ export default function Menu() {
 
     party.forEach((character: CharacterData) => {
       if (!character) return;
-      character.data.currentStats = undefined;
+      character.currentStats = undefined;
     });
 
     [playerCharacter, enemyCharacter].forEach((character: CharacterData) => {
       if (!character) return;
-      character.data.currentStats = undefined;
+      character.currentStats = undefined;
     });
 
     setBattleCharacters([playerCharacter, enemyCharacter]);

@@ -18,7 +18,7 @@ const templateEnemies: EnemyData[] = [
         },
       ],
       sprite: {
-        name: "Subzero",
+        name: "Slime",
       },
     },
   },
