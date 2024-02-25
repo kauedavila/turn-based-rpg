@@ -126,6 +126,7 @@ const SelectCharacter = ({ selectingCharacter, setSelectingCharacter }: { select
   const handleAddToParty = (index: number) => {
     setSelectingCharacter(0);
     const character = characters[index].attributes;
+    character.id = characters[index].id;
     const newParty = [...party];
     newParty[selectingCharacter - 1] = character;
     setParty(newParty);
@@ -147,12 +148,12 @@ const SelectCharacter = ({ selectingCharacter, setSelectingCharacter }: { select
             const sprite = sprites?.find((item) => item?.attributes?.name === character?.attributes?.sprite?.name)?.attributes;
             const spriteUrl = sprite?.idle.data.attributes.url.toString();
 
-            const characterInParty: boolean = party.find((item: CharacterData) => item?.data?.id === character?.attributes?.id) ? true : false;
+            const characterInParty: boolean = party.find((item: CharacterData) => item?.id === character?.id) ? true : false;
 
             return (
               <div
                 key={index}
-                id={`party-list-character-${character?.attributes?.id}-sprite`}
+                id={`party-list-character-${character?.id}-sprite`}
                 className={
                   characterInParty
                     ? "w-full h-auto aspect-square border  rounded-md bg-gray-700 cursor-not-allowed filter grayscale"

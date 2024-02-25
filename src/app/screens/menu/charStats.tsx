@@ -1,6 +1,3 @@
-import { CharacterData } from "@/types";
-import { useEffect, useState } from "react";
-
 const CharStats = ({ character }: any) => {
   return (
     <>
@@ -9,22 +6,22 @@ const CharStats = ({ character }: any) => {
                 items-start justify-start w-full h-auto pb-2"
       >
         <p>
-          <strong>{character?.data?.name}</strong>
+          <strong>{character?.name}</strong>
         </p>
         <p>
-          <strong>LV</strong>: {character?.data?.level}
+          <strong>LV</strong>: {character?.level}
         </p>
         <p>
-          <strong>HP</strong>: {character?.data?.health}
+          <strong>HP</strong>: {character?.health}
         </p>
         <p>
-          <strong>ATK</strong>: {character?.data?.attack}
+          <strong>ATK</strong>: {character?.attack}
         </p>
         <p>
-          <strong>DEF</strong>: {character?.data?.defense}
+          <strong>DEF</strong>: {character?.defense}
         </p>
         <p>
-          <strong>SPD</strong>: {character?.data?.speed}
+          <strong>SPD</strong>: {character?.speed}
         </p>
       </div>
     </>

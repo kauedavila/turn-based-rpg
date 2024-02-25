@@ -29,13 +29,16 @@ export default function CharacterMenuData({ character, index }: any) {
   const [characterStatTab, setCharacterStatTab] = useState<number>(0);
   const sprites = useSprites((state: any) => state?.sprites);
 
-  const sprite = sprites?.find((item) => item?.attributes?.name === character?.attributes?.sprite?.name)?.attributes;
+  const sprite = sprites?.find((item) => item?.attributes?.name === character?.sprite?.name)?.attributes;
   const spriteUrl = sprite?.idle.data.attributes.url.toString();
 
   return (
-    <div className="flex justify-between items-between w-full gap-4">
+    <div
+      className="grid grid-cols-[3fr,3fr,1fr]
+     justify-between w-full  gap-4"
+    >
       <div
-        className="w-full h-auto aspect-square"
+        className="w-full h-auto aspect-square self-end"
         style={{
           backgroundImage: `url(http://localhost:1337${spriteUrl})`,
           backgroundSize: "cover",
