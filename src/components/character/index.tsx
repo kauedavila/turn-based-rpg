@@ -1,10 +1,8 @@
 "use client";
 
 import { templateProjectiles } from "@/templates/projectiles";
-import templateSprites from "@/templates/sprites";
 import { CharacterData, SpriteDataType } from "@/types";
 import Image from "next/image";
-import CharacterImage from "./characterImage";
 import { useSprites } from "@/stores/useSprite";
 
 const Character = ({ data, position }: CharacterData & { position: string }) => {
@@ -26,7 +24,7 @@ const Character = ({ data, position }: CharacterData & { position: string }) => 
           transform: position === "right" ? "scaleX(-1)" : "scaleX(1)",
         }}
       >
-        {spriteUrl && <Image id={`character-${position}-sprite`} src={`http://localhost:1337${spriteUrl}`} alt={name} width={400} height={400} className="w-auto" />}
+        {spriteUrl && <Image id={`character-${position}-sprite`} src={`http://localhost:1337${spriteUrl}`} alt={name} width={position === "right" ? 150 : 200} height={200} className="h-auto" />}
       </div>
       {Array(projectilesData[0].projectiles.length)
         .fill(0)

@@ -4,6 +4,7 @@ import handleTurn from "@/functions/handleTurn";
 import { useBattleCharacters } from "@/stores/battleCharacters";
 import { useScreen } from "@/stores/screen";
 import { useParty } from "@/stores/useParty";
+import { useStages } from "@/stores/useStage";
 import { BattleData, CharacterData } from "@/types";
 import React, { useEffect, useState } from "react";
 
@@ -11,9 +12,10 @@ export default function Battle({}: {}) {
   const battleCharacters = useBattleCharacters((state: any) => state?.battleCharacters);
   const setBattleCharacters = useBattleCharacters((state: any) => state?.setBattleCharacters);
 
+  const stage = useStages((state: any) => state?.stage);
+  const background = stage?.attributes.background?.data.attributes.url;
   const party = useParty((state: any) => state?.party);
   const setScreen = useScreen((state: any) => state?.setScreen);
-
   const [battleData, setBattleData] = useState<BattleData>({
     timer: 0,
     turn: 1,
@@ -63,7 +65,7 @@ export default function Battle({}: {}) {
       id="battle-screen"
       className="relative bg-gray-900 h-[75%] w-[75%] flex overflow-hidden"
       style={{
-        backgroundImage: `url(https://64.media.tumblr.com/03a31af62efcd3f59b81237c40e2f2c6/225a8a6ba496dec7-ec/s500x750/8c25533f4c7a21964c50abe94c8bb26350307f98.gif)`,
+        backgroundImage: `url(http://localhost:1337${background})`,
         backgroundSize: "cover",
         backgroundPosition: "bottom",
       }}

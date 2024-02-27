@@ -9,6 +9,7 @@ import { CharacterData, SpriteStates } from "@/types";
 import { useEffect, useState } from "react";
 import CharacterMenuData from "@/components/characterMenuData";
 import { useSprites } from "@/stores/useSprite";
+import { useStages } from "@/stores/useStage";
 
 export default function Menu() {
   const party = useParty((state: any) => state?.party);
@@ -23,6 +24,10 @@ export default function Menu() {
   const sprites = useSprites((state: any) => state?.sprites);
   const setSprites = useSprites((state: any) => state?.setSprites);
 
+  const stages = useStages((state: any) => state?.stages);
+  const setStages = useStages((state: any) => state?.setStages);
+  const setStage = useStages((state: any) => state?.setStage);
+
   useEffect(() => {
     const fetchSprites = async () => {
       const data = await fetch("http://localhost:1337/api/sprites?populate=*", {
@@ -34,6 +39,19 @@ export default function Menu() {
     };
 
     fetchSprites();
+  }, []);
+
+  useEffect(() => {
+    const fetchStages = async () => {
+      const data = await fetch("http://localhost:1337/api/stages?populate=*", {
+        headers: { Authorization: `bearer ${process.env.NEXT_PUBLIC_API_TOKEN_SALT}` },
+      })
+        .then((response) => response.json())
+        .catch((error) => console.error(error));
+      setStages(data.data);
+    };
+
+    fetchStages();
   }, []);
 
   useEffect(() => {
@@ -50,20 +68,12 @@ export default function Menu() {
     fetchCharacters();
   }, []);
 
-  const fetchEnemy = async () => {
-    const data = await fetch("http://localhost:1337/api/enemies", {
-      headers: { Authorization: `bearer ${process.env.NEXT_PUBLIC_API_TOKEN_SALT}` },
-    })
-      .then((response) => response.json())
-      .catch((error) => console.error(error));
-
-    return data ? data.data[0].attributes : templateEnemies;
-  };
-
-  const handleBattle = async () => {
+  const handleBattle = async (stage: any) => {
     if (party.length !== 3 || party.includes(undefined)) return alert("Complete your party in order to procceed!");
     const playerCharacter = party.find((character: CharacterData) => character !== undefined);
-    const enemyCharacter = await fetchEnemy();
+
+    const enemyCharacter = stage.attributes.enemies.data[1].attributes;
+    const background = stage.attributes.background.data.attributes.url;
 
     party.forEach((character: CharacterData) => {
       if (!character) return;
@@ -77,6 +87,7 @@ export default function Menu() {
 
     setBattleCharacters([playerCharacter, enemyCharacter]);
     setScreen("battle");
+    setStage(stage);
   };
 
   return (
@@ -114,12 +125,16 @@ export default function Menu() {
           })}
       </div>
       <div id="battle-button" className="flex justify-center items-center w-full h-full">
-        <button
-          className="w-[25%] h-[25%] bg-gray-700 rounded-full text-white text-2xl font-bold cursor-pointer aspect-square hover:scale-105 transition-all duration-300 ease-in-out"
-          onClick={handleBattle}
-        >
-          Battle
-        </button>
+        {stages?.length > 0 &&
+          stages.map((stage: any, index: number) => (
+            <button
+              key={index}
+              className="p-2 bg-gray-600 rounded-md text-gray-100 text-2xl hover:bg-gray-700 hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer"
+              onClick={() => handleBattle(stage)}
+            >
+              {stage.attributes.name}
+            </button>
+          ))}
       </div>
     </div>
   );
