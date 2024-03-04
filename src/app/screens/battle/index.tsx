@@ -73,7 +73,7 @@ export default function Battle({}: {}) {
       <div id="battle-hud" className="w-full h-[20%] absolute top-0 flex justify-between items-start gap-[10%]">
         {battleCharacters.length > 0 &&
           battleCharacters?.map((character: CharacterData, index: number) => {
-            const healthPercentage = Math.max(Math.floor(((character.currentStats?.health ?? 0) / character.health) * 100), 0) || 100;
+            const healthPercentage = character.currentStats ? Math.max(Math.floor(((character.currentStats?.health ?? 0) / character.health) * 100), 0) : 100;
             return (
               <React.Fragment key={index}>
                 <div key={index} className={`flex flex-col w-full ${index === 0 ? "items-start" : "items-end"}`}>

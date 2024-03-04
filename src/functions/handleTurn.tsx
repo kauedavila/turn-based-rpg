@@ -37,6 +37,9 @@ const handleTurn = (
   setBattleData({ ...battleData, waiting: true });
 
   const performAttack = (attacker: CharacterData, defender: CharacterData, attackType: string, attackerPosition?: string) => {
+    if (attacker.currentStats?.health === 0) {
+      return;
+    }
     handleAttack(attackType, attacker, defender, battleCharacters, setBattleCharacters, attackerPosition);
   };
 

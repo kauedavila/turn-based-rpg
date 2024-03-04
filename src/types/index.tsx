@@ -20,29 +20,27 @@ export type SpriteStateDataType = {
 export type SpriteStates = "idle" | "attack" | "hit" | "death";
 
 export type CharacterData = {
-  data: {
-    id: number;
-    name: string;
-    level: number;
-    experience: number;
-    health: number;
-    attack: number;
-    defense: number;
-    speed: number;
-    moves?: {
-      name?: string;
-      level?: number;
-    }[];
-    sprite?: {
-      name?: string;
-      state?: SpriteStates;
-    };
-    currentStats?: {
-      health?: number;
-      attack?: number;
-      defense?: number;
-      speed?: number;
-    };
+  id: number;
+  name: string;
+  level: number;
+  experience: number;
+  health: number;
+  attack: number;
+  defense: number;
+  speed: number;
+  moves?: {
+    name?: string;
+    level?: number;
+  }[];
+  sprite?: {
+    name?: string;
+    state?: SpriteStates;
+  };
+  currentStats?: {
+    health?: number;
+    attack?: number;
+    defense?: number;
+    speed?: number;
   };
 };
 

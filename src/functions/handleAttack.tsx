@@ -118,8 +118,11 @@ const handleAttack = (
   setTimeout(() => {
     defender.currentStats = {
       ...defender?.currentStats,
-      health: currentHealth ? currentHealth - damage : 0,
+      health: Math.max(currentHealth ? currentHealth - damage : 0, 0),
     };
+    if (defender.currentStats?.health === 0) {
+      handleSpriteState(defender, "death", battleCharacters, setBattleCharacters);
+    }
   }, animation.attackDelay);
 
   return;

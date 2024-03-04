@@ -3,9 +3,8 @@ import { useScreen } from "@/stores/screen";
 import { useParty } from "@/stores/useParty";
 import { useCharacters } from "@/stores/useCharacter";
 import templateCharacters from "@/templates/characters";
-import templateEnemies from "@/templates/enemies";
 import templateSprites from "@/templates/sprites";
-import { CharacterData, SpriteStates } from "@/types";
+import { CharacterData } from "@/types";
 import { useEffect, useState } from "react";
 import CharacterMenuData from "@/components/characterMenuData";
 import { useSprites } from "@/stores/useSprite";
@@ -48,7 +47,7 @@ export default function Menu() {
       })
         .then((response) => response.json())
         .catch((error) => console.error(error));
-      setStages(data.data);
+      data && setStages(data.data);
     };
 
     fetchStages();
