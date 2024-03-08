@@ -68,6 +68,16 @@ export default function Menu() {
     fetchCharacters();
   }, [screen]);
 
+  useEffect(() => {
+    const updatedParty = party.map((character: CharacterData) => {
+      const updatedCharacter = characters.find((item: CharacterData) => item.id === character.id)?.attributes;
+      updatedCharacter.id = character.id;
+      return updatedCharacter;
+    });
+
+    setParty(updatedParty);
+  }, [characters]);
+
   const handleBattle = async (stage: any) => {
     if (party.length !== 3 || party.includes(undefined)) return alert("Complete your party in order to procceed!");
     const playerCharacter = party.find((character: CharacterData) => character !== undefined);
@@ -92,7 +102,7 @@ export default function Menu() {
   return (
     <div
       id="menu-screen"
-      className="relative bg-gray-900 h-[75%] w-[75%] flex overflow-hidden "
+      className="relative bg-gray-900 h-[90%] w-[90%] flex overflow-hidden "
       style={{
         backgroundImage: `url(https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/ca530ccc-fd0f-4f26-bbc7-9af8e8225eea/dd5qnyp-781f6297-22b0-46d8-b100-a34b741a1160.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2NhNTMwY2NjLWZkMGYtNGYyNi1iYmM3LTlhZjhlODIyNWVlYVwvZGQ1cW55cC03ODFmNjI5Ny0yMmIwLTQ2ZDgtYjEwMC1hMzRiNzQxYTExNjAucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.yxbgNBh9crVxUr4QfVmMITa488tmAqlbxQU-XlTSXgE)`,
         backgroundSize: "cover",

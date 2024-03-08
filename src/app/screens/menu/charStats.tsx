@@ -3,13 +3,16 @@ const CharStats = ({ character }: any) => {
     <>
       <div
         className="flex flex-col
-                items-start justify-start w-full h-auto pb-2"
+                items-start justify-start w-full h-auto pb-2 text-sm"
       >
         <p>
-          <strong>{character?.name}</strong>
+          <strong className="text-base">{character?.name}</strong>
         </p>
         <p>
           <strong>LV</strong>: {character?.level}
+        </p>
+        <p>
+          <strong>EXP</strong>: {character?.experience} / {character?.level * 20}
         </p>
         <p>
           <strong>HP</strong>: {character?.health}

@@ -75,7 +75,9 @@ export default function Battle({}: {}) {
     if (turnResult === "player_dies") setScreen("gameover");
     else if (turnResult === "enemy_dies") {
       const exp = calculateExperience(battleCharacters[1].level);
-      handleExp(exp, party, characters);
+      party.forEach((character: CharacterData) => {
+        handleExp(exp, character.id, characters);
+      });
       setResultScreen({ result: "win", experience: exp });
     }
   }, [turnResult]);
@@ -83,7 +85,7 @@ export default function Battle({}: {}) {
   return (
     <div
       id="battle-screen"
-      className="relative bg-gray-900 h-[75%] w-[75%] flex overflow-hidden"
+      className="relative bg-gray-900 h-[90%] w-[90%] flex overflow-hidden"
       style={{
         backgroundImage: `url(http://localhost:1337${background})`,
         backgroundSize: "cover",

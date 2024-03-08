@@ -1,8 +1,8 @@
-const handleExp = async (exp: number, party: CharacterData[], characters: CharacterData[]) => {
-  const findChar = characters.find((char) => char.id === party[0].id);
+const handleExp = async (exp: number, charId: number, characters: CharacterData[]) => {
+  const findChar = characters.find((char) => char.id === charId);
   const newExp = Number(exp) + Number(findChar?.attributes?.experience);
   console.log(newExp);
-  const data = await fetch(`http://localhost:1337/api/characters/${party[0].id}`, {
+  const data = await fetch(`http://localhost:1337/api/characters/${charId}`, {
     method: "PUT",
     mode: "cors",
     body: JSON.stringify({ data: { experience: newExp } }),
