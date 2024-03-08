@@ -12,6 +12,7 @@ import { useStages } from "@/stores/useStage";
 
 export default function Menu() {
   const party = useParty((state: any) => state?.party);
+  const setParty = useParty((state: any) => state?.setParty);
   const [selectingCharacter, setSelectingCharacter] = useState<number>(0);
 
   const characters = useCharacters((state: any) => state?.characters);
@@ -65,7 +66,7 @@ export default function Menu() {
     };
 
     fetchCharacters();
-  }, []);
+  }, [screen]);
 
   const handleBattle = async (stage: any) => {
     if (party.length !== 3 || party.includes(undefined)) return alert("Complete your party in order to procceed!");

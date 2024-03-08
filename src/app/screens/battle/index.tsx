@@ -1,14 +1,17 @@
 "use client";
 import Character from "@/components/character";
+import handleExp from "@/functions/handleExp";
 import handleTurn from "@/functions/handleTurn";
 import { useBattleCharacters } from "@/stores/battleCharacters";
 import { useScreen } from "@/stores/screen";
+import { useCharacters } from "@/stores/useCharacter";
 import { useParty } from "@/stores/useParty";
 import { useStages } from "@/stores/useStage";
 import { BattleData, CharacterData } from "@/types";
 import React, { useEffect, useState } from "react";
 
 export default function Battle({}: {}) {
+  const characters = useCharacters((state: any) => state?.characters);
   const battleCharacters = useBattleCharacters((state: any) => state?.battleCharacters);
   const setBattleCharacters = useBattleCharacters((state: any) => state?.setBattleCharacters);
 
@@ -35,8 +38,8 @@ export default function Battle({}: {}) {
     };
   };
 
-  const calculateExperience = (enemy: CharacterData, player: CharacterData) => {
-    const experience = Math.floor((enemy.level * 2 + 10 - player.level) * (enemy.level * 2 + 10) * enemy.level * 0.01);
+  const calculateExperience = (enemyLevel: CharacterData) => {
+    const experience = enemyLevel;
     return experience;
   };
 
@@ -71,7 +74,8 @@ export default function Battle({}: {}) {
   useEffect(() => {
     if (turnResult === "player_dies") setScreen("gameover");
     else if (turnResult === "enemy_dies") {
-      const exp = calculateExperience(battleCharacters[1], battleCharacters[0]);
+      const exp = calculateExperience(battleCharacters[1].level);
+      handleExp(exp, party, characters);
       setResultScreen({ result: "win", experience: exp });
     }
   }, [turnResult]);
