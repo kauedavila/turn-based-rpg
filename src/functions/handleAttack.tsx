@@ -2,6 +2,7 @@ import { animationData, defaultAnimation } from "@/templates/animations";
 import { attackData, defaultAttack } from "@/templates/attacks";
 import { templateProjectiles } from "@/templates/projectiles";
 import { AnimationData, CharacterData, SpriteStates } from "@/types";
+import handleDeath from "./handleDeath";
 
 const calculateDamage = (attackName: string, attacker: CharacterData, defender: CharacterData) => {
   const move = attackData.find((data) => data.attackName === attackName) || defaultAttack;
@@ -120,9 +121,6 @@ const handleAttack = (
       ...defender?.currentStats,
       health: Math.max(currentHealth ? currentHealth - damage : 0, 0),
     };
-    if (defender.currentStats?.health === 0) {
-      handleSpriteState(defender, "death", battleCharacters, setBattleCharacters);
-    }
   }, animation.attackDelay);
 
   return;

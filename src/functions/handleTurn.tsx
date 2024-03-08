@@ -9,7 +9,8 @@ const handleTurn = (
   setBattleCharacters: (characters: CharacterData[]) => void,
   battleData: BattleData,
   setBattleData: (data: BattleData) => void,
-  party: CharacterData[]
+  party: CharacterData[],
+  setTurnResult: (result: string) => void
 ) => {
   if (battleData.waiting) return;
 
@@ -38,6 +39,8 @@ const handleTurn = (
 
   const performAttack = (attacker: CharacterData, defender: CharacterData, attackType: string, attackerPosition?: string) => {
     if (attacker.currentStats?.health === 0) {
+      const charDeath = attacker === characters[0] ? "player_dies" : "enemy_dies";
+      setTurnResult(charDeath);
       return;
     }
     handleAttack(attackType, attacker, defender, battleCharacters, setBattleCharacters, attackerPosition);

@@ -12,6 +12,9 @@ export default function Battle({}: {}) {
   const battleCharacters = useBattleCharacters((state: any) => state?.battleCharacters);
   const setBattleCharacters = useBattleCharacters((state: any) => state?.setBattleCharacters);
 
+  const [resultScreen, setResultScreen] = useState<object>({});
+
+  const [turnResult, setTurnResult] = useState<string>("");
   const stage = useStages((state: any) => state?.stage);
   const background = stage?.attributes.background?.data.attributes.url;
   const party = useParty((state: any) => state?.party);
@@ -30,6 +33,11 @@ export default function Battle({}: {}) {
       defense: character.defense,
       speed: character.speed,
     };
+  };
+
+  const calculateExperience = (enemy: CharacterData, player: CharacterData) => {
+    const experience = Math.floor((enemy.level * 2 + 10 - player.level) * (enemy.level * 2 + 10) * enemy.level * 0.01);
+    return experience;
   };
 
   const handleHPColor = (healthPercentage: number) => {
@@ -59,6 +67,14 @@ export default function Battle({}: {}) {
       character.currentStats === undefined && calculateCurrentStats({ index });
     });
   }, [battleCharacters]);
+
+  useEffect(() => {
+    if (turnResult === "player_dies") setScreen("gameover");
+    else if (turnResult === "enemy_dies") {
+      const exp = calculateExperience(battleCharacters[1], battleCharacters[0]);
+      setResultScreen({ result: "win", experience: exp });
+    }
+  }, [turnResult]);
 
   return (
     <div
@@ -127,7 +143,7 @@ export default function Battle({}: {}) {
               hover:bg-gray-700 transition-all duration-300
               "
                   onClick={() => {
-                    handleTurn("attack", move.name ?? "melee", battleCharacters, setBattleCharacters, battleData, setBattleData, party);
+                    handleTurn("attack", move.name ?? "melee", battleCharacters, setBattleCharacters, battleData, setBattleData, party, setTurnResult);
                   }}
                 >
                   {move.name.replace("_", " ")}
@@ -151,7 +167,7 @@ export default function Battle({}: {}) {
                       display: character?.id === battleCharacters[0]?.id ? "none" : "block",
                     }}
                     onClick={() => {
-                      handleTurn("switch", index.toString(), battleCharacters, setBattleCharacters, battleData, setBattleData, party);
+                      handleTurn("switch", index.toString(), battleCharacters, setBattleCharacters, battleData, setBattleData, party, setTurnResult);
                     }}
                   >
                     <p className="relative z-10">{character?.name}</p>
@@ -175,6 +191,18 @@ export default function Battle({}: {}) {
           >
             Flee
           </button>
+        </div>
+      )}
+
+      {!resultScreen.result ? null : (
+        <div className="absolute w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-gray-900 text-white p-10 rounded-md flex flex-col justify-center items-center gap-5 transition-all duration-300">
+            <div>
+              <h1>Victory!</h1>
+              <p>You have earned {resultScreen.experience} experience points</p>
+            </div>
+            <button onClick={() => setScreen("menu")}>Return to menu</button>
+          </div>
         </div>
       )}
     </div>

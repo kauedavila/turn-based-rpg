@@ -72,7 +72,6 @@ export default function Menu() {
     const playerCharacter = party.find((character: CharacterData) => character !== undefined);
 
     const enemyCharacter = stage.attributes.enemies.data[1].attributes;
-    const background = stage.attributes.background.data.attributes.url;
 
     party.forEach((character: CharacterData) => {
       if (!character) return;
