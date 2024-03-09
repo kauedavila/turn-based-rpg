@@ -32,8 +32,8 @@ const handleTurn = (
   const animationA = getAnimation(action);
   const animationB = getAnimation(enemyAction);
 
-  const delayA = 500 + animationA.attackDuration + animationA.attackDelay;
-  const delayB = 500 + animationB.attackDuration + animationB.attackDelay;
+  const delayA = animationA.attackDuration + animationA.attackDelay;
+  const delayB = animationB.attackDuration + animationB.attackDelay;
 
   setBattleData({ ...battleData, waiting: true });
 
@@ -54,20 +54,14 @@ const handleTurn = (
 
   scheduleAttack(speedPriority[0], speedPriority[1], speedPriority[0] === characters[0] ? action : enemyAction, 100, speedPriority[0] === characters[0] ? "left" : "right");
 
-  scheduleAttack(speedPriority[1], speedPriority[0], speedPriority[1] === characters[0] ? action : enemyAction, delayA, speedPriority[1] === characters[0] ? "left" : "right");
+  // scheduleAttack(speedPriority[1], speedPriority[0], speedPriority[1] === characters[0] ? action : enemyAction, delayA, speedPriority[1] === characters[0] ? "left" : "right");
 
-  setTimeout(() => {
-    if (action === "switch") {
-      battleCharacters[0] = party[Number(value)];
-      setBattleCharacters(battleCharacters);
-    }
+  if (action === "switch") {
+    battleCharacters[0] = party[Number(value)];
+    setBattleCharacters(battleCharacters);
+  }
 
-    setBattleData({
-      ...battleData,
-      turn: battleData.turn && battleData.turn + 1,
-      waiting: false,
-    });
-  }, delayA + delayB);
+  setBattleData((prev: any) => ({ ...prev, progress: [0, 0], waiting: true }));
 };
 
 export default handleTurn;

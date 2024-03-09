@@ -6,14 +6,17 @@ import { useBattleCharacters } from "@/stores/battleCharacters";
 import { useScreen } from "@/stores/screen";
 import { useCharacters } from "@/stores/useCharacter";
 import { useParty } from "@/stores/useParty";
+import { useSprites } from "@/stores/useSprite";
 import { useStages } from "@/stores/useStage";
-import { BattleData, CharacterData } from "@/types";
+import { BattleData, CharacterData, SpriteDataType } from "@/types";
 import React, { useEffect, useState } from "react";
 
 export default function Battle({}: {}) {
   const characters = useCharacters((state: any) => state?.characters);
   const battleCharacters = useBattleCharacters((state: any) => state?.battleCharacters);
   const setBattleCharacters = useBattleCharacters((state: any) => state?.setBattleCharacters);
+
+  const sprites = useSprites((state: any) => state?.sprites);
 
   const [resultScreen, setResultScreen] = useState<object>({});
 
@@ -22,9 +25,12 @@ export default function Battle({}: {}) {
   const background = stage?.attributes.background?.data.attributes.url;
   const party = useParty((state: any) => state?.party);
   const setScreen = useScreen((state: any) => state?.setScreen);
+  const screen = useScreen((state: any) => state?.screen);
   const [battleData, setBattleData] = useState<BattleData>({
     timer: 0,
     turn: 1,
+    progress: [0, 0],
+    waiting: true,
   });
 
   const calculateCurrentStats = ({ index }: { index: number }) => {
@@ -81,6 +87,21 @@ export default function Battle({}: {}) {
       setResultScreen({ result: "win", experience: exp });
     }
   }, [turnResult]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const speed = battleCharacters.map((character: CharacterData) => Number(character.currentStats?.speed) ?? 0);
+
+      battleData.waiting &&
+        setBattleData((prev) => ({
+          ...prev,
+          progress: [prev.progress[0] + speed[0], prev.progress[1] + speed[1]],
+          waiting: prev.progress[0] < 100,
+        }));
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, [battleData]);
 
   return (
     <div
@@ -199,6 +220,30 @@ export default function Battle({}: {}) {
           </button>
         </div>
       )}
+
+      <div className="absolute items-center flex bottom-8 left-[25%] w-[50%] h-2 bg-white rounded-full">
+        {battleCharacters.map((character: CharacterData, index: number) => {
+          const sprite = character.sprite;
+          const currentSprite = sprites.find((item) => item.attributes.name === sprite?.name) as SpriteDataType;
+          const spriteState = "idle";
+          const spriteUrl = currentSprite?.attributes?.[spriteState]?.data.attributes.url ?? "";
+          console.log(battleData?.progress[index]);
+          return (
+            <div
+              key={index}
+              id={`char-turn-metter-${index}`}
+              className={`absolute transition-all duration-1000
+               h-10  w-10 bg-black rounded-full`}
+              style={{
+                left: `${Math.min((battleData?.progress[index] / 100) * 100, 100)}%`,
+                backgroundImage: `url(http://localhost:1337${spriteUrl})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+          );
+        })}
+      </div>
 
       {!resultScreen.result ? null : (
         <div className="absolute w-full h-full bg-black bg-opacity-50 flex justify-center items-center">

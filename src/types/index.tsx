@@ -55,6 +55,7 @@ export type BattleData = {
   timer?: number;
   turn?: number;
   waiting?: boolean;
+  progress?: [number, number];
   stage?: {
     background?: string;
   };
