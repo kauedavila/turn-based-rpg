@@ -20,12 +20,13 @@ export default function Battle({}: {}) {
 
   const [resultScreen, setResultScreen] = useState<object>({});
 
-  const [turnResult, setTurnResult] = useState<string>("");
   const stage = useStages((state: any) => state?.stage);
   const background = stage?.attributes.background?.data.attributes.url;
   const party = useParty((state: any) => state?.party);
   const setScreen = useScreen((state: any) => state?.setScreen);
   const screen = useScreen((state: any) => state?.screen);
+
+  const [turnResult, setTurnResult] = useState<string | null>(null);
   const [battleData, setBattleData] = useState<BattleData>({
     timer: 0,
     turn: 1,
@@ -80,6 +81,8 @@ export default function Battle({}: {}) {
   useEffect(() => {
     if (turnResult === "player_dies") setScreen("gameover");
     else if (turnResult === "enemy_dies") {
+      setBattleData((prev) => ({ ...prev, waiting: false }));
+
       const exp = calculateExperience(battleCharacters[1].level);
       party.forEach((character: CharacterData) => {
         handleExp(exp, character.id, characters);
@@ -90,14 +93,18 @@ export default function Battle({}: {}) {
 
   useEffect(() => {
     const interval = setInterval(() => {
+      if (battleCharacters[1].currentStats?.health <= 0) {
+        setTurnResult("enemy_dies");
+      }
       const speed = battleCharacters.map((character: CharacterData) => Number(character.currentStats?.speed) ?? 0);
-
       battleData.waiting &&
         setBattleData((prev) => ({
           ...prev,
           progress: [prev.progress[0] + speed[0], prev.progress[1] + speed[1]],
-          waiting: prev.progress[0] < 100,
+          waiting: prev.progress[0] + speed[0] < 100 && prev.progress[1] + speed[1] < 100,
         }));
+
+      battleData.progress[1] >= 100 && handleTurn("attack", "melee", battleCharacters, setBattleCharacters, battleData, setBattleData, party, battleCharacters[1], battleCharacters[0]);
     }, 500);
 
     return () => clearInterval(interval);
@@ -150,7 +157,7 @@ export default function Battle({}: {}) {
       <div id="battle-characters" className="relative w-full h-full flex justify-between items-end px-[15%] py-[5%]">
         {battleCharacters.length > 0 && battleCharacters?.map((character: CharacterData, index: number) => <Character key={index} data={character} position={index === 0 ? "left" : "right"} />)}
       </div>
-      {battleData.waiting ? null : (
+      {battleData.progress[0] < 100 ? null : (
         <div id="battle-actions" className="flex flex-col absolute left-0 bottom-0 border-2 rounded-tr-md border-black">
           <details
             className="text-left bg-gray-900 text-white  
@@ -170,7 +177,7 @@ export default function Battle({}: {}) {
               hover:bg-gray-700 transition-all duration-300
               "
                   onClick={() => {
-                    handleTurn("attack", move.name ?? "melee", battleCharacters, setBattleCharacters, battleData, setBattleData, party, setTurnResult);
+                    handleTurn("attack", move.name ?? "melee", battleCharacters, setBattleCharacters, battleData, setBattleData, party, battleCharacters[0], battleCharacters[1]);
                   }}
                 >
                   {move.name.replace("_", " ")}
@@ -194,7 +201,7 @@ export default function Battle({}: {}) {
                       display: character?.id === battleCharacters[0]?.id ? "none" : "block",
                     }}
                     onClick={() => {
-                      handleTurn("switch", index.toString(), battleCharacters, setBattleCharacters, battleData, setBattleData, party, setTurnResult);
+                      handleTurn("switch", index.toString(), battleCharacters, setBattleCharacters, battleData, setBattleData, party, battleCharacters[0], battleCharacters[1]);
                     }}
                   >
                     <p className="relative z-10">{character?.name}</p>
@@ -232,10 +239,10 @@ export default function Battle({}: {}) {
             <div
               key={index}
               id={`char-turn-metter-${index}`}
-              className={`absolute transition-all duration-1000
+              className={`absolute transition-all duration-300
                h-10  w-10 bg-black rounded-full`}
               style={{
-                left: `${Math.min((battleData?.progress[index] / 100) * 100, 100)}%`,
+                left: `${Math.min((battleData?.progress[index] / 100) * 95, 95)}%`,
                 backgroundImage: `url(http://localhost:1337${spriteUrl})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
