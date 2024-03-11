@@ -34,6 +34,8 @@ export default function Battle({}: {}) {
     waiting: true,
   });
 
+  const [auto, setAuto] = useState<boolean>(false);
+
   const calculateCurrentStats = ({ index }: { index: number }) => {
     const character = battleCharacters[index];
 
@@ -104,6 +106,10 @@ export default function Battle({}: {}) {
           waiting: prev.progress[0] + speed[0] < 100 && prev.progress[1] + speed[1] < 100,
         }));
 
+      battleData.progress[0] >= 100 &&
+        auto === true &&
+        handleTurn("attack", "melee", battleCharacters, setBattleCharacters, battleData, setBattleData, party, battleCharacters[0], battleCharacters[1]);
+
       battleData.progress[1] >= 100 && handleTurn("attack", "melee", battleCharacters, setBattleCharacters, battleData, setBattleData, party, battleCharacters[1], battleCharacters[0]);
     }, 500);
 
@@ -157,7 +163,7 @@ export default function Battle({}: {}) {
       <div id="battle-characters" className="relative w-full h-full flex justify-between items-end px-[15%] py-[5%]">
         {battleCharacters.length > 0 && battleCharacters?.map((character: CharacterData, index: number) => <Character key={index} data={character} position={index === 0 ? "left" : "right"} />)}
       </div>
-      {battleData.progress[0] < 100 ? null : (
+      {battleData.progress[0] < 100 || auto === true ? null : (
         <div id="battle-actions" className="flex flex-col absolute left-0 bottom-0 border-2 rounded-tr-md border-black">
           <details
             className="text-left bg-gray-900 text-white  
@@ -228,13 +234,22 @@ export default function Battle({}: {}) {
         </div>
       )}
 
+      <div className="flex flex-col absolute right-0 bottom-0 border-2 rounded-tl-md border-black">
+        <button
+          className={`w-full h-auto text-left bg-gray-${battleData.auto ? "500" : "900"} text-white border border-black px-10 py-2 first-letter:capitalize
+              hover:bg-gray-700 transition-all duration-300`}
+          onClick={() => setAuto(!auto)}
+        >
+          {auto ? "Stop" : "Auto"}
+        </button>
+      </div>
+
       <div className="absolute items-center flex bottom-8 left-[25%] w-[50%] h-2 bg-white rounded-full">
         {battleCharacters.map((character: CharacterData, index: number) => {
           const sprite = character.sprite;
           const currentSprite = sprites.find((item) => item.attributes.name === sprite?.name) as SpriteDataType;
           const spriteState = "idle";
           const spriteUrl = currentSprite?.attributes?.[spriteState]?.data.attributes.url ?? "";
-          console.log(battleData?.progress[index]);
           return (
             <div
               key={index}
@@ -254,7 +269,7 @@ export default function Battle({}: {}) {
 
       {!resultScreen.result ? null : (
         <div className="absolute w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-gray-900 text-white p-10 rounded-md flex flex-col justify-center items-center gap-5 transition-all duration-300">
+          <div className="bg-gray-900 text-white p-10 rounded-md flex flex-col justify-center items-center gap-5 transition-all duration-500">
             <div>
               <h1>Victory!</h1>
               <p>You have earned {resultScreen.experience} experience points</p>
