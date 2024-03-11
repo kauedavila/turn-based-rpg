@@ -179,7 +179,7 @@ const SelectCharacter = ({ selectingCharacter, setSelectingCharacter }: { select
         </div>
         <div className="grid grid-cols-6 gap-2">
           {characters?.map((character: any, index: number) => {
-            const sprite = sprites?.find((item) => item?.attributes?.name === character?.attributes?.sprite?.name)?.attributes;
+            const sprite = sprites?.find((item: any) => item?.attributes?.name === character?.attributes?.sprite?.name)?.attributes;
             const spriteUrl = sprite?.idle.data.attributes.url.toString();
 
             const characterInParty: boolean = party.find((item: CharacterData) => item?.id === character?.id) ? true : false;

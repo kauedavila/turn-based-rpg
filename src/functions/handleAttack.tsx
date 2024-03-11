@@ -2,7 +2,6 @@ import { animationData, defaultAnimation } from "@/templates/animations";
 import { attackData, defaultAttack } from "@/templates/attacks";
 import { templateProjectiles } from "@/templates/projectiles";
 import { AnimationData, CharacterData, SpriteStates } from "@/types";
-import handleDeath from "./handleDeath";
 
 const calculateDamage = (attackName: string, attacker: CharacterData, defender: CharacterData) => {
   const move = attackData.find((data) => data.attackName === attackName) || defaultAttack;
@@ -56,7 +55,7 @@ const handleAnimation = (
 
   const animation: AnimationData = animationData.find((data) => data.attackName === attackName) || defaultAnimation;
 
-  const projectile = templateProjectiles.find((item) => item.name === animation?.projectile);
+  const projectile = templateProjectiles.find((item: any) => item.name === animation?.projectile);
 
   const projectilesIds: any = [];
   if (projectile) {

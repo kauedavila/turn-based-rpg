@@ -8,7 +8,7 @@ import { useCharacters } from "@/stores/useCharacter";
 import { useParty } from "@/stores/useParty";
 import { useSprites } from "@/stores/useSprite";
 import { useStages } from "@/stores/useStage";
-import { BattleData, CharacterData, SpriteDataType } from "@/types";
+import { BattleData, CharacterData, ResultScreenData, SpriteDataType } from "@/types";
 import React, { useEffect, useState } from "react";
 
 export default function Battle({}: {}) {
@@ -18,7 +18,10 @@ export default function Battle({}: {}) {
 
   const sprites = useSprites((state: any) => state?.sprites);
 
-  const [resultScreen, setResultScreen] = useState<object>({});
+  const [resultScreen, setResultScreen] = useState<ResultScreenData>({
+    experience: 0,
+    result: "",
+  });
 
   const stage = useStages((state: any) => state?.stage);
   const background = stage?.attributes.background?.data.attributes.url;
@@ -87,9 +90,9 @@ export default function Battle({}: {}) {
 
       const exp = calculateExperience(battleCharacters[1].level);
       party.forEach((character: CharacterData) => {
-        handleExp(exp, character.id, characters);
+        handleExp(exp as any, character.id, characters);
       });
-      setResultScreen({ result: "win", experience: exp });
+      setResultScreen({ result: "win", experience: exp as any });
     }
   }, [turnResult]);
 
@@ -100,17 +103,20 @@ export default function Battle({}: {}) {
       }
       const speed = battleCharacters.map((character: CharacterData) => Number(character.currentStats?.speed) ?? 0);
       battleData.waiting &&
-        setBattleData((prev) => ({
+        setBattleData((prev: any) => ({
           ...prev,
-          progress: [prev.progress[0] + speed[0], prev.progress[1] + speed[1]],
+          progress: [(prev.progress[0] + speed[0], prev.progress[1] + speed[1])],
           waiting: prev.progress[0] + speed[0] < 100 && prev.progress[1] + speed[1] < 100,
         }));
 
-      battleData.progress[0] >= 100 &&
+      battleData.progress &&
+        battleData.progress[0] >= 100 &&
         auto === true &&
         handleTurn("attack", "melee", battleCharacters, setBattleCharacters, battleData, setBattleData, party, battleCharacters[0], battleCharacters[1]);
 
-      battleData.progress[1] >= 100 && handleTurn("attack", "melee", battleCharacters, setBattleCharacters, battleData, setBattleData, party, battleCharacters[1], battleCharacters[0]);
+      battleData.progress &&
+        battleData.progress[1] >= 100 &&
+        handleTurn("attack", "melee", battleCharacters, setBattleCharacters, battleData, setBattleData, party, battleCharacters[1], battleCharacters[0]);
     }, 500);
 
     return () => clearInterval(interval);
@@ -161,9 +167,9 @@ export default function Battle({}: {}) {
           })}
       </div>
       <div id="battle-characters" className="relative w-full h-full flex justify-between items-end px-[15%] py-[5%]">
-        {battleCharacters.length > 0 && battleCharacters?.map((character: CharacterData, index: number) => <Character key={index} data={character} position={index === 0 ? "left" : "right"} />)}
+        {battleCharacters.length > 0 && battleCharacters?.map((character: CharacterData, index: number) => <Character key={index} attributes={character} position={index === 0 ? "left" : "right"} />)}
       </div>
-      {battleData.progress[0] < 100 || auto === true ? null : (
+      {(battleData.progress && battleData.progress[0] < 100) || auto === true ? null : (
         <div id="battle-actions" className="flex flex-col absolute left-0 bottom-0 border-2 rounded-tr-md border-black">
           <details
             className="text-left bg-gray-900 text-white  
@@ -247,7 +253,7 @@ export default function Battle({}: {}) {
       <div className="absolute items-center flex bottom-8 left-[25%] w-[50%] h-2 bg-white rounded-full">
         {battleCharacters.map((character: CharacterData, index: number) => {
           const sprite = character.sprite;
-          const currentSprite = sprites.find((item) => item.attributes.name === sprite?.name) as SpriteDataType;
+          const currentSprite = sprites.find((item: any) => item.attributes.name === sprite?.name) as SpriteDataType;
           const spriteState = "idle";
           const spriteUrl = currentSprite?.attributes?.[spriteState]?.data.attributes.url ?? "";
           return (
@@ -257,7 +263,7 @@ export default function Battle({}: {}) {
               className={`absolute transition-all duration-300
                h-10  w-10 bg-black rounded-full`}
               style={{
-                left: `${Math.min((battleData?.progress[index] / 100) * 95, 95)}%`,
+                left: `${Math.min(((battleData.progress && battleData?.progress[index]) || 0 / 100) * 95, 95)}%`,
                 backgroundImage: `url(http://localhost:1337${spriteUrl})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",

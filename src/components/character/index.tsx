@@ -5,13 +5,13 @@ import { CharacterData, SpriteDataType } from "@/types";
 import Image from "next/image";
 import { useSprites } from "@/stores/useSprite";
 
-const Character = ({ data, position }: CharacterData & { position: string }) => {
-  const { id, name, sprite } = data;
+const Character = ({ attributes, position }: any) => {
+  const { id, name, sprite } = attributes;
   const sprites = useSprites((state: any) => state?.sprites);
 
   const projectilesData = templateProjectiles;
 
-  const currentSprite = sprites.find((item) => item.attributes.name === sprite?.name) as SpriteDataType;
+  const currentSprite = sprites.find((item: any) => item.attributes.name === sprite?.name) as SpriteDataType;
 
   // const spriteState = currentSprite?.state ?? "idle";
   const spriteState = "idle";
