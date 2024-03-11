@@ -74,6 +74,13 @@ export default function Battle({}: {}) {
       setBattleCharacters(battleCharacters));
   };
 
+  const handleToggleAuto = () => {
+    setAuto(!auto);
+    if (battleData.progress[0] >= 100) {
+      handleTurn("attack", "melee", battleCharacters, setBattleCharacters, battleData, setBattleData, party, battleCharacters[0], battleCharacters[1]);
+    }
+  };
+
   useEffect(() => {
     battleCharacters.forEach((character: CharacterData, index: number) => {
       character.currentStats === undefined && calculateCurrentStats({ index });
@@ -233,12 +240,11 @@ export default function Battle({}: {}) {
           </button>
         </div>
       )}
-
       <div className="flex flex-col absolute right-0 bottom-0 border-2 rounded-tl-md border-black">
         <button
           className={`w-full h-auto text-left bg-gray-${battleData.auto ? "500" : "900"} text-white border border-black px-10 py-2 first-letter:capitalize
               hover:bg-gray-700 transition-all duration-300`}
-          onClick={() => setAuto(!auto)}
+          onClick={() => handleToggleAuto()}
         >
           {auto ? "Stop" : "Auto"}
         </button>
