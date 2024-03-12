@@ -20,6 +20,7 @@ export default function Menu() {
 
   const setBattleCharacters = useBattleCharacters((state: any) => state?.setBattleCharacters);
   const setScreen = useScreen((state: any) => state?.setScreen);
+  const screen = useScreen((state: any) => state?.screen);
 
   const sprites = useSprites((state: any) => state?.sprites);
   const setSprites = useSprites((state: any) => state?.setSprites);
@@ -102,25 +103,25 @@ export default function Menu() {
   return (
     <div
       id="menu-screen"
-      className="relative bg-gray-900 h-[90%] w-[90%] flex overflow-hidden "
+      className="relative bg-gray-900 h-[90%] w-[90%] flex justify-center  items-end overflow-hidden"
       style={{
-        backgroundImage: `url(https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/ca530ccc-fd0f-4f26-bbc7-9af8e8225eea/dd5qnyp-781f6297-22b0-46d8-b100-a34b741a1160.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2NhNTMwY2NjLWZkMGYtNGYyNi1iYmM3LTlhZjhlODIyNWVlYVwvZGQ1cW55cC03ODFmNjI5Ny0yMmIwLTQ2ZDgtYjEwMC1hMzRiNzQxYTExNjAucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.yxbgNBh9crVxUr4QfVmMITa488tmAqlbxQU-XlTSXgE)`,
+        backgroundImage: `url(https://img.freepik.com/premium-photo/medieval-town-anime-background-illustration_708558-453.jpg)`,
         backgroundSize: "cover",
         backgroundPosition: "bottom",
       }}
     >
       {selectingCharacter > 0 && <SelectCharacter selectingCharacter={selectingCharacter} setSelectingCharacter={setSelectingCharacter} />}
-      <div id="party-list" className="grid grid-rows-3 grid-cols-1 self-start place-self-start items-start justify-start w-[50%] h-full bg-white rounded-r-md border-r-2 border-gray-700 bg-opacity-50">
+      <div id="party-list" className="absolute flex items-start justify-start z-10 w-[80%] h-[50%]">
         {Array(3)
           .fill(0)
           .map((_, index) => {
             const character = party[index];
 
             return (
-              <div key={index} id={`party-list-character-${character?.id}`} className="flex w-full h-full justify-center border-b-2 border-gray-700 pt-2 px-2">
+              <div key={index} id={`party-list-character-${character?.id}`} className="flex  w-full h-full justify-center py-4">
                 {!character ? (
                   <div
-                    className="flex items-center place-self-center justify-center border border-gray-900 bg-gray-600 w-[25%] rounded-full h-auto aspect-square
+                    className="flex  items-center place-self-center justify-center border border-gray-900 bg-gray-600 w-[25%] rounded-full h-auto aspect-square
                 cursor-pointer hover:bg-gray-700 hover:border-gray-800 hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out"
                     onClick={() => setSelectingCharacter(index + 1)}
                   >
@@ -133,18 +134,23 @@ export default function Menu() {
             );
           })}
       </div>
-      <div id="battle-button" className="flex justify-center items-center w-full h-full">
-        {stages?.length > 0 &&
-          stages.map((stage: any, index: number) => (
+      <details className="absolute right-0 top-0 flex flex-col gap-4 items-center justify-center w-fit h-fit bg-gray-800 rounded-md p-4">
+        <summary className="flex items-center justify-center w-full h-full">
+          <p className="text-2xl font-bold text-white">Stages</p>
+        </summary>
+        {stages?.map((stage: any, index: number) => {
+          return (
             <button
               key={index}
-              className="p-2 bg-gray-600 rounded-md text-gray-100 text-2xl hover:bg-gray-700 hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer"
+              className="w-full h-auto bg-gray-600 rounded-md text-white cursor-pointer aspect-square flex items-center justify-center hover:bg-gray-700 hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out"
               onClick={() => handleBattle(stage)}
             >
-              {stage.attributes.name}
+              <p className="text-white ">{stage?.attributes?.name}</p>
+              <p className="text-white">{stage?.attributes?.description}</p>
             </button>
-          ))}
-      </div>
+          );
+        })}
+      </details>
     </div>
   );
 }
@@ -167,7 +173,7 @@ const SelectCharacter = ({ selectingCharacter, setSelectingCharacter }: { select
   };
 
   return (
-    <section id="select-character-main" className="flex  absolute items-center justify-center w-full h-full backdrop-blur-sm z-10">
+    <section id="select-character-main" className="flex  z-20 absolute items-center justify-center w-full h-full backdrop-blur-sm">
       <div id="select-character" className="flex flex-col w-[75%] h-[75%] bg-gray-300 rounded-md shadow-lg p-4">
         <div id="select-character-close" className="flex justify-end w-full" onClick={() => setSelectingCharacter(0)}>
           <p

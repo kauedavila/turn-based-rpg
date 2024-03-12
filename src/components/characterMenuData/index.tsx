@@ -33,35 +33,35 @@ export default function CharacterMenuData({ character, index }: any) {
   const spriteUrl = sprite?.idle.data.attributes.url.toString();
 
   return (
-    <div
-      className="grid grid-cols-[3fr,3fr,1fr]
-     justify-between w-full  gap-4"
-    >
+    <div className="grid grid-cols-1 grid-rows-1 w-full  justify-items-center ">
+      <div className="flex absolute gap-4 w-[20%] h-[50%] -top-40 justify-center items-center py-8 px-4 bg-gray-800 rounded-md shadow-lg text-white">
+        {characterStatTab === 0 && <CharStats character={character} />}
+        {characterStatTab === 1 && <CharMoves character={character} />}
+        {characterStatTab === 2 && <CharRemove index={index} />}
+
+        <div className="flex flex-col gap-1">
+          {characterTabs.map((tab) => (
+            <button
+              key={tab.index}
+              className={`p-1 w-full h-auto bg-gray-700 rounded-md text-white 
+                          cursor-pointer aspect-square flex items-center justify-center
+                           ${characterStatTab === tab.index ? "border-2 border-white" : ""}`}
+              onClick={() => setCharacterStatTab(tab.index)}
+            >
+              {tab.icon}
+            </button>
+          ))}
+        </div>
+      </div>
       <div
-        className="w-full h-auto aspect-square self-end"
+        className="w-[50%] h-[100%] rounded-md shadow-lg"
         style={{
           backgroundImage: `url(http://localhost:1337${spriteUrl})`,
-          backgroundSize: "cover",
+          backgroundSize: "contain",
+          backgroundRepeat: "no-repeat",
           backgroundPosition: "top",
         }}
       />
-      {characterStatTab === 0 && <CharStats character={character} />}
-      {characterStatTab === 1 && <CharMoves character={character} />}
-      {characterStatTab === 2 && <CharRemove index={index} />}
-
-      <div className="flex flex-col gap-1">
-        {characterTabs.map((tab) => (
-          <button
-            key={tab.index}
-            className={`p-1 w-full h-auto bg-gray-700 rounded-md text-white 
-                          cursor-pointer aspect-square flex items-center justify-center
-                           ${characterStatTab === tab.index ? "border-2 border-white" : ""}`}
-            onClick={() => setCharacterStatTab(tab.index)}
-          >
-            {tab.icon}
-          </button>
-        ))}
-      </div>
     </div>
   );
 }
