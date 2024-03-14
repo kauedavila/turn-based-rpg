@@ -1,20 +1,26 @@
 export type ScreenList = "menu" | "battle";
 
-export type SpriteDataType = {
-  [key: string]: string | SpriteStateDataType | undefined;
-  name: string;
-  state?: SpriteStates;
-  idle?: SpriteStateDataType;
-  attack?: SpriteStateDataType;
-  hit?: SpriteStateDataType;
-  death?: SpriteStateDataType;
+type MediaType = {
+  data?: {
+    attributes: {
+      url?: string;
+    };
+  };
 };
 
-export type SpriteStateDataType = {
-  url?: string;
-  flip?: boolean;
-  width?: number;
-  height?: number;
+export type SpriteDataType = {
+  [key: string]: string | undefined | MediaType;
+  name?: string;
+  state?: SpriteStates;
+  idle?: MediaType;
+  attack?: MediaType;
+  hit?: MediaType;
+  death?: MediaType;
+};
+
+export type ResultScreenProps = {
+  result: string | null;
+  experience: number;
 };
 
 export type SpriteStates = "idle" | "attack" | "hit" | "death";

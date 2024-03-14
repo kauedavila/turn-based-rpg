@@ -134,15 +134,15 @@ export default function Menu() {
             );
           })}
       </div>
-      <details className="absolute right-0 top-0 flex flex-col gap-4 items-center justify-center w-fit h-fit bg-gray-800 rounded-md p-4">
+      <details className="absolute right-0 top-0 flex flex-col gap-4 items-center justify-center w-fit h-fit bg-gray-800 rounded-md p-4 cursor-pointer">
         <summary className="flex items-center justify-center w-full h-full">
-          <p className="text-2xl font-bold text-white">Stages</p>
+          <p className="text-2xl font-bold text-white ">Stages</p>
         </summary>
         {stages?.map((stage: any, index: number) => {
           return (
             <button
               key={index}
-              className="w-full h-auto bg-gray-600 rounded-md text-white cursor-pointer aspect-square flex items-center justify-center hover:bg-gray-700 hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out"
+              className="w-full h-auto mt-4 bg-gray-600 rounded-md text-white cursor-pointer aspect-square flex items-center justify-center hover:bg-gray-700 hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out"
               onClick={() => handleBattle(stage)}
             >
               <p className="text-white ">{stage?.attributes?.name}</p>
@@ -185,7 +185,7 @@ const SelectCharacter = ({ selectingCharacter, setSelectingCharacter }: { select
         </div>
         <div className="grid grid-cols-6 gap-2">
           {characters?.map((character: any, index: number) => {
-            const sprite = sprites?.find((item) => item?.attributes?.name === character?.attributes?.sprite?.name)?.attributes;
+            const sprite = sprites?.find((item: any) => item?.attributes?.name === character?.attributes?.sprite?.name)?.attributes;
             const spriteUrl = sprite?.idle.data.attributes.url.toString();
 
             const characterInParty: boolean = party.find((item: CharacterData) => item?.id === character?.id) ? true : false;
