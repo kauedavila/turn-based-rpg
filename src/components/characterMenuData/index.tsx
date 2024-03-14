@@ -34,7 +34,7 @@ export default function CharacterMenuData({ character, index }: any) {
 
   return (
     <div className="grid grid-cols-1 grid-rows-1 w-full  justify-items-center ">
-      <div className="flex absolute gap-4 w-[20%] h-[50%] -top-40 justify-center items-center py-8 px-4 bg-gray-800 rounded-md shadow-lg text-white">
+      <div className="flex absolute gap-4 w-[20%] h-[50%] -top-40 justify-start items-center py-4 px-4 bg-gray-800 rounded-md shadow-lg text-white">
         {characterStatTab === 0 && <CharStats character={character} />}
         {characterStatTab === 1 && <CharMoves character={character} />}
         {characterStatTab === 2 && <CharRemove index={index} />}

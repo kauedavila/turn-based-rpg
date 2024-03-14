@@ -2,30 +2,22 @@ const CharStats = ({ character }: any) => {
   return (
     <>
       <div
-        className="flex flex-col
+        className="flex flex-col 
                 items-start justify-start w-full h-auto pb-2 text-sm"
       >
         <p>
           <strong className="text-base">{character?.name}</strong>
         </p>
-        <p>
-          <strong>LV</strong>: {character?.level}
-        </p>
-        <p>
-          <strong>EXP</strong>: {character?.experience} / {character?.level * 20}
-        </p>
-        <p>
-          <strong>HP</strong>: {character?.health}
-        </p>
-        <p>
-          <strong>ATK</strong>: {character?.attack}
-        </p>
-        <p>
-          <strong>DEF</strong>: {character?.defense}
-        </p>
-        <p>
-          <strong>SPD</strong>: {character?.speed}
-        </p>
+        <ul>
+          <li>LV {character?.level}</li>
+          <li>
+            EXP {character?.experience} / {character?.level * 20}
+          </li>
+          <li>HP {character?.health}</li>
+          <li>ATK {character?.attack}</li>
+          <li>DEF {character?.defense}</li>
+          <li>SPD {character?.speed}</li>
+        </ul>
       </div>
     </>
   );

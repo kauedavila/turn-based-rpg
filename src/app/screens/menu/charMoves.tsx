@@ -5,7 +5,7 @@ const CharMoves = ({ character }: any) => {
     <>
       <div
         className="flex flex-col gap-1 
-                items-start justify-start w-full h-auto "
+                items-start justify-start w-full h-full "
       >
         <h1 className="font-bold">Moves</h1>
         {character?.moves?.map((move: any, index: number) => {

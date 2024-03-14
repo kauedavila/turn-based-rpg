@@ -12,7 +12,7 @@ const CharRemove = ({ index }: { index: number }) => {
 
   return (
     <>
-      <div className="flex flex-col items-start justify-start w-full h-auto pb-2">
+      <div className="flex flex-col items-start justify-start w-full h-full pb-2">
         <strong>Remove from party?</strong>
         <button className="p-1 w-full h-auto bg-red-500 rounded-md text-white cursor-pointer" onClick={() => handleRemoveFromParty(index)}>
           Remove
