@@ -1,6 +1,8 @@
-const handleExp = async (exp: number, charId: number, characters: CharacterData[]) => {
-  const findChar = characters.find((char) => char.id === charId);
-  const newExp = Number(exp) + Number(findChar?.attributes?.experience);
+import { CharacterData } from "@/types";
+
+const handleExp = async (exp: number, charId: number, characters: any[]) => {
+  const findChar = characters.find((char) => char.id === charId)?.attributes;
+  const newExp = exp + Number(findChar?.experience);
   const data = await fetch(`http://localhost:1337/api/characters/${charId}`, {
     method: "PUT",
     mode: "cors",

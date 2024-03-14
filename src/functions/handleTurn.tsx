@@ -1,4 +1,4 @@
-import { BattleData, CharacterData } from "@/types";
+import { BattleData, CharacterData, EnemyData } from "@/types";
 import handleAttack from "./handleAttack";
 import { animationData } from "@/templates/animations";
 
@@ -8,7 +8,7 @@ const handleTurn = (
   battleCharacters: CharacterData[],
   setBattleCharacters: (characters: CharacterData[]) => void,
   battleData: BattleData,
-  setBattleData: (data: BattleData) => void,
+  setBattleData: (data: any) => void,
   party: CharacterData[],
   attacker: CharacterData,
   defender: EnemyData

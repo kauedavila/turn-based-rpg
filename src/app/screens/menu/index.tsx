@@ -138,18 +138,19 @@ export default function Menu() {
         <summary className="flex items-center justify-center w-full h-full">
           <p className="text-2xl font-bold text-white ">Stages</p>
         </summary>
-        {stages?.map((stage: any, index: number) => {
-          return (
-            <button
-              key={index}
-              className="w-full h-auto mt-4 bg-gray-600 rounded-md text-white cursor-pointer aspect-square flex items-center justify-center hover:bg-gray-700 hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out"
-              onClick={() => handleBattle(stage)}
-            >
-              <p className="text-white ">{stage?.attributes?.name}</p>
-              <p className="text-white">{stage?.attributes?.description}</p>
-            </button>
-          );
-        })}
+        {stages?.length > 0 &&
+          stages?.map((stage: any, index: number) => {
+            return (
+              <button
+                key={index}
+                className="w-full h-auto mt-4 bg-gray-600 rounded-md text-white cursor-pointer aspect-square flex items-center justify-center hover:bg-gray-700 hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out"
+                onClick={() => handleBattle(stage)}
+              >
+                <p className="text-white ">{stage?.attributes?.name}</p>
+                <p className="text-white">{stage?.attributes?.description}</p>
+              </button>
+            );
+          })}
       </details>
     </div>
   );
