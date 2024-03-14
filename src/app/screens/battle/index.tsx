@@ -8,7 +8,7 @@ import { useCharacters } from "@/stores/useCharacter";
 import { useParty } from "@/stores/useParty";
 import { useSprites } from "@/stores/useSprite";
 import { useStages } from "@/stores/useStage";
-import { BattleData, CharacterData, SpriteDataType } from "@/types";
+import { BattleData, CharacterData, ResultScreenProps, SpriteDataType } from "@/types";
 import React, { useEffect, useState } from "react";
 
 export default function Battle({}: {}) {
@@ -17,8 +17,10 @@ export default function Battle({}: {}) {
   const setBattleCharacters = useBattleCharacters((state: any) => state?.setBattleCharacters);
 
   const sprites = useSprites((state: any) => state?.sprites);
-
-  const [resultScreen, setResultScreen] = useState<object>({});
+  const [resultScreen, setResultScreen] = useState<ResultScreenProps>({
+    result: null,
+    experience: 0,
+  });
 
   const stage = useStages((state: any) => state?.stage);
   const background = stage?.attributes.background?.data.attributes.url;
@@ -94,9 +96,9 @@ export default function Battle({}: {}) {
 
       const exp = calculateExperience(battleCharacters[1].level);
       party.forEach((character: CharacterData) => {
-        handleExp(exp, character.id, characters);
+        handleExp(Number(exp), character.id, characters);
       });
-      setResultScreen({ result: "win", experience: exp });
+      setResultScreen({ result: "win", experience: Number(exp) });
     }
   }, [turnResult]);
 
@@ -253,9 +255,8 @@ export default function Battle({}: {}) {
       <div className="absolute items-center flex bottom-8 left-[25%] w-[50%] h-2 bg-white rounded-full">
         {battleCharacters.map((character: CharacterData, index: number) => {
           const sprite = character.sprite;
-          const currentSprite = sprites.find((item) => item.attributes.name === sprite?.name) as SpriteDataType;
-          const spriteState = "idle";
-          const spriteUrl = currentSprite?.attributes?.[spriteState]?.data.attributes.url ?? "";
+          const currentSprite = sprites.find((item: any) => item.attributes.name === sprite?.name).attributes as SpriteDataType;
+          const spriteUrl = currentSprite?.idle?.data?.attributes.url;
           return (
             <div
               key={index}
@@ -273,12 +274,12 @@ export default function Battle({}: {}) {
         })}
       </div>
 
-      {!resultScreen.result ? null : (
+      {!resultScreen?.result ? null : (
         <div className="absolute w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-gray-900 text-white p-10 rounded-md flex flex-col justify-center items-center gap-5 transition-all duration-500">
             <div>
               <h1>Victory!</h1>
-              <p>You have earned {resultScreen.experience} experience points</p>
+              <p>You have earned {resultScreen?.experience} experience points</p>
             </div>
             <button onClick={() => setScreen("menu")}>Return to menu</button>
           </div>
