@@ -170,7 +170,10 @@ export default function Battle({}: {}) {
           })}
       </div>
       <div id="battle-characters" className="relative w-full h-full flex justify-between items-end px-[15%] py-[5%]">
-        {battleCharacters.length > 0 && battleCharacters?.map((character: CharacterData, index: number) => <Character key={index} data={character} position={index === 0 ? "left" : "right"} />)}
+        {battleCharacters.length > 0 &&
+          battleCharacters?.map((character: CharacterData, index: number) => (
+            <Character key={index} id={character.id} name={character.name} sprite={character.sprite} position={index === 0 ? "left" : "right"} />
+          ))}
       </div>
       {battleData.progress[0] < 100 || auto === true ? null : (
         <div id="battle-actions" className="flex flex-col absolute left-0 bottom-0 border-2 rounded-tr-md border-black">

@@ -1,21 +1,30 @@
 "use client";
 
 import { templateProjectiles } from "@/templates/projectiles";
-import { CharacterData, SpriteDataType } from "@/types";
+import { CharacterData, SpriteDataType, SpriteStates } from "@/types";
 import Image from "next/image";
 import { useSprites } from "@/stores/useSprite";
 
-const Character = ({ data, position }: CharacterData & { position: string }) => {
-  const { id, name, sprite } = data;
+type BattleCharProps = {
+  id: number;
+  name: string;
+  sprite:
+    | {
+        name?: string | undefined;
+        state?: SpriteStates | undefined;
+      }
+    | undefined;
+  position: string;
+};
+
+const Character = ({ id, name, sprite, position }: BattleCharProps) => {
   const sprites = useSprites((state: any) => state?.sprites);
 
   const projectilesData = templateProjectiles;
 
-  const currentSprite = sprites.find((item) => item.attributes.name === sprite?.name) as SpriteDataType;
+  const currentSprite = sprites.find((item: any) => item.attributes.name === sprite?.name).attributes as SpriteDataType;
 
-  // const spriteState = currentSprite?.state ?? "idle";
-  const spriteState = "idle";
-  const spriteUrl = currentSprite?.attributes?.[spriteState]?.data.attributes.url ?? "";
+  const spriteUrl = currentSprite?.idle?.data?.attributes?.url ?? "";
 
   return (
     <div id={`character-${position}`} className="relative flex flex-col items-start justify-center w-auto h-auto">
