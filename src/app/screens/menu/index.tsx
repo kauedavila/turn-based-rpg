@@ -2,12 +2,9 @@ import { useBattleCharacters } from "@/stores/battleCharacters";
 import { useScreen } from "@/stores/screen";
 import { useParty } from "@/stores/useParty";
 import { useCharacters } from "@/stores/useCharacter";
-import templateCharacters from "@/templates/characters";
-import templateSprites from "@/templates/sprites";
 import { CharacterData } from "@/types";
 import { useEffect, useState } from "react";
 import CharacterMenuData from "@/components/characterMenuData";
-import { useSprites } from "@/stores/useSprite";
 import { useStages } from "@/stores/useStage";
 
 export default function Menu() {
@@ -22,34 +19,16 @@ export default function Menu() {
   const setScreen = useScreen((state: any) => state?.setScreen);
   const screen = useScreen((state: any) => state?.screen);
 
-  const sprites = useSprites((state: any) => state?.sprites);
-  const setSprites = useSprites((state: any) => state?.setSprites);
-
   const stages = useStages((state: any) => state?.stages);
   const setStages = useStages((state: any) => state?.setStages);
   const setStage = useStages((state: any) => state?.setStage);
 
   useEffect(() => {
-    const fetchSprites = async () => {
-      const data = await fetch("http://localhost:1337/api/sprites?populate=*", {
-        headers: { Authorization: `bearer ${process.env.NEXT_PUBLIC_API_TOKEN_SALT}` },
-      })
-        .then((response) => response.json())
-        .catch((error) => console.error(error));
-      data ? setSprites(data.data) : setSprites(templateSprites);
-    };
-
-    fetchSprites();
-  }, []);
-
-  useEffect(() => {
     const fetchStages = async () => {
-      const data = await fetch("http://localhost:1337/api/stages?populate=*", {
-        headers: { Authorization: `bearer ${process.env.NEXT_PUBLIC_API_TOKEN_SALT}` },
-      })
+      const data = await fetch("http://localhost:3000/api/stages", {})
         .then((response) => response.json())
         .catch((error) => console.error(error));
-      data && setStages(data.data);
+      data && setStages(data);
     };
 
     fetchStages();
@@ -57,13 +36,11 @@ export default function Menu() {
 
   useEffect(() => {
     const fetchCharacters = async () => {
-      const data = await fetch("http://localhost:1337/api/characters", {
-        headers: { Authorization: `bearer ${process.env.NEXT_PUBLIC_API_TOKEN_SALT}` },
-      })
+      const data = await fetch("http://localhost:3000/api/characters", {})
         .then((response) => response.json())
         .catch((error) => console.error(error));
 
-      data ? setCharacters(data.data) : setCharacters(templateCharacters);
+      data && setCharacters(data);
     };
 
     fetchCharacters();
@@ -71,8 +48,8 @@ export default function Menu() {
 
   useEffect(() => {
     const updatedParty = party.map((character: CharacterData) => {
-      const updatedCharacter = characters.find((item: CharacterData) => item.id === character.id)?.attributes;
-      updatedCharacter.id = character.id;
+      const updatedCharacter = characters.find((item: CharacterData) => item._id === character._id);
+      updatedCharacter._id = character._id;
       return updatedCharacter;
     });
 
@@ -83,7 +60,8 @@ export default function Menu() {
     if (party.length !== 3 || party.includes(undefined)) return alert("Complete your party in order to procceed!");
     const playerCharacter = party.find((character: CharacterData) => character !== undefined);
 
-    const enemyCharacter = stage.attributes.enemies.data[1].attributes;
+    const enemyCharacter = stage.enemyList[0];
+    console.log(enemyCharacter);
 
     party.forEach((character: CharacterData) => {
       if (!character) return;
@@ -146,8 +124,8 @@ export default function Menu() {
                 className="w-full h-auto mt-4 bg-gray-600 rounded-md text-white cursor-pointer aspect-square flex items-center justify-center hover:bg-gray-700 hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out"
                 onClick={() => handleBattle(stage)}
               >
-                <p className="text-white ">{stage?.attributes?.name}</p>
-                <p className="text-white">{stage?.attributes?.description}</p>
+                <p className="text-white ">{stage?.name}</p>
+                <p className="text-white">{stage?.description}</p>
               </button>
             );
           })}
@@ -161,13 +139,9 @@ const SelectCharacter = ({ selectingCharacter, setSelectingCharacter }: { select
   const setParty = useParty((state: any) => state?.setParty);
   const characters = useCharacters((state: any) => state?.characters);
 
-  const sprites = useSprites((state: any) => state?.sprites);
-  const setSprites = useSprites((state: any) => state?.setSprites);
-
   const handleAddToParty = (index: number) => {
     setSelectingCharacter(0);
-    const character = characters[index].attributes;
-    character.id = characters[index].id;
+    const character = characters[index];
     const newParty = [...party];
     newParty[selectingCharacter - 1] = character;
     setParty(newParty);
@@ -186,33 +160,31 @@ const SelectCharacter = ({ selectingCharacter, setSelectingCharacter }: { select
         </div>
         <div className="grid grid-cols-6 gap-2">
           {characters?.map((character: any, index: number) => {
-            const sprite = sprites?.find((item: any) => item?.attributes?.name === character?.attributes?.sprite?.name)?.attributes;
-            const spriteUrl = sprite?.idle.data.attributes.url.toString();
+            const spriteUrl = character?.sprite;
 
-            const characterInParty: boolean = party.find((item: CharacterData) => item?.id === character?.id) ? true : false;
-
+            const characterInParty: boolean = party.find((item: CharacterData) => item?._id === character?._id) ? true : false;
             return (
               <div
                 key={index}
-                id={`party-list-character-${character?.id}-sprite`}
+                id={`party-list-character-${character?._id}-sprite`}
                 className={
                   characterInParty
                     ? "w-full h-auto aspect-square border  rounded-md bg-gray-700 cursor-not-allowed filter grayscale"
                     : "w-full h-auto aspect-square border border-black rounded-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer bg-gray-500 hover:border-gray-800 hover:bg-gray-700"
                 }
                 style={{
-                  backgroundImage: `url(http://localhost:1337${spriteUrl})`,
+                  backgroundImage: `url(http://localhost:3000/${spriteUrl})`,
                   backgroundSize: "cover",
                   backgroundPosition: "top",
                 }}
                 onClick={() => !characterInParty && handleAddToParty(index)}
               >
-                <div id={`party-list-character-${character?.attributes?.id}-data`} className="flex flex-col h-full justify-between p-1 text-white">
+                <div id={`party-list-character-${character?._id}-data`} className="flex flex-col h-full justify-between p-1 text-white">
                   <p>
-                    <strong>{character?.attributes?.name}</strong>
+                    <strong>{character?.name}</strong>
                   </p>
                   <p className="text-xs self-end ">
-                    <strong>LV</strong>: {character?.attributes?.level}
+                    <strong>LV</strong>: {character?.level}
                   </p>
                 </div>
               </div>
