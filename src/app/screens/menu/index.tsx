@@ -60,20 +60,17 @@ export default function Menu() {
     if (party.length !== 3 || party.includes(undefined)) return alert("Complete your party in order to procceed!");
     const playerCharacter = party.find((character: CharacterData) => character !== undefined);
 
-    const enemyCharacter = stage.enemyList[0];
-    console.log(enemyCharacter);
+    // const enemyCharacter = stage.enemyList[0];
+    // party.forEach((character: CharacterData) => {
+    //   if (!character) return;
+    //   character.currentStats = undefined;
+    // });
 
-    party.forEach((character: CharacterData) => {
-      if (!character) return;
-      character.currentStats = undefined;
-    });
+    // [playerCharacter, enemyCharacter].forEach((character: CharacterData) => {
+    //   if (!character) return;
+    //   character.currentStats = undefined;
+    // });
 
-    [playerCharacter, enemyCharacter].forEach((character: CharacterData) => {
-      if (!character) return;
-      character.currentStats = undefined;
-    });
-
-    setBattleCharacters([playerCharacter, enemyCharacter]);
     setScreen("battle");
     setStage(stage);
   };

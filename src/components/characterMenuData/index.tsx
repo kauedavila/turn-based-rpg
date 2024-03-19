@@ -5,7 +5,6 @@ import CharRemove from "@/app/screens/menu/charRemove";
 import { useState } from "react";
 import { GiSkills, GiSpellBook } from "react-icons/gi";
 import { IoIosCloseCircle } from "react-icons/io";
-import { useSprites } from "@/stores/useSprite";
 
 const characterTabs = [
   {
@@ -27,10 +26,7 @@ const characterTabs = [
 
 export default function CharacterMenuData({ character, index }: any) {
   const [characterStatTab, setCharacterStatTab] = useState<number>(0);
-  const sprites = useSprites((state: any) => state?.sprites);
-
-  const sprite = sprites?.find((item: any) => item?.attributes?.name === character?.sprite?.name)?.attributes;
-  const spriteUrl = sprite?.idle.data.attributes.url.toString();
+  const spriteUrl = character?.sprite || "";
 
   return (
     <div className="grid grid-cols-1 grid-rows-1 w-full  justify-items-center ">
@@ -56,7 +52,7 @@ export default function CharacterMenuData({ character, index }: any) {
       <div
         className="w-[50%] h-[100%] rounded-md shadow-lg"
         style={{
-          backgroundImage: `url(http://localhost:1337${spriteUrl})`,
+          backgroundImage: `url(http://localhost:3000/${spriteUrl})`,
           backgroundSize: "contain",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "top",

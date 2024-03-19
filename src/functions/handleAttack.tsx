@@ -1,7 +1,7 @@
 import { animationData, defaultAnimation } from "@/templates/animations";
 import { attackData, defaultAttack } from "@/templates/attacks";
 import { templateProjectiles } from "@/templates/projectiles";
-import { AnimationData, CharacterData, SpriteStates } from "@/types";
+import { AnimationData, CharacterData } from "@/types";
 
 const calculateDamage = (attackName: string, attacker: CharacterData, defender: CharacterData) => {
   const move = attackData.find((data) => data.attackName === attackName) || defaultAttack;
@@ -26,19 +26,19 @@ const calculateDamage = (attackName: string, attacker: CharacterData, defender: 
   return damage * 3;
 };
 
-const handleSpriteState = (target: CharacterData, state: SpriteStates, battleCharacters: CharacterData[], setBattleCharacters: (characters: CharacterData[]) => void) => {
-  setBattleCharacters(
-    battleCharacters.map((character) => {
-      if (character.id === target.id) {
-        character.sprite = {
-          ...character.sprite,
-          state,
-        };
-      }
-      return character;
-    })
-  );
-};
+// const handleSpriteState = (target: CharacterData, battleCharacters: CharacterData[], setBattleCharacters: (characters: CharacterData[]) => void) => {
+//   setBattleCharacters(
+//     battleCharacters.map((character) => {
+//       if (character._id === target._id) {
+//         character.sprite = {
+//           ...character.sprite,
+//           state,
+//         };
+//       }
+//       return character;
+//     })
+//   );
+// };
 
 const handleAnimation = (
   attackName: string,
@@ -73,12 +73,12 @@ const handleAnimation = (
       projectileId?.classList.remove("hidden");
     });
 
-    handleSpriteState(attacker, "attack", battleCharacters, setBattleCharacters);
+    // handleSpriteState(attacker, "attack", battleCharacters, setBattleCharacters);
   }, animation.attackDelay);
 
   setTimeout(() => {
     defenderId?.classList.add(animation.hitAnimation);
-    handleSpriteState(defender, "hit", battleCharacters, setBattleCharacters);
+    // handleSpriteState(defender, "hit", battleCharacters, setBattleCharacters);
 
     setTimeout(() => {
       defenderId?.classList.remove(animation.hitAnimation);
@@ -86,8 +86,8 @@ const handleAnimation = (
   }, animation.hitDelay);
   setTimeout(() => {
     attackerId?.classList.remove(animation.attackAnimation);
-    handleSpriteState(attacker, "idle", battleCharacters, setBattleCharacters);
-    handleSpriteState(defender, "idle", battleCharacters, setBattleCharacters);
+    // handleSpriteState(attacker, "idle", battleCharacters, setBattleCharacters);
+    // handleSpriteState(defender, "idle", battleCharacters, setBattleCharacters);
     projectilesIds?.forEach((projectileId: any, index: number) => {
       projectileId?.classList.remove(projectile?.projectiles[0]?.className);
       projectileId?.classList.add("hidden");

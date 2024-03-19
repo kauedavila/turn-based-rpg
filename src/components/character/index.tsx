@@ -1,30 +1,18 @@
 "use client";
 
 import { templateProjectiles } from "@/templates/projectiles";
-import { CharacterData, SpriteDataType, SpriteStates } from "@/types";
 import Image from "next/image";
 import { useSprites } from "@/stores/useSprite";
 
 type BattleCharProps = {
   id: number;
   name: string;
-  sprite:
-    | {
-        name?: string | undefined;
-        state?: SpriteStates | undefined;
-      }
-    | undefined;
+  sprite: string | undefined;
   position: string;
 };
 
 const Character = ({ id, name, sprite, position }: BattleCharProps) => {
-  const sprites = useSprites((state: any) => state?.sprites);
-
   const projectilesData = templateProjectiles;
-
-  const currentSprite = sprites.find((item: any) => item.attributes.name === sprite?.name).attributes as SpriteDataType;
-
-  const spriteUrl = currentSprite?.idle?.data?.attributes?.url ?? "";
 
   return (
     <div id={`character-${position}`} className="relative flex flex-col items-start justify-center w-auto h-auto">
@@ -33,7 +21,7 @@ const Character = ({ id, name, sprite, position }: BattleCharProps) => {
           transform: position === "right" ? "scaleX(-1)" : "scaleX(1)",
         }}
       >
-        {spriteUrl && <Image id={`character-${position}-sprite`} src={`http://localhost:1337${spriteUrl}`} alt={name} width={position === "right" ? 150 : 200} height={200} className="h-auto" />}
+        {sprite && <Image id={`character-${position}-sprite`} src={`http://localhost:3000/${sprite}`} alt={name} width={position === "right" ? 150 : 200} height={200} className="h-auto" />}
       </div>
       {Array(projectilesData[0].projectiles.length)
         .fill(0)
