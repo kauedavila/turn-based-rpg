@@ -1,8 +1,8 @@
-import { useParty } from "@/stores/useParty";
+import { usePartyStore } from "@/stores/usePartyStore";
 
 const CharRemove = ({ index }: { index: number }) => {
-  const party = useParty((state: any) => state?.party);
-  const setParty = useParty((state: any) => state?.setParty);
+  const party = usePartyStore((state: any) => state?.party);
+  const setParty = usePartyStore((state: any) => state?.setParty);
 
   const handleRemoveFromParty = (index: number) => {
     const newParty = [...party];

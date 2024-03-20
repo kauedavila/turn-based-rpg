@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { PartyDataType } from "@/types";
 
-export const useParty = create((set) => ({
+export const usePartyStore = create((set) => ({
   party: [] as PartyDataType,
   setParty: (party: PartyDataType) => set({ party }),
 }));

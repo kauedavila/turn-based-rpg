@@ -2,7 +2,6 @@
 
 import { templateProjectiles } from "@/templates/projectiles";
 import Image from "next/image";
-import { useSprites } from "@/stores/useSprite";
 
 type BattleCharProps = {
   id: number;

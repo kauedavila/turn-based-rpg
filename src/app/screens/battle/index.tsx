@@ -3,29 +3,27 @@ import useEnemy from "@/app/hooks/useEnemy";
 import Character from "@/components/character";
 import handleExp from "@/functions/handleExp";
 import handleTurn from "@/functions/handleTurn";
-import { useBattleCharacters } from "@/stores/battleCharacters";
-import { useScreen } from "@/stores/screen";
-import { useCharacters } from "@/stores/useCharacter";
-import { useParty } from "@/stores/useParty";
-import { useSprites } from "@/stores/useSprite";
-import { useStages } from "@/stores/useStage";
+import { useScreenStore } from "@/stores/useScreenStore";
+import { useCharactersStore } from "@/stores/useCharacterStore";
+import { usePartyStore } from "@/stores/usePartyStore";
+import { useStagesStore } from "@/stores/useStageStore";
 import { BattleData, CharacterData, ResultScreenProps } from "@/types";
 import React, { useEffect, useState } from "react";
+import { useBattleCharactersStore } from "@/stores/useBattleCharactersStore";
 
 export default function Battle({}: {}) {
-  const characters = useCharacters((state: any) => state?.characters);
-  const battleCharacters = useBattleCharacters((state: any) => state?.battleCharacters);
-  const setBattleCharacters = useBattleCharacters((state: any) => state?.setBattleCharacters);
-  const stage = useStages((state: any) => state?.stage);
+  const characters = useCharactersStore((state: any) => state?.characters);
+  const battleCharacters = useBattleCharactersStore((state: any) => state?.battleCharacters);
+  const setBattleCharacters = useBattleCharactersStore((state: any) => state?.setBattleCharacters);
+  const stage = useStagesStore((state: any) => state?.stage);
   const enemyCharacter = useEnemy(stage?.enemyList[0])?.data;
 
-  const sprites = useSprites((state: any) => state?.sprites);
   const [resultScreen, setResultScreen] = useState<ResultScreenProps>({
     result: null,
     experience: 0,
   });
-  const party = useParty((state: any) => state?.party);
-  const setScreen = useScreen((state: any) => state?.setScreen);
+  const party = usePartyStore((state: any) => state?.party);
+  const setScreen = useScreenStore((state: any) => state?.setScreen);
 
   const [turnResult, setTurnResult] = useState<string | null>(null);
   const [battleData, setBattleData] = useState<BattleData>({

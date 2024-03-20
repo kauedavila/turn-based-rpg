@@ -1,25 +1,25 @@
-import { useScreen } from "@/stores/screen";
-import { useParty } from "@/stores/useParty";
-import { useCharacters } from "@/stores/useCharacter";
+import { useScreenStore } from "@/stores/useScreenStore";
+import { usePartyStore } from "@/stores/usePartyStore";
+import { useCharactersStore } from "@/stores/useCharacterStore";
 import { CharacterData } from "@/types";
 import { useEffect, useState } from "react";
 import CharacterMenuData from "@/components/characterMenuData";
-import { useStages } from "@/stores/useStage";
+import { useStagesStore } from "@/stores/useStageStore";
 
 export default function Menu() {
-  const party = useParty((state: any) => state?.party);
-  const setParty = useParty((state: any) => state?.setParty);
+  const party = usePartyStore((state: any) => state?.party);
+  const setParty = usePartyStore((state: any) => state?.setParty);
   const [selectingCharacter, setSelectingCharacter] = useState<number>(0);
 
-  const characters = useCharacters((state: any) => state?.characters);
-  const setCharacters = useCharacters((state: any) => state?.setCharacters);
+  const characters = useCharactersStore((state: any) => state?.characters);
+  const setCharacters = useCharactersStore((state: any) => state?.setCharacters);
 
-  const setScreen = useScreen((state: any) => state?.setScreen);
-  const screen = useScreen((state: any) => state?.screen);
+  const setScreen = useScreenStore((state: any) => state?.setScreen);
+  const screen = useScreenStore((state: any) => state?.screen);
 
-  const stages = useStages((state: any) => state?.stages);
-  const setStages = useStages((state: any) => state?.setStages);
-  const setStage = useStages((state: any) => state?.setStage);
+  const stages = useStagesStore((state: any) => state?.stages);
+  const setStages = useStagesStore((state: any) => state?.setStages);
+  const setStage = useStagesStore((state: any) => state?.setStage);
 
   useEffect(() => {
     const fetchStages = async () => {
@@ -117,9 +117,9 @@ export default function Menu() {
 }
 
 const SelectCharacter = ({ selectingCharacter, setSelectingCharacter }: { selectingCharacter: number; setSelectingCharacter: any }) => {
-  const party = useParty((state: any) => state?.party);
-  const setParty = useParty((state: any) => state?.setParty);
-  const characters = useCharacters((state: any) => state?.characters);
+  const party = usePartyStore((state: any) => state?.party);
+  const setParty = usePartyStore((state: any) => state?.setParty);
+  const characters = useCharactersStore((state: any) => state?.characters);
 
   const handleAddToParty = (index: number) => {
     setSelectingCharacter(0);
