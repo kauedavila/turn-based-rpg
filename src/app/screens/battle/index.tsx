@@ -90,6 +90,7 @@ export default function Battle({}: {}) {
 
   useEffect(() => {
     if (enemyCharacter) {
+      enemyCharacter.currentStats = undefined;
       setBattleCharacters([party[0], enemyCharacter]);
     }
   }, [enemyCharacter, party]);
@@ -101,34 +102,39 @@ export default function Battle({}: {}) {
 
       const exp = calculateExperience(battleCharacters[1].level);
       party.forEach((character: CharacterData) => {
-        handleExp(Number(exp), character.id, characters);
+        handleExp(Number(exp), character._id, characters);
       });
       setResultScreen({ result: "win", experience: Number(exp) });
     }
   }, [turnResult]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (battleCharacters[1]?.currentStats?.health <= 0) {
-        setTurnResult("enemy_dies");
-      }
-      const speed = battleCharacters.map((character: CharacterData) => Number(character.currentStats?.speed) ?? 0);
-      battleData.waiting &&
-        setBattleData((prev) => ({
-          ...prev,
-          progress: [prev.progress[0] + speed[0], prev.progress[1] + speed[1]],
-          waiting: prev.progress[0] + speed[0] < 100 && prev.progress[1] + speed[1] < 100,
-        }));
+    const interval =
+      battleCharacters.length == 2
+        ? setInterval(() => {
+            if (battleCharacters[1]?.currentStats?.health <= 0) {
+              setTurnResult("enemy_dies");
+            }
+            const speed = battleCharacters.map((character: CharacterData) => Number(character.currentStats?.speed) ?? 0);
+            battleData.waiting &&
+              setBattleData((prev) => ({
+                ...prev,
+                progress: [prev.progress[0] + speed[0], prev.progress[1] + speed[1]],
+                waiting: prev.progress[0] + speed[0] < 100 && prev.progress[1] + speed[1] < 100,
+              }));
 
-      battleData.progress[0] >= 100 &&
-        auto === true &&
-        handleTurn("attack", "melee", battleCharacters, setBattleCharacters, battleData, setBattleData, party, battleCharacters[0], battleCharacters[1]);
+            battleData.progress[0] >= 100 &&
+              auto === true &&
+              handleTurn("attack", "melee", battleCharacters, setBattleCharacters, battleData, setBattleData, party, battleCharacters[0], battleCharacters[1]);
 
-      battleData.progress[1] >= 100 && handleTurn("attack", "melee", battleCharacters, setBattleCharacters, battleData, setBattleData, party, battleCharacters[1], battleCharacters[0]);
-    }, 500);
+            battleData.progress[1] >= 100 && handleTurn("attack", "melee", battleCharacters, setBattleCharacters, battleData, setBattleData, party, battleCharacters[1], battleCharacters[0]);
+          }, 500)
+        : setInterval(() => {
+            console.log("waiting for characters");
+          }, 500);
 
     return () => clearInterval(interval);
-  }, [battleData]);
+  }, [battleData, battleCharacters]);
 
   return (
     <div
@@ -224,7 +230,7 @@ export default function Battle({}: {}) {
                         className="w-full relative text-left bg-red-900 text-white border border-black px-10 py-2 first-letter:capitalize
               hover:bg-gray-700 transition-all duration-300"
                         style={{
-                          display: character?.id === battleCharacters[0]?.id ? "none" : "block",
+                          display: character?._id === battleCharacters[0]?._id ? "none" : "block",
                         }}
                         onClick={() => {
                           handleTurn("switch", index.toString(), battleCharacters, setBattleCharacters, battleData, setBattleData, party, battleCharacters[0], battleCharacters[1]);
