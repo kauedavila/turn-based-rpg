@@ -15,7 +15,6 @@ export default function Menu() {
   const characters = useCharacters((state: any) => state?.characters);
   const setCharacters = useCharacters((state: any) => state?.setCharacters);
 
-  const setBattleCharacters = useBattleCharacters((state: any) => state?.setBattleCharacters);
   const setScreen = useScreen((state: any) => state?.setScreen);
   const screen = useScreen((state: any) => state?.screen);
 
@@ -58,19 +57,6 @@ export default function Menu() {
 
   const handleBattle = async (stage: any) => {
     if (party.length !== 3 || party.includes(undefined)) return alert("Complete your party in order to procceed!");
-    const playerCharacter = party.find((character: CharacterData) => character !== undefined);
-
-    // const enemyCharacter = stage.enemyList[0];
-    // party.forEach((character: CharacterData) => {
-    //   if (!character) return;
-    //   character.currentStats = undefined;
-    // });
-
-    // [playerCharacter, enemyCharacter].forEach((character: CharacterData) => {
-    //   if (!character) return;
-    //   character.currentStats = undefined;
-    // });
-
     setScreen("battle");
     setStage(stage);
   };
