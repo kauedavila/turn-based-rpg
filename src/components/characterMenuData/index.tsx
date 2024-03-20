@@ -1,6 +1,6 @@
-import CharMoves from "@/app/screens/menu/charMoves";
-import CharStats from "@/app/screens/menu/charStats";
-import CharRemove from "@/app/screens/menu/charRemove";
+import CharMoves from "@/components/character/charMoves";
+import CharStats from "@/components/character/charStats";
+import CharRemove from "@/components/character/charRemove";
 
 import { useState } from "react";
 import { GiSkills, GiSpellBook } from "react-icons/gi";
