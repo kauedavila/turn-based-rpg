@@ -7,6 +7,7 @@ import { useStagesStore } from "@/stores/useStageStore";
 import useStages from "@/app/hooks/useStages";
 import useCharacters from "@/app/hooks/useCharacters";
 import SelectCharacter from "@/components/character/selectCharacter";
+import MenuParty from "@/components/menu/menuParty";
 
 export default function Menu() {
   const party = usePartyStore((state: any) => state?.party);
@@ -48,48 +49,7 @@ export default function Menu() {
         backgroundPosition: "bottom",
       }}
     >
-      {selectingCharacter > 0 && <SelectCharacter selectingCharacter={selectingCharacter} setSelectingCharacter={setSelectingCharacter} />}
-      <div id="party-list" className="absolute flex items-start justify-start z-10 w-[80%] h-[50%]">
-        {Array(3)
-          .fill(0)
-          .map((_, index) => {
-            const character = party[index];
-
-            return (
-              <div key={index} id={`party-list-character-${character?._id}`} className="flex  w-full h-full justify-center py-4">
-                {!character ? (
-                  <div
-                    className="flex  items-center place-self-center justify-center border border-gray-900 bg-gray-600 w-[25%] rounded-full h-auto aspect-square
-                cursor-pointer hover:bg-gray-700 hover:border-gray-800 hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out"
-                    onClick={() => setSelectingCharacter(index + 1)}
-                  >
-                    <p className="text-gray-100 text-4xl m-0 p-0">+</p>
-                  </div>
-                ) : (
-                  <CharacterMenuData character={character} index={index} />
-                )}
-              </div>
-            );
-          })}
-      </div>
-      <details className="absolute right-0 top-0 flex flex-col gap-4 items-center justify-center w-fit h-fit bg-gray-800 rounded-md p-4 cursor-pointer">
-        <summary className="flex items-center justify-center w-full h-full">
-          <p className="text-2xl font-bold text-white ">Stages</p>
-        </summary>
-        {stages?.length > 0 &&
-          stages?.map((stage: any, index: number) => {
-            return (
-              <button
-                key={index}
-                className="w-full h-auto mt-4 bg-gray-600 rounded-md text-white cursor-pointer aspect-square flex items-center justify-center hover:bg-gray-700 hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out"
-                onClick={() => handleBattle(stage)}
-              >
-                <p className="text-white ">{stage?.name}</p>
-                <p className="text-white">{stage?.description}</p>
-              </button>
-            );
-          })}
-      </details>
+      <MenuParty selectingCharacter={selectingCharacter} setSelectingCharacter={setSelectingCharacter} />
     </div>
   );
 }
