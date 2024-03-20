@@ -1,7 +1,7 @@
 "use client";
 import useEnemy from "@/app/hooks/useEnemy";
 import Character from "@/components/character";
-import handleExp from "@/functions/handleExp";
+import handleExp, { calculateExperience } from "@/functions/handleExp";
 import handleTurn from "@/functions/handleTurn";
 import { useScreenStore } from "@/stores/useScreenStore";
 import { usePartyStore } from "@/stores/usePartyStore";
@@ -9,10 +9,9 @@ import { useStagesStore } from "@/stores/useStageStore";
 import { BattleData, CharacterData, ResultScreenProps } from "@/types";
 import React, { useEffect, useState } from "react";
 import { useBattleCharactersStore } from "@/stores/useBattleCharactersStore";
-import useCharacters from "@/app/hooks/useCharacters";
+import handleHPColor from "@/functions/handleHpColor";
 
 export default function Battle({}: {}) {
-  const characters = useCharacters().data;
   const battleCharacters = useBattleCharactersStore((state: any) => state?.battleCharacters);
   const setBattleCharacters = useBattleCharactersStore((state: any) => state?.setBattleCharacters);
   const stage = useStagesStore((state: any) => state?.stage);
@@ -22,6 +21,7 @@ export default function Battle({}: {}) {
     result: null,
     experience: 0,
   });
+
   const party = usePartyStore((state: any) => state?.party);
   const setScreen = useScreenStore((state: any) => state?.setScreen);
 
@@ -44,21 +44,6 @@ export default function Battle({}: {}) {
       defense: character.defense,
       speed: character.speed,
     };
-  };
-
-  const calculateExperience = (enemyLevel: CharacterData) => {
-    const experience = enemyLevel;
-    return experience;
-  };
-
-  const handleHPColor = (healthPercentage: number) => {
-    if (healthPercentage > 50) {
-      return "green";
-    } else if (healthPercentage > 25) {
-      return "#f5c71a";
-    } else {
-      return "#eb244b";
-    }
   };
 
   const handleFlee = () => {
