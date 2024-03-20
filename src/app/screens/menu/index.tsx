@@ -1,57 +1,34 @@
 import { useScreenStore } from "@/stores/useScreenStore";
 import { usePartyStore } from "@/stores/usePartyStore";
-import { useCharactersStore } from "@/stores/useCharacterStore";
 import { CharacterData } from "@/types";
 import { useEffect, useState } from "react";
 import CharacterMenuData from "@/components/characterMenuData";
 import { useStagesStore } from "@/stores/useStageStore";
+import useStages from "@/app/hooks/useStages";
+import useCharacters from "@/app/hooks/useCharacters";
 
 export default function Menu() {
   const party = usePartyStore((state: any) => state?.party);
   const setParty = usePartyStore((state: any) => state?.setParty);
   const [selectingCharacter, setSelectingCharacter] = useState<number>(0);
 
-  const characters = useCharactersStore((state: any) => state?.characters);
-  const setCharacters = useCharactersStore((state: any) => state?.setCharacters);
+  const characters = useCharacters().data;
 
   const setScreen = useScreenStore((state: any) => state?.setScreen);
-  const screen = useScreenStore((state: any) => state?.screen);
 
-  const stages = useStagesStore((state: any) => state?.stages);
-  const setStages = useStagesStore((state: any) => state?.setStages);
+  const stages = useStages().data;
   const setStage = useStagesStore((state: any) => state?.setStage);
 
   useEffect(() => {
-    const fetchStages = async () => {
-      const data = await fetch("http://localhost:3000/api/stages", {})
-        .then((response) => response.json())
-        .catch((error) => console.error(error));
-      data && setStages(data);
-    };
+    const updatedParty =
+      characters &&
+      party.map((character: CharacterData) => {
+        const updatedCharacter = characters?.find((item: CharacterData) => item._id === character._id);
+        updatedCharacter._id = character._id;
+        return updatedCharacter;
+      });
 
-    fetchStages();
-  }, []);
-
-  useEffect(() => {
-    const fetchCharacters = async () => {
-      const data = await fetch("http://localhost:3000/api/characters", {})
-        .then((response) => response.json())
-        .catch((error) => console.error(error));
-
-      data && setCharacters(data);
-    };
-
-    fetchCharacters();
-  }, [screen]);
-
-  useEffect(() => {
-    const updatedParty = party.map((character: CharacterData) => {
-      const updatedCharacter = characters.find((item: CharacterData) => item._id === character._id);
-      updatedCharacter._id = character._id;
-      return updatedCharacter;
-    });
-
-    setParty(updatedParty);
+    characters && setParty(updatedParty);
   }, [characters]);
 
   const handleBattle = async (stage: any) => {
@@ -78,7 +55,7 @@ export default function Menu() {
             const character = party[index];
 
             return (
-              <div key={index} id={`party-list-character-${character?.id}`} className="flex  w-full h-full justify-center py-4">
+              <div key={index} id={`party-list-character-${character?._id}`} className="flex  w-full h-full justify-center py-4">
                 {!character ? (
                   <div
                     className="flex  items-center place-self-center justify-center border border-gray-900 bg-gray-600 w-[25%] rounded-full h-auto aspect-square
@@ -119,7 +96,7 @@ export default function Menu() {
 const SelectCharacter = ({ selectingCharacter, setSelectingCharacter }: { selectingCharacter: number; setSelectingCharacter: any }) => {
   const party = usePartyStore((state: any) => state?.party);
   const setParty = usePartyStore((state: any) => state?.setParty);
-  const characters = useCharactersStore((state: any) => state?.characters);
+  const characters = useCharacters().data;
 
   const handleAddToParty = (index: number) => {
     setSelectingCharacter(0);

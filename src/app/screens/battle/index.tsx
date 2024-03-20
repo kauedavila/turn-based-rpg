@@ -4,15 +4,15 @@ import Character from "@/components/character";
 import handleExp from "@/functions/handleExp";
 import handleTurn from "@/functions/handleTurn";
 import { useScreenStore } from "@/stores/useScreenStore";
-import { useCharactersStore } from "@/stores/useCharacterStore";
 import { usePartyStore } from "@/stores/usePartyStore";
 import { useStagesStore } from "@/stores/useStageStore";
 import { BattleData, CharacterData, ResultScreenProps } from "@/types";
 import React, { useEffect, useState } from "react";
 import { useBattleCharactersStore } from "@/stores/useBattleCharactersStore";
+import useCharacters from "@/app/hooks/useCharacters";
 
 export default function Battle({}: {}) {
-  const characters = useCharactersStore((state: any) => state?.characters);
+  const characters = useCharacters().data;
   const battleCharacters = useBattleCharactersStore((state: any) => state?.battleCharacters);
   const setBattleCharacters = useBattleCharactersStore((state: any) => state?.setBattleCharacters);
   const stage = useStagesStore((state: any) => state?.stage);
@@ -100,7 +100,7 @@ export default function Battle({}: {}) {
 
       const exp = calculateExperience(battleCharacters[1].level);
       party.forEach((character: CharacterData) => {
-        handleExp(Number(exp), character._id, characters);
+        handleExp(Number(character.experience), Number(exp), character._id);
       });
       setResultScreen({ result: "win", experience: Number(exp) });
     }
