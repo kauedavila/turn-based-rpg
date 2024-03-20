@@ -11,7 +11,7 @@ const handleTurn = (
   setBattleData: (data: any) => void,
   party: CharacterData[],
   attacker: CharacterData,
-  defender: EnemyData
+  defender: any
 ) => {
   if (battleData.waiting) return;
 
