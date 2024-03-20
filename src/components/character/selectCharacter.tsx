@@ -41,7 +41,7 @@ const SelectCharacter = ({ selectingCharacter, setSelectingCharacter }: { select
                     : "w-full h-auto aspect-square border border-black rounded-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer bg-gray-500 hover:border-gray-800 hover:bg-gray-700"
                 }
                 style={{
-                  backgroundImage: `url(http://localhost:3000/${spriteUrl})`,
+                  backgroundImage: `url(${process.env.NEXT_PUBLIC_API_URL}/${spriteUrl})`,
                   backgroundSize: "cover",
                   backgroundPosition: "top",
                 }}

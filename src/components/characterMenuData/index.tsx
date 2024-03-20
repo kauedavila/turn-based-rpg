@@ -52,7 +52,7 @@ export default function CharacterMenuData({ character, index }: any) {
       <div
         className="w-[50%] h-[100%] rounded-md shadow-lg"
         style={{
-          backgroundImage: `url(http://localhost:3000/${spriteUrl})`,
+          backgroundImage: `url(${process.env.NEXT_PUBLIC_API_URL}/${spriteUrl})`,
           backgroundSize: "contain",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "top",

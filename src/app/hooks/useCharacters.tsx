@@ -19,14 +19,3 @@ export default function useCharacters() {
     data: query.data?.data,
   };
 }
-
-// useEffect(() => {
-//   const fetchStages = async () => {
-//     const data = await fetch("http://localhost:3000/api/stages", {})
-//       .then((response) => response.json())
-//       .catch((error) => console.error(error));
-//     data && setStages(data);
-//   };
-
-//   fetchStages();
-// }, []);

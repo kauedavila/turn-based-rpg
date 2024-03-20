@@ -20,7 +20,9 @@ const Character = ({ id, name, sprite, position }: BattleCharProps) => {
           transform: position === "right" ? "scaleX(-1)" : "scaleX(1)",
         }}
       >
-        {sprite && <Image id={`character-${position}-sprite`} src={`http://localhost:3000/${sprite}`} alt={name} width={position === "right" ? 150 : 200} height={200} className="h-auto" />}
+        {sprite && (
+          <Image id={`character-${position}-sprite`} src={`${process.env.NEXT_PUBLIC_API_URL}/${sprite}`} alt={name} width={position === "right" ? 150 : 200} height={200} className="h-auto" />
+        )}
       </div>
       {Array(projectilesData[0].projectiles.length)
         .fill(0)
