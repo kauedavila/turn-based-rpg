@@ -1,6 +1,5 @@
 "use client";
 import useEnemy from "@/app/hooks/useEnemy";
-import Character from "@/components/character";
 import handleExp, { calculateExperience } from "@/functions/handleExp";
 import handleTurn from "@/functions/handleTurn";
 import { useScreenStore } from "@/stores/useScreenStore";
@@ -9,7 +8,6 @@ import { useStagesStore } from "@/stores/useStageStore";
 import { BattleData, CharacterData, ResultScreenProps } from "@/types";
 import React, { useEffect, useState } from "react";
 import { useBattleCharactersStore } from "@/stores/useBattleCharactersStore";
-import handleHPColor from "@/functions/handleHpColor";
 import BattleActions from "@/components/battle/battleActions";
 import ResultsScreen from "@/components/battle/resultsScreen";
 import BattleHUD from "@/components/battle/battleHUD";
