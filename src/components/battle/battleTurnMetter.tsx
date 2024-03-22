@@ -1,7 +1,7 @@
 import { useBattleCharactersStore } from "@/stores/useBattleCharactersStore";
 import { BattleData, CharacterData } from "@/types";
 
-const BattleTurnMetter = (battleData: any) => {
+const BattleTurnMetter = ({ battleData }: { battleData: BattleData }) => {
   const battleCharacters = useBattleCharactersStore((state: any) => state?.battleCharacters);
 
   return (

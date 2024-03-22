@@ -2,22 +2,26 @@ import { useBattleCharactersStore } from "@/stores/useBattleCharactersStore";
 import { usePartyStore } from "@/stores/usePartyStore";
 import { useScreenStore } from "@/stores/useScreenStore";
 import { BattleData, CharacterData } from "@/types";
-import { useState } from "react";
 import handleTurn from "@/functions/handleTurn";
 import handleHPColor from "@/functions/handleHpColor";
 
-const BattleActions = ({ variant, auto, setAuto }: { variant: string; auto: boolean; setAuto: (auto: boolean) => void }) => {
+const BattleActions = ({
+  variant,
+  auto,
+  setAuto,
+  battleData,
+  setBattleData,
+}: {
+  variant: string;
+  auto: boolean;
+  setAuto: (auto: boolean) => void;
+  battleData: BattleData;
+  setBattleData: (battleData: BattleData) => void;
+}) => {
   const battleCharacters = useBattleCharactersStore((state: any) => state?.battleCharacters);
   const setBattleCharacters = useBattleCharactersStore((state: any) => state?.setBattleCharacters);
   const party = usePartyStore((state: any) => state?.party);
   const setScreen = useScreenStore((state: any) => state?.setScreen);
-
-  const [battleData, setBattleData] = useState<BattleData>({
-    timer: 0,
-    turn: 1,
-    progress: [0, 0],
-    waiting: true,
-  });
 
   const handleFlee = () => {
     confirm("Are you sure you want to flee?") === true &&

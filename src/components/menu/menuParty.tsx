@@ -1,8 +1,10 @@
 import { usePartyStore } from "@/stores/usePartyStore";
 import SelectCharacter from "../character/selectCharacter";
 import CharacterMenuData from "../characterMenuData";
+import { useState } from "react";
 
-const MenuParty = ({ selectingCharacter, setSelectingCharacter }: { selectingCharacter: number; setSelectingCharacter: (value: number) => void }) => {
+const MenuParty = () => {
+  const [selectingCharacter, setSelectingCharacter] = useState<number>(0);
   const party = usePartyStore((state: any) => state?.party);
   return (
     <>

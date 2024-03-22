@@ -18,7 +18,7 @@ export default function Battle({}: {}) {
   const battleCharacters = useBattleCharactersStore((state: any) => state?.battleCharacters);
   const setBattleCharacters = useBattleCharactersStore((state: any) => state?.setBattleCharacters);
   const stage = useStagesStore((state: any) => state?.stage);
-  const enemyCharacter = useEnemy(stage?.enemyList[0])?.data;
+  const { data: enemyCharacter } = useEnemy(stage?.enemyList[0]);
 
   const [resultScreen, setResultScreen] = useState<ResultScreenProps>({
     result: null,
@@ -119,8 +119,8 @@ export default function Battle({}: {}) {
         <>
           <BattleHUD />
           <BattleCharacters />
-          {battleData.progress[0] < 100 || auto === true ? null : <BattleActions variant="left" auto={auto} setAuto={setAuto} />}
-          <BattleActions variant="right" auto={auto} setAuto={setAuto} />
+          {battleData.progress[0] < 100 || auto === true ? null : <BattleActions variant="left" auto={auto} setAuto={setAuto} battleData={battleData} setBattleData={setBattleData} />}
+          <BattleActions variant="right" auto={auto} setAuto={setAuto} battleData={battleData} setBattleData={setBattleData} />
           <BattleTurnMetter battleData={battleData} />
           {!resultScreen?.result ? null : <ResultsScreen result={resultScreen?.result} experience={resultScreen?.experience} />}
         </>

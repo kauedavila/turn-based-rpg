@@ -26,29 +26,6 @@ export type CharacterData = {
     defense?: number;
     speed?: number;
   };
-  attributes: {
-    name: string;
-    level: number;
-    experience: number;
-    health: number;
-    attack: number;
-    defense: number;
-    speed: number;
-    moves?: {
-      name?: string;
-      level?: number;
-    }[];
-    sprite?: {
-      name?: string;
-      state?: SpriteStates;
-    };
-    currentStats?: {
-      health?: number;
-      attack?: number;
-      defense?: number;
-      speed?: number;
-    };
-  };
 };
 
 export type EnemyData = CharacterData;
