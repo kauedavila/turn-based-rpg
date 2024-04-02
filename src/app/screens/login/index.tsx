@@ -1,4 +1,5 @@
 import useAuth from "@/app/hooks/useAuth";
+import useLoggedInUser from "@/app/hooks/useLoggedInUser";
 import useRegisterUser from "@/app/hooks/useRegisterUser";
 import { useScreenStore } from "@/stores/useScreenStore";
 import { useEffect, useState } from "react";
@@ -8,9 +9,7 @@ import { z } from "zod";
 export default function Login() {
   const login = useAuth();
   const registerUser = useRegisterUser();
-
   const [isRegistering, setIsRegistering] = useState(false);
-
   const setScreen = useScreenStore((state: any) => state?.setScreen);
 
   const { handleSubmit, register, reset } = useForm({
@@ -42,6 +41,7 @@ export default function Login() {
 
   useEffect(() => {
     if (login.isSuccess) {
+      localStorage.setItem("token", login.data?.token);
       setTimeout(() => {
         setScreen("menu");
       }, 1000);
