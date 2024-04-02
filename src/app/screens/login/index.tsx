@@ -1,6 +1,7 @@
 import useAuth from "@/app/hooks/useAuth";
 import useRegisterUser from "@/app/hooks/useRegisterUser";
-import { useState } from "react";
+import { useScreenStore } from "@/stores/useScreenStore";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -9,6 +10,8 @@ export default function Login() {
   const registerUser = useRegisterUser();
 
   const [isRegistering, setIsRegistering] = useState(false);
+
+  const setScreen = useScreenStore((state: any) => state?.setScreen);
 
   const { handleSubmit, register, reset } = useForm({
     defaultValues: {
@@ -36,6 +39,14 @@ export default function Login() {
   const onRegister: any = async (data: z.infer<typeof schemaRegister>) => {
     registerUser.mutate(data);
   };
+
+  useEffect(() => {
+    if (login.isSuccess) {
+      setTimeout(() => {
+        setScreen("menu");
+      }, 1000);
+    }
+  }, [login.isSuccess]);
 
   return (
     <>
@@ -73,7 +84,7 @@ export default function Login() {
                 className="w-full p-2 bg-gray-300 rounded-md
           hover:bg-gray-400 focus:outline-none active:bg-gray-500 transition duration-300 ease-in-out
           "
-                disabled={login.isPending}
+                disabled={login.isPending || login.isSuccess}
               >
                 {login.isPending ? "Logging in..." : "Login"}
               </button>
