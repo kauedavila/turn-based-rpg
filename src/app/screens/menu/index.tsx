@@ -35,7 +35,7 @@ export default function Menu() {
       ) : (
         <div
           id="menu-screen"
-          className="relative bg-gray-900 h-[90%] w-[90%] flex justify-center  items-end overflow-hidden"
+          className="relative bg-gray-900 h-full h-full flex justify-center  items-end overflow-hidden"
           style={{
             backgroundImage: `url(https://img.freepik.com/premium-photo/medieval-town-anime-background-illustration_708558-453.jpg)`,
             backgroundSize: "cover",

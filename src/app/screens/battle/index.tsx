@@ -106,7 +106,7 @@ export default function Battle({}: {}) {
   return (
     <div
       id="battle-screen"
-      className="relative bg-gray-900 h-[90%] w-[90%] flex overflow-hidden"
+      className="relative bg-gray-900 h-full h-full flex overflow-hidden"
       style={{
         backgroundImage: `url(${process.env.NEXT_PUBLIC_API_URL}/${stage?.bg})`,
         backgroundSize: "cover",
