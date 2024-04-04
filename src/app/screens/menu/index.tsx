@@ -5,6 +5,7 @@ import useCharacters from "@/app/hooks/useCharacters";
 import MenuParty from "@/components/menu/menuParty";
 import MenuStages from "@/components/menu/menuStages";
 import useLoggedInUser from "@/app/hooks/useLoggedInUser";
+import MenuRecruit from "@/components/menu/menuRecruit";
 
 export default function Menu() {
   const party = usePartyStore((state: any) => state?.party);
@@ -72,7 +73,7 @@ export default function Menu() {
           </div>
           {menu === 0 && <MenuParty />}
           {menu === 1 && <MenuStages />}
-          {menu === 1 && <MenuStages />}
+          {menu === 2 && <MenuRecruit />}
         </div>
       )}
     </>
