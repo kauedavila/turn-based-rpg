@@ -21,7 +21,14 @@ const Character = ({ id, name, sprite, position }: BattleCharProps) => {
         }}
       >
         {sprite && (
-          <Image id={`character-${position}-sprite`} src={`${process.env.NEXT_PUBLIC_API_URL}/${sprite}`} alt={name} width={position === "right" ? 150 : 200} height={200} className="h-auto" />
+          <Image
+            id={`character-${position}-sprite`}
+            src={`${process.env.NEXT_PUBLIC_API_URL}/public/uploads/classes/${sprite}`}
+            alt={name}
+            width={position === "right" ? 150 : 200}
+            height={200}
+            className="h-auto"
+          />
         )}
       </div>
       {Array(projectilesData[0].projectiles.length)

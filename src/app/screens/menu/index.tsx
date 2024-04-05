@@ -6,6 +6,7 @@ import MenuParty from "@/components/menu/menuParty";
 import MenuStages from "@/components/menu/menuStages";
 import useLoggedInUser from "@/app/hooks/useLoggedInUser";
 import MenuRecruit from "@/components/menu/menuRecruit";
+import { GiTwinShell, GiTwoCoins } from "react-icons/gi";
 
 export default function Menu() {
   const party = usePartyStore((state: any) => state?.party);
@@ -46,17 +47,23 @@ export default function Menu() {
             backgroundPosition: "bottom",
           }}
         >
-          <div id="menu-hud" className="absolute left-0 flex flex-col items-end justify-start order-2 w-[25%] h-full">
+          <div id="menu-hud" className="absolute top-0 left-0 flex flex-col items-end justify-start order-2 z-20 w-auto h-auto">
             <div
-              className="p-1 w-full h-auto  bg-opacity-95 bg-gray-900 rounded-md text-white 
-                         flex items-center justify-center border  border-white
+              className="p-4 w-auto gap-4 h-auto flex flex-col bg-opacity-95 bg-gray-900 rounded-md text-white 
+                          items-start justify-center border  border-white
                          "
             >
-              {session.data?.username}
+              <p>{session.data?.username}</p>
+              <div className="flex items-center gap-2">
+                <GiTwoCoins className="text-yellow-500" /> {session.data?.gold}
+              </div>
+              <div className="flex items-center gap-2">
+                <GiTwinShell className="text-blue-500" /> {session.data?.souls}
+              </div>
             </div>
           </div>
 
-          <div id="menu-select" className="absolute right-0 flex flex-col items-end justify-start order-2 z-20 w-[5%]  h-full">
+          <div id="menu-select" className="absolute top-0 right-0 flex flex-col items-end justify-start order-2 z-20 w-[5%]  h-auto">
             {menuNames.map((_, index) => {
               return (
                 <button

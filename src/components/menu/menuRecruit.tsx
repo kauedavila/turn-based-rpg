@@ -1,15 +1,11 @@
-import useClassSprites from "@/app/hooks/useClassSprites";
 import useClasses from "@/app/hooks/useClasses";
-import { usePartyStore } from "@/stores/usePartyStore";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { nameByRace } from "fantasy-name-generator";
-import axios from "axios";
 import { fetchData as fetchSprites } from "@/app/hooks/useClassSprites";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL + "/api";
+import useRecruit from "@/app/hooks/useRecruit";
 
 const MenuRecruit = () => {
   const { register, handleSubmit, setValue } = useForm({
@@ -22,6 +18,7 @@ const MenuRecruit = () => {
   const [rolled, setRolled] = useState(false);
 
   const classes = useClasses();
+  const recruit = useRecruit();
 
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedClassFolder, setSelectedClassFolder] = useState("");
@@ -50,7 +47,7 @@ const MenuRecruit = () => {
 
     const randomSprite = Math.floor(Math.random() * sprites?.data?.filesResult.length);
     const sprite = sprites?.data?.filesResult[randomSprite];
-    register("sprite", { value: sprite });
+    setValue("sprite", spriteFolder + "/" + sprite);
     setSelectedSprite(sprite);
     setSelectedClassFolder(spriteFolder);
   };
@@ -63,32 +60,36 @@ const MenuRecruit = () => {
     >
       <div className="grid grid-cols-2 w-[50%] h-[50%] bg-gray-900 border-2 border-gray-100 rounded-md">
         <div id="recruit-image" className="flex flex-col items-center justify-center w-full h-full ">
-          <Image
-            src={`
+          {selectedSprite && (
+            <Image
+              src={`
           ${process.env.NEXT_PUBLIC_API_URL}/public/uploads/classes/${selectedClassFolder}/${selectedSprite}
           `}
-            alt="sprite"
-            width={150}
-            height={200}
-            className="h-auto"
-          />
+              alt="sprite"
+              width={150}
+              height={200}
+              className="h-auto"
+            />
+          )}
         </div>
 
         {!rolled ? (
-          <button
-            className="w-full h-20 bg-gray-300 hover:bg-gray-400 focus:outline-none active:bg-gray-500 rounded-md cursor-pointer"
-            onClick={() => {
-              handleRoll();
-            }}
-          >
-            Roll
-          </button>
+          <div className="flex flex-col items-start justify-between w-full h-full ">
+            <button
+              className="w-full h-20  bg-gray-300 hover:bg-gray-400 focus:outline-none active:bg-gray-500 rounded-md cursor-pointer"
+              onClick={() => {
+                handleRoll();
+              }}
+            >
+              Roll
+            </button>
+          </div>
         ) : (
           <form
             id="recruit-select"
             className="flex flex-col items-start justify-between w-full h-full "
             onSubmit={handleSubmit((data) => {
-              console.log(data);
+              recruit.mutate(data);
             })}
           >
             <label htmlFor="class" className="text-white flex items-center gap-2 w-full h-20">
