@@ -23,7 +23,7 @@ const Character = ({ id, name, sprite, position }: BattleCharProps) => {
         {sprite && (
           <Image
             id={`character-${position}-sprite`}
-            src={`${process.env.NEXT_PUBLIC_API_URL}/public/uploads/classes/${sprite}`}
+            src={`${process.env.NEXT_PUBLIC_API_URL}/public/uploads/${position === "right" ? "enemies" : "classes"}/${sprite}`}
             alt={name}
             width={position === "right" ? 150 : 200}
             height={200}

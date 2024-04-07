@@ -16,7 +16,7 @@ const BattleTurnMetter = ({ battleData }: { battleData: BattleData }) => {
                h-10  w-10 bg-black rounded-full`}
             style={{
               left: `${Math.min((battleData?.progress[index] / 100) * 95, 95)}%`,
-              backgroundImage: `url(${process.env.NEXT_PUBLIC_API_URL}/${spriteUrl})`,
+              backgroundImage: `url(${process.env.NEXT_PUBLIC_API_URL}/public/uploads/${index === 1 ? "enemies" : "classes"}/${spriteUrl})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}
