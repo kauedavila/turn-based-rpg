@@ -1,6 +1,5 @@
 "use client";
 import useEnemy from "@/app/hooks/useEnemy";
-import handleExp, { calculateExperience } from "@/functions/handleExp";
 import handleTurn from "@/functions/handleTurn";
 import { useScreenStore } from "@/stores/useScreenStore";
 import { usePartyStore } from "@/stores/usePartyStore";
@@ -13,6 +12,7 @@ import ResultsScreen from "@/components/battle/resultsScreen";
 import BattleHUD from "@/components/battle/battleHUD";
 import BattleCharacters from "@/components/battle/battleCharacters";
 import BattleTurnMetter from "@/components/battle/battleTurnMetter";
+import { useCharactersMutation } from "@/app/hooks/useCharacters";
 
 export default function Battle({}: {}) {
   const battleCharacters = useBattleCharactersStore((state: any) => state?.battleCharacters);
@@ -28,6 +28,8 @@ export default function Battle({}: {}) {
   const party = usePartyStore((state: any) => state?.party);
   const setScreen = useScreenStore((state: any) => state?.setScreen);
 
+  const characterMutation = useCharactersMutation();
+
   const [turnResult, setTurnResult] = useState<string | null>(null);
   const [battleData, setBattleData] = useState<BattleData>({
     timer: 0,
@@ -37,6 +39,11 @@ export default function Battle({}: {}) {
   });
 
   const [auto, setAuto] = useState<boolean>(false);
+
+  const calculateExperience = (enemyLevel: CharacterData) => {
+    const experience = enemyLevel;
+    return experience;
+  };
 
   const calculateCurrentStats = ({ index }: { index: number }) => {
     const character = battleCharacters[index];
@@ -69,7 +76,7 @@ export default function Battle({}: {}) {
 
       const exp = calculateExperience(battleCharacters[1].level);
       party.forEach((character: CharacterData) => {
-        handleExp(Number(character.experience), Number(exp), character._id);
+        characterMutation.mutate({ ...character, experience: Number(character.experience) + Number(exp) });
       });
       setResultScreen({ result: "win", experience: Number(exp) });
     }
