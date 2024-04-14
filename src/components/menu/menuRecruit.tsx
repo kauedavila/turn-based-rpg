@@ -6,13 +6,15 @@ import { z } from "zod";
 import { nameByRace } from "fantasy-name-generator";
 import { fetchData as fetchSprites } from "@/app/hooks/useClassSprites";
 import useRecruit from "@/app/hooks/useRecruit";
+import { attackData } from "@/templates/attacks";
 
 const MenuRecruit = () => {
-  const { register, handleSubmit, setValue } = useForm({
+  const { register, handleSubmit, setValue, getValues } = useForm({
     defaultValues: {
       class: "",
       name: "",
       sprite: "",
+      moves: ["", "", "", ""],
     },
   });
   const [rolled, setRolled] = useState(false);
@@ -23,6 +25,14 @@ const MenuRecruit = () => {
   const [selectedClass, setSelectedClass] = useState("random");
   const [selectedClassFolder, setSelectedClassFolder] = useState("");
   const [selectedSprite, setSelectedSprite] = useState("");
+  const [movesDatas, setMovesDatas] = useState<Object[]>([]);
+  const [showingMoveDescription, setShowingMoveDescription] = useState({
+    active: false,
+    attackDisplayName: "",
+    description: "",
+    properties: [],
+    power: 0,
+  });
 
   const handleRoll = async () => {
     setRolled(true);
@@ -54,6 +64,22 @@ const MenuRecruit = () => {
     setValue("sprite", spriteFolder + "/" + sprite);
     setSelectedSprite(sprite);
     setSelectedClassFolder(spriteFolder);
+
+    //Pick Moves
+    const moves = attackData?.filter((item) => {
+      return item.attackName !== "switch";
+    });
+
+    const randomMoves = moves
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 4)
+      .map((item) => item);
+
+    const randomMovesAttackNames = randomMoves.map((item) => item.attackName);
+
+    setMovesDatas(randomMoves);
+
+    setValue("moves", randomMovesAttackNames);
   };
 
   return (
@@ -63,7 +89,7 @@ const MenuRecruit = () => {
    z-10 w-full h-full"
     >
       <div className="grid grid-cols-2 w-[50%] h-[50%] bg-gray-900 border-2 border-gray-100 rounded-md">
-        <div id="recruit-image" className="flex flex-col items-center justify-center w-full h-full ">
+        <div id="recruit-image" className="relative flex flex-col items-center justify-center w-full h-full ">
           {selectedSprite && (
             <Image
               src={`
@@ -75,11 +101,26 @@ const MenuRecruit = () => {
               className="h-auto"
             />
           )}
+          {showingMoveDescription?.active === true && (
+            <div className="bg-gray-900 text-white border-2 border-white absolute w-full top-0 p-4 h-full">
+              <h1 className="text-center font-bold mb-2">{showingMoveDescription?.attackDisplayName}</h1>
+              <p>{showingMoveDescription?.description}</p>
+              <p>Power: {showingMoveDescription?.power}</p>
+              <p>Properties:</p>
+              {showingMoveDescription?.properties.map((item: any, index: any) => {
+                return (
+                  <li key={index} className="capitalize">
+                    {item}
+                  </li>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {!rolled ? (
           <div className="flex flex-col items-center justify-between w-full h-full ">
-            <div id="class-select" className="flex items-center justify-between w-full h-full">
+            <div id="class-select" className="flex justify-between w-full h-full">
               <label
                 htmlFor="random-class"
                 className={`flex justify-center w-full text-center text-white border-white items-center h-20  border-2 hover:bg-gray-400 focus:outline-none active:bg-gray-500 rounded-md cursor-pointer
@@ -123,19 +164,54 @@ const MenuRecruit = () => {
         ) : (
           <form
             id="recruit-select"
-            className="flex flex-col items-start justify-between w-full h-full "
+            className="relative flex flex-col items-start justify-between w-full h-full "
             onSubmit={handleSubmit((data) => {
               recruit.mutate(data);
             })}
           >
             <label htmlFor="class" className="text-white flex items-center gap-2 w-full h-20">
               Class
-              <input type="text" className="text-black w-full h-10  rounded-md" {...register("class")} readOnly />
+              <input type="text" className="text-black w-full h-10 cursor-default active:outline-none focus:outline-none rounded-md" {...register("class")} readOnly />
             </label>
             <label htmlFor="name" className="text-white flex items-center gap-2 w-full h-20">
               Name
-              <input type="text" className="text-black w-full h-10  rounded-md" {...register("name")} readOnly />
+              <input type="text" className="text-black w-full h-10 cursor-default active:outline-none focus:outline-none rounded-md" {...register("name")} readOnly />
             </label>
+            <label htmlFor="name" className="text-white flex items-center gap-2 w-full h-20">
+              Moves
+              <div className="grid grid-cols-2 w-full h-20 gap-2">
+                {movesDatas.map((item: any, index) => {
+                  return (
+                    <input
+                      key={index}
+                      type="text"
+                      className="text-black w-full h-10  rounded-md cursor-default active:outline-none focus:outline-none"
+                      value={item?.attackDisplayName}
+                      readOnly
+                      onMouseEnter={() => {
+                        setShowingMoveDescription({
+                          active: true,
+                          attackDisplayName: item.attackDisplayName,
+                          description: item.description,
+                          properties: item.properties,
+                          power: item.power,
+                        });
+                      }}
+                      onMouseLeave={() => {
+                        setShowingMoveDescription({
+                          active: false,
+                          attackDisplayName: "",
+                          description: "",
+                          properties: [],
+                          power: 0,
+                        });
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            </label>
+
             <div className="flex items-end justify-center gap-2  w-full h-full">
               <input
                 type="button"

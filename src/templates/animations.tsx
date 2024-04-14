@@ -30,6 +30,15 @@ export const animationData: AnimationData[] = [
     hitDuration: 500,
   },
   {
+    attackName: "melee2",
+    attackAnimation: "animate-melee-attack",
+    attackDelay: 0,
+    attackDuration: 1000,
+    hitAnimation: "animate-melee-hit",
+    hitDelay: 500,
+    hitDuration: 500,
+  },
+  {
     attackName: "throw_rock",
     attackAnimation: "animate-throw_rock-attack",
     attackDelay: 0,
