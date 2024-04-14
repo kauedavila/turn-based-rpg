@@ -20,7 +20,7 @@ const MenuRecruit = () => {
   const classes = useClasses();
   const recruit = useRecruit();
 
-  const [selectedClass, setSelectedClass] = useState("");
+  const [selectedClass, setSelectedClass] = useState("random");
   const [selectedClassFolder, setSelectedClassFolder] = useState("");
   const [selectedSprite, setSelectedSprite] = useState("");
 
@@ -30,8 +30,12 @@ const MenuRecruit = () => {
     //Pick Class
     const randomClass = Math.floor(Math.random() * classes.data?.length);
     const className = classes.data?.[randomClass].name;
-    setValue("class", className);
-    setSelectedClass(className);
+
+    if (selectedClass === "random") {
+      setValue("class", className);
+    } else {
+      setValue("class", selectedClass);
+    }
 
     //Pick Name
     const name = nameByRace("human", {
@@ -41,7 +45,7 @@ const MenuRecruit = () => {
     setValue("name", name);
 
     //Pick Sprite
-    const spriteFolder = classes.data?.[randomClass].spriteFolder;
+    const spriteFolder = selectedClass === "random" ? classes.data?.[randomClass].spriteFolder : classes.data?.find((item: any) => item.name === selectedClass)?.spriteFolder;
 
     const sprites = await fetchSprites(spriteFolder);
 
@@ -74,7 +78,39 @@ const MenuRecruit = () => {
         </div>
 
         {!rolled ? (
-          <div className="flex flex-col items-start justify-between w-full h-full ">
+          <div className="flex flex-col items-center justify-between w-full h-full ">
+            <div id="class-select" className="flex items-center justify-between w-full h-full">
+              <label
+                htmlFor="random-class"
+                className={`flex justify-center w-full text-center text-white border-white items-center h-20  border-2 hover:bg-gray-400 focus:outline-none active:bg-gray-500 rounded-md cursor-pointer
+                      ${selectedClass === "random" ? "bg-gray-500" : "bg-gray-900 border-2 "}
+                      `}
+                onClick={() => {
+                  setSelectedClass("random");
+                }}
+              >
+                Random Class
+                <input type="radio" name="random-class" value={"random"} className="hidden" />
+              </label>
+              {classes.data?.length > 0 &&
+                classes.data?.map((item: any, index: any) => {
+                  return (
+                    <label
+                      key={index}
+                      htmlFor={item.name}
+                      className={`flex justify-center w-full text-center text-white border-white items-center h-20  border-2 hover:bg-gray-400 focus:outline-none active:bg-gray-500 rounded-md cursor-pointer
+                      ${selectedClass === item.name ? "bg-gray-500" : "bg-gray-900 border-2 "}
+                      `}
+                      onClick={() => {
+                        setSelectedClass(item.name);
+                      }}
+                    >
+                      {item.name}
+                      <input type="radio" name="class" value={item.name} className="hidden" />
+                    </label>
+                  );
+                })}
+            </div>
             <button
               className="w-full h-20  bg-gray-300 hover:bg-gray-400 focus:outline-none active:bg-gray-500 rounded-md cursor-pointer"
               onClick={() => {
