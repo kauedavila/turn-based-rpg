@@ -2,7 +2,6 @@ import useClasses from "@/app/hooks/useClasses";
 import Image from "next/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { nameByRace } from "fantasy-name-generator";
 import { fetchData as fetchSprites } from "@/app/hooks/useClassSprites";
 import useRecruit from "@/app/hooks/useRecruit";
@@ -14,7 +13,12 @@ const MenuRecruit = () => {
       class: "",
       name: "",
       sprite: "",
-      moves: ["", "", "", ""],
+      moves: [
+        {
+          name: "",
+          level: 1,
+        },
+      ],
     },
   });
   const [rolled, setRolled] = useState(false);
@@ -75,11 +79,16 @@ const MenuRecruit = () => {
       .slice(0, 4)
       .map((item) => item);
 
-    const randomMovesAttackNames = randomMoves.map((item) => item.attackName);
+    const formattedMoves = randomMoves.map((item) => {
+      return {
+        name: item.attackName,
+        level: 1,
+      };
+    });
 
     setMovesDatas(randomMoves);
 
-    setValue("moves", randomMovesAttackNames);
+    setValue("moves", formattedMoves);
   };
 
   return (
@@ -102,18 +111,27 @@ const MenuRecruit = () => {
             />
           )}
           {showingMoveDescription?.active === true && (
-            <div className="bg-gray-900 text-white border-2 border-white absolute w-full top-0 p-4 h-full">
+            <div className="flex flex-col gap-2 bg-gray-900 text-white border-2 border-white absolute w-full top-0 p-4 h-full">
               <h1 className="text-center font-bold mb-2">{showingMoveDescription?.attackDisplayName}</h1>
-              <p>{showingMoveDescription?.description}</p>
+              <p className="text-center">{showingMoveDescription?.description}</p>
               <p>Power: {showingMoveDescription?.power}</p>
               <p>Properties:</p>
-              {showingMoveDescription?.properties.map((item: any, index: any) => {
-                return (
-                  <li key={index} className="capitalize">
-                    {item}
-                  </li>
-                );
-              })}
+              <div>
+                {showingMoveDescription?.properties.map((item: any, index: any) => {
+                  return (
+                    <li key={index} className="capitalize">
+                      {item}
+                    </li>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          {rolled === false && (
+            <div className="flex flex-col gap-2 bg-gray-900 text-white border-2 border-white absolute w-full top-0 p-4 h-full">
+              <h1 className="text-center font-bold mb-2">Recruiting Characters</h1>
+              <p>Recruit characters to join your party. Each character has a unique class, name, and set of moves.</p>
+              <p>Choosing a class will cost you more souls than rolling a random class character.</p>
             </div>
           )}
         </div>
