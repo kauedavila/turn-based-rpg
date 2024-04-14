@@ -55,10 +55,10 @@ export default function Menu() {
             >
               <p>{session.data?.username}</p>
               <div className="flex items-center gap-2">
-                <GiTwoCoins className="text-yellow-500" /> {session.data?.gold}
+                <GiTwoCoins className="text-yellow-500" /> {session.data?.gold.toLocaleString("en")}
               </div>
               <div className="flex items-center gap-2">
-                <GiTwinShell className="text-blue-500" /> {session.data?.souls}
+                <GiTwinShell className="text-blue-500" /> {session.data?.souls.toLocaleString("en")}
               </div>
             </div>
           </div>
