@@ -3,6 +3,10 @@ import { attackData, defaultAttack } from "@/templates/attacks";
 import { templateProjectiles } from "@/templates/projectiles";
 import { AnimationData, CharacterData } from "@/types";
 
+const formatName = (name: string) => {
+  return name.replace(" ", "-").toLowerCase();
+};
+
 const calculateDamage = (attackName: string, attacker: CharacterData, defender: CharacterData) => {
   const move = attackData.find((data) => data.attackName === attackName) || defaultAttack;
 
@@ -40,18 +44,9 @@ const calculateDamage = (attackName: string, attacker: CharacterData, defender: 
 //   );
 // };
 
-const handleAnimation = (
-  attackName: string,
-  attacker: CharacterData,
-  defender: CharacterData,
-  battleCharacters: CharacterData[],
-  setBattleCharacters: (characters: CharacterData[]) => void,
-  attackerPosition?: string
-) => {
-  const defenderPosition = attackerPosition === "left" ? "right" : "left";
-
-  const attackerId = document.getElementById(`character-${attackerPosition}-sprite`) as HTMLElement;
-  const defenderId = document.getElementById(`character-${defenderPosition}-sprite`) as HTMLElement;
+const handleAnimation = (attackName: string, attacker: CharacterData, defender: CharacterData) => {
+  const attackerId = document.getElementById(`character-${attacker?.name ? formatName(attacker?.name) : null}-sprite`) as HTMLElement;
+  const defenderId = document.getElementById(`character-${defender?.name ? formatName(defender?.name) : null}-sprite`) as HTMLElement;
 
   const animation: AnimationData = animationData.find((data) => data.attackName === attackName) || defaultAnimation;
 
@@ -84,6 +79,7 @@ const handleAnimation = (
       defenderId?.classList.remove(animation.hitAnimation);
     }, animation.hitDuration);
   }, animation.hitDelay);
+
   setTimeout(() => {
     attackerId?.classList.remove(animation.attackAnimation);
     // handleSpriteState(attacker, "idle", battleCharacters, setBattleCharacters);
@@ -95,14 +91,7 @@ const handleAnimation = (
   }, animation.attackDuration);
 };
 
-const handleAttack = (
-  attackName: string,
-  attacker: CharacterData,
-  defender: CharacterData,
-  battleCharacters: CharacterData[],
-  setBattleCharacters: (characters: CharacterData[]) => void,
-  attackerPosition?: string
-) => {
+const handleAttack = (attackName: string, attacker: CharacterData, defender: CharacterData) => {
   const damage = calculateDamage(attackName, attacker, defender);
   const currentHealth = defender?.currentStats?.health;
 
@@ -113,7 +102,7 @@ const handleAttack = (
     hitDuration: 0,
   };
 
-  handleAnimation(attackName, attacker, defender, battleCharacters, setBattleCharacters, attackerPosition);
+  handleAnimation(attackName, attacker, defender);
 
   setTimeout(() => {
     defender.currentStats = {

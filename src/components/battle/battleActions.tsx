@@ -3,7 +3,7 @@ import { usePartyStore } from "@/stores/usePartyStore";
 import { useScreenStore } from "@/stores/useScreenStore";
 import { BattleData, CharacterData } from "@/types";
 import handleTurn from "@/functions/handleTurn";
-import handleHPColor from "@/functions/handleHpColor";
+import { useBattleEnemiesStore } from "@/stores/useBattleEnemiesStore";
 
 const BattleActions = ({
   variant,
@@ -20,6 +20,7 @@ const BattleActions = ({
 }) => {
   const battleCharacters = useBattleCharactersStore((state: any) => state?.battleCharacters);
   const setBattleCharacters = useBattleCharactersStore((state: any) => state?.setBattleCharacters);
+  const battleEnemies = useBattleEnemiesStore((state: any) => state?.battleEnemies);
   const party = usePartyStore((state: any) => state?.party);
   const setScreen = useScreenStore((state: any) => state?.setScreen);
 
@@ -37,15 +38,20 @@ const BattleActions = ({
 
   const handleToggleAuto = () => {
     setAuto(!auto);
-    if (battleData.progress[0] >= 100) {
-      handleTurn("attack", "melee", battleCharacters, setBattleCharacters, battleData, setBattleData, party, battleCharacters[0], battleCharacters[1]);
-    }
   };
 
   return (
     <>
       {variant === "left" ? (
-        <div id="battle-actions-left" className="flex flex-col absolute left-0 bottom-0 border-2 rounded-tr-md border-black">
+        <div id="battle-actions-left" className="flex flex-col absolute left-0 bottom-0 border-2 rounded-tr-md border-black z-50">
+          {battleData.turn && (
+            <p
+              className="text-center p-4 bg-gray-900 text-white  
+               transition-all duration-300 "
+            >
+              {battleData.turn + "'s actions"}
+            </p>
+          )}
           <details
             className="text-left bg-gray-900 text-white  
               hover:bg-gray-700 transition-all duration-300 cursor-pointer"
@@ -64,7 +70,17 @@ const BattleActions = ({
               hover:bg-gray-700 transition-all duration-300
               "
                   onClick={() => {
-                    handleTurn("attack", move.name ?? "melee", battleCharacters, setBattleCharacters, battleData, setBattleData, party, battleCharacters[0], battleCharacters[1]);
+                    handleTurn(
+                      "attack",
+                      move.name ?? "melee",
+                      battleCharacters,
+                      setBattleCharacters,
+                      battleData,
+                      setBattleData,
+                      party,
+                      battleCharacters.find((character: CharacterData) => character.name === battleData.turn),
+                      battleEnemies[Math.floor(Math.random() * battleEnemies.length)]
+                    );
                   }}
                 >
                   {move.name.replace("_", " ")}
@@ -72,7 +88,7 @@ const BattleActions = ({
               ))}
             </div>
           </details>
-          {party.length > 1 && (
+          {/*party.length > 1 && (
             <details
               className="text-left bg-gray-900 text-white  
               hover:bg-gray-700 transition-all duration-300 cursor-pointer"
@@ -103,8 +119,7 @@ const BattleActions = ({
                 ))}
               </div>
             </details>
-          )}
-
+          )*/}
           <button
             className="w-full h-auto text-left bg-gray-900 text-white border border-black px-10 py-2 first-letter:capitalize
               hover:bg-gray-700 transition-all duration-300"

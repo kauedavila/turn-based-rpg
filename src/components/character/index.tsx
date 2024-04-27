@@ -4,17 +4,21 @@ import { templateProjectiles } from "@/templates/projectiles";
 import Image from "next/image";
 
 type BattleCharProps = {
-  id: number;
   name: string;
   sprite: string | undefined;
   position: string;
+  className: string;
 };
 
-const Character = ({ id, name, sprite, position }: BattleCharProps) => {
+const formatName = (name: string) => {
+  return name.replace(" ", "-").toLowerCase();
+};
+
+const Character = ({ className, name, sprite, position }: BattleCharProps) => {
   const projectilesData = templateProjectiles;
 
   return (
-    <div id={`character-${position}`} className="relative flex flex-col items-start justify-center w-auto h-auto">
+    <div id={`character-${position}`} className={`absolute flex flex-col items-start justify-center w-auto h-auto ${className}`}>
       <div
         style={{
           transform: position === "right" ? "scaleX(-1)" : "scaleX(1)",
@@ -22,7 +26,7 @@ const Character = ({ id, name, sprite, position }: BattleCharProps) => {
       >
         {sprite && (
           <Image
-            id={`character-${position}-sprite`}
+            id={`character-${formatName(name)}-sprite`}
             src={`${process.env.NEXT_PUBLIC_API_URL}/public/uploads/${position === "right" ? "enemies" : "classes"}/${sprite}`}
             alt={name}
             width={position === "right" ? 150 : 200}

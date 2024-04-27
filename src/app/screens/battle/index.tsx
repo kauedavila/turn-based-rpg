@@ -13,10 +13,16 @@ import BattleHUD from "@/components/battle/battleHUD";
 import BattleCharacters from "@/components/battle/battleCharacters";
 import BattleTurnMetter from "@/components/battle/battleTurnMetter";
 import { useCharactersMutation } from "@/app/hooks/useCharacters";
+import { useBattleEnemiesStore } from "@/stores/useBattleEnemiesStore";
+import BattleEnemies from "@/components/battle/battleEnemies";
 
 export default function Battle({}: {}) {
   const battleCharacters = useBattleCharactersStore((state: any) => state?.battleCharacters);
   const setBattleCharacters = useBattleCharactersStore((state: any) => state?.setBattleCharacters);
+
+  const battleEnemies = useBattleEnemiesStore((state: any) => state?.battleEnemies);
+  const setBattleEnemies = useBattleEnemiesStore((state: any) => state?.setBattleEnemies);
+
   const stage = useStagesStore((state: any) => state?.stage);
   const { data: enemyCharacter } = useEnemy(stage?.enemyList[0]);
 
@@ -33,8 +39,7 @@ export default function Battle({}: {}) {
   const [turnResult, setTurnResult] = useState<string | null>(null);
   const [battleData, setBattleData] = useState<BattleData>({
     timer: 0,
-    turn: 1,
-    progress: [0, 0],
+    turn: null,
     waiting: true,
   });
 
@@ -46,14 +51,27 @@ export default function Battle({}: {}) {
   };
 
   const calculateCurrentStats = ({ index }: { index: number }) => {
-    const character = battleCharacters[index];
+    const character = battleCharacters;
+    const enemies = battleEnemies;
 
-    character.currentStats = {
-      health: character.health,
-      attack: character.attack,
-      defense: character.defense,
-      speed: character.speed,
-    };
+    character.map((character: CharacterData) => {
+      character.currentStats = {
+        health: character.health,
+        attack: character.attack,
+        defense: character.defense,
+        speed: character.speed,
+        progress: 0,
+      };
+    });
+
+    enemies.map((enemy: CharacterData) => {
+      enemy.currentStats = {
+        health: enemy.health,
+        attack: enemy.attack,
+        defense: enemy.defense,
+        speed: enemy.speed,
+      };
+    });
   };
 
   useEffect(() => {
@@ -65,7 +83,8 @@ export default function Battle({}: {}) {
   useEffect(() => {
     if (enemyCharacter) {
       enemyCharacter.currentStats = undefined;
-      setBattleCharacters([party[0], enemyCharacter]);
+      setBattleCharacters(party);
+      setBattleEnemies([enemyCharacter]);
     }
   }, [enemyCharacter, party]);
 
@@ -84,29 +103,21 @@ export default function Battle({}: {}) {
 
   useEffect(() => {
     const interval =
-      battleCharacters.length == 2
+      battleCharacters.length > 0
         ? setInterval(() => {
-            if (battleCharacters[1]?.currentStats?.health <= 0) {
-              setTurnResult("enemy_dies");
-            }
-            const speed = battleCharacters.map((character: CharacterData) => Number(character.currentStats?.speed) ?? 0);
-            battleData.waiting &&
-              setBattleData((prev) => ({
-                ...prev,
-                progress: [prev.progress[0] + speed[0], prev.progress[1] + speed[1]],
-                waiting: prev.progress[0] + speed[0] < 100 && prev.progress[1] + speed[1] < 100,
-              }));
-
-            battleData.progress[0] >= 100 &&
-              auto === true &&
-              handleTurn("attack", "melee", battleCharacters, setBattleCharacters, battleData, setBattleData, party, battleCharacters[0], battleCharacters[1]);
-
-            battleData.progress[1] >= 100 && handleTurn("attack", "melee", battleCharacters, setBattleCharacters, battleData, setBattleData, party, battleCharacters[1], battleCharacters[0]);
+            if (battleData.waiting === false) return;
+            battleCharacters.map((character: any) => {
+              if (character.currentStats.progress >= 100) {
+                character.currentStats.progress = 100;
+                setBattleData((prev) => ({ ...prev, waiting: false, turn: character.name }));
+              } else {
+                character.currentStats.progress += character.currentStats.speed;
+              }
+            });
           }, 500)
         : setInterval(() => {
             console.log("waiting for characters");
           }, 500);
-
     return () => clearInterval(interval);
   }, [battleData, battleCharacters]);
 
@@ -120,15 +131,16 @@ export default function Battle({}: {}) {
         backgroundPosition: "bottom",
       }}
     >
-      {battleCharacters?.length !== 2 ? (
+      {battleCharacters?.length === 0 ? (
         <p className="text-white">loading characters</p>
       ) : (
         <>
           <BattleHUD />
           <BattleCharacters />
-          {battleData.progress[0] < 100 || auto === true ? null : <BattleActions variant="left" auto={auto} setAuto={setAuto} battleData={battleData} setBattleData={setBattleData} />}
+          <BattleEnemies />
+          {battleData.waiting === true || auto === true ? null : <BattleActions variant="left" auto={auto} setAuto={setAuto} battleData={battleData} setBattleData={setBattleData} />}
           <BattleActions variant="right" auto={auto} setAuto={setAuto} battleData={battleData} setBattleData={setBattleData} />
-          <BattleTurnMetter battleData={battleData} />
+          <BattleTurnMetter />
           {!resultScreen?.result ? null : <ResultsScreen result={resultScreen?.result} experience={resultScreen?.experience} />}
         </>
       )}

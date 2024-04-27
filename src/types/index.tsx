@@ -25,6 +25,7 @@ export type CharacterData = {
     attack?: number;
     defense?: number;
     speed?: number;
+    progress?: number;
   };
 };
 
@@ -37,10 +38,10 @@ export type PartyDataType = CharacterData[] &
 
 export type BattleData = {
   timer?: number;
-  turn?: number;
+  turn?: string | null;
   waiting?: boolean;
   auto?: boolean;
-  progress: [number, number];
+  charTurn?: number;
   stage?: {
     background?: string;
   };
