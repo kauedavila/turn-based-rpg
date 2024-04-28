@@ -50,33 +50,29 @@ export default function Battle({}: {}) {
     return experience;
   };
 
-  const calculateCurrentStats = ({ index }: { index: number }) => {
+  useEffect(() => {
     const character = battleCharacters;
     const enemies = battleEnemies;
 
     character.map((character: CharacterData) => {
-      character.currentStats = {
-        health: character.health,
-        attack: character.attack,
-        defense: character.defense,
-        speed: character.speed,
-        progress: 0,
-      };
+      if (!character.currentStats)
+        character.currentStats = {
+          health: character.health,
+          attack: character.attack,
+          defense: character.defense,
+          speed: character.speed,
+          progress: 0,
+        };
     });
 
     enemies.map((enemy: CharacterData) => {
-      enemy.currentStats = {
-        health: enemy.health,
-        attack: enemy.attack,
-        defense: enemy.defense,
-        speed: enemy.speed,
-      };
-    });
-  };
-
-  useEffect(() => {
-    battleCharacters?.forEach((character: CharacterData, index: number) => {
-      character.currentStats === undefined && calculateCurrentStats({ index });
+      if (!enemy.currentStats)
+        enemy.currentStats = {
+          health: enemy.health,
+          attack: enemy.attack,
+          defense: enemy.defense,
+          speed: enemy.speed,
+        };
     });
   }, [battleCharacters]);
 
@@ -106,12 +102,26 @@ export default function Battle({}: {}) {
       battleCharacters.length > 0
         ? setInterval(() => {
             if (battleData.waiting === false) return;
-            battleCharacters.map((character: any) => {
+            const charArray = structuredClone(battleCharacters);
+            charArray.map((character: any) => {
               if (character.currentStats.progress >= 100) {
-                character.currentStats.progress = 100;
+                setBattleCharacters(charArray);
                 setBattleData((prev) => ({ ...prev, waiting: false, turn: character.name }));
+                character.currentStats.progress = 100;
               } else {
+                setBattleCharacters(charArray);
                 character.currentStats.progress += character.currentStats.speed;
+              }
+            });
+            const enemyArray = structuredClone(battleEnemies);
+            enemyArray.map((enemy: any) => {
+              if (enemy.currentStats.progress >= 100) {
+                enemy.currentStats.progress = 100;
+                setBattleEnemies(enemyArray);
+                setBattleData((prev) => ({ ...prev, waiting: false, turn: enemy.name }));
+              } else {
+                enemy.currentStats.progress += enemy.currentStats.speed;
+                setBattleEnemies(enemyArray);
               }
             });
           }, 500)

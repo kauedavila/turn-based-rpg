@@ -24,17 +24,17 @@ const handleTurn = (
 
   const enemyAction = "melee";
 
-  const performAttack = (attacker: CharacterData, defender: CharacterData, attackType: string, attackerPosition?: string) => {
+  const performAttack = (attacker: CharacterData, defender: CharacterData, attackType: string) => {
     handleAttack(attackType, attacker, defender);
   };
 
-  const scheduleAttack = (attacker: CharacterData, defender: CharacterData, attackType: string, delay: number, attackerPosition?: string) => {
+  const scheduleAttack = (attacker: CharacterData, defender: CharacterData, attackType: string, delay: number) => {
     setTimeout(() => {
-      performAttack(attacker, defender, attackType, attackerPosition);
+      performAttack(attacker, defender, attackType);
     }, delay);
   };
 
-  scheduleAttack(attacker, defender, attackerType === "character" ? action : enemyAction, 100, attackerType === "character" ? "left" : "right");
+  scheduleAttack(attacker, defender, attackerType === "character" ? action : enemyAction, 100);
 
   //Reset progress of attacker
   if (attackerType === "character") {
