@@ -6,14 +6,10 @@ const handleTurn = (
   value: string,
   battleCharacters: CharacterData[],
   setBattleCharacters: (characters: CharacterData[]) => void,
-  battleData: BattleData,
   setBattleData: (data: any) => void,
-  party: CharacterData[],
   attacker: CharacterData,
   defender: any
 ) => {
-  if (battleData.waiting) return;
-
   const characters = [...battleCharacters];
 
   if (action == "attack") {

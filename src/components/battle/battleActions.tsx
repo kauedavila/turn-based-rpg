@@ -4,6 +4,7 @@ import { useScreenStore } from "@/stores/useScreenStore";
 import { BattleData, CharacterData } from "@/types";
 import handleTurn from "@/functions/handleTurn";
 import { useBattleEnemiesStore } from "@/stores/useBattleEnemiesStore";
+import { useEffect } from "react";
 
 const BattleActions = ({
   variant,
@@ -40,14 +41,32 @@ const BattleActions = ({
     setAuto(!auto);
   };
 
+  useEffect(() => {
+    const isEnemy = battleEnemies.find((enemy: CharacterData) => String(enemy?._id) === battleData.turn);
+    isEnemy &&
+      handleTurn(
+        "attack",
+        "melee",
+        battleCharacters,
+        setBattleCharacters,
+        setBattleData,
+        battleEnemies.find((enemy: CharacterData) => String(enemy._id) === battleData.turn),
+        battleCharacters[0]
+      );
+  }, [battleData.turn]);
+
   return (
     <>
       {variant === "left" ? (
-        <div id="battle-actions-left" className="flex flex-col absolute left-0 bottom-0 border-2 rounded-tr-md border-black z-50">
+        <div
+          id="battle-actions-left"
+          className={`${battleData.waiting === true || auto === true ? "hidden" : "flex"} 
+        flex-col absolute left-0 bottom-0 border-2 rounded-tr-md border-black z-50`}
+        >
           {battleData.turn && (
             <p
-              className="text-center p-4 bg-gray-900 text-white  
-               transition-all duration-300 "
+              className="text-center p-4 bg-gray-900 text-white
+               transition-all duration-300"
             >
               {battleData.turn + "'s actions"}
             </p>
@@ -75,10 +94,8 @@ const BattleActions = ({
                       move.name ?? "melee",
                       battleCharacters,
                       setBattleCharacters,
-                      battleData,
                       setBattleData,
-                      party,
-                      battleCharacters.find((character: CharacterData) => character.name === battleData.turn),
+                      battleCharacters.find((character: CharacterData) => String(character._id) === battleData.turn),
                       battleEnemies[Math.floor(Math.random() * battleEnemies.length)]
                     );
                   }}

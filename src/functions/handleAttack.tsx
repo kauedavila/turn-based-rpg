@@ -10,7 +10,7 @@ const formatName = (name: string) => {
 const calculateDamage = (attackName: string, attacker: CharacterData, defender: CharacterData) => {
   const move = attackData.find((data) => data.attackName === attackName) || defaultAttack;
 
-  const { attack: attackerAtk, defense: attackerDef } = attacker.currentStats || { attack: 0, defense: 0 };
+  const { attack: attackerAtk, defense: attackerDef } = attacker?.currentStats || { attack: 0, defense: 0 };
 
   const { defense: defenderDef } = defender?.currentStats || {
     attack: 0,

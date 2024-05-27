@@ -72,6 +72,7 @@ export default function Battle({}: {}) {
           attack: enemy.attack,
           defense: enemy.defense,
           speed: enemy.speed,
+          progress: 0,
         };
     });
   }, [battleCharacters]);
@@ -106,7 +107,7 @@ export default function Battle({}: {}) {
             charArray.map((character: any) => {
               if (character.currentStats.progress >= 100) {
                 setBattleCharacters(charArray);
-                setBattleData((prev) => ({ ...prev, waiting: false, turn: character.name }));
+                setBattleData((prev) => ({ ...prev, waiting: false, turn: character._id }));
                 character.currentStats.progress = 100;
               } else {
                 setBattleCharacters(charArray);
@@ -116,9 +117,19 @@ export default function Battle({}: {}) {
             const enemyArray = structuredClone(battleEnemies);
             enemyArray.map((enemy: any) => {
               if (enemy.currentStats.progress >= 100) {
-                enemy.currentStats.progress = 100;
+                enemy.currentStats.progress = 0;
                 setBattleEnemies(enemyArray);
-                setBattleData((prev) => ({ ...prev, waiting: false, turn: enemy.name }));
+                setBattleData((prev) => ({ ...prev, waiting: false, turn: enemy._id }));
+
+                // handleTurn(
+                //   "attack",
+                //   "melee",
+                //   battleCharacters,
+                //   setBattleCharacters,
+                //   setBattleData,
+                //   battleEnemies[Math.floor(Math.random() * battleEnemies.length)],
+                //   battleCharacters.find((character: CharacterData) => character.name === battleData.turn)
+                // );
               } else {
                 enemy.currentStats.progress += enemy.currentStats.speed;
                 setBattleEnemies(enemyArray);
@@ -148,7 +159,7 @@ export default function Battle({}: {}) {
           <BattleHUD />
           <BattleCharacters />
           <BattleEnemies />
-          {battleData.waiting === true || auto === true ? null : <BattleActions variant="left" auto={auto} setAuto={setAuto} battleData={battleData} setBattleData={setBattleData} />}
+          <BattleActions variant="left" auto={auto} setAuto={setAuto} battleData={battleData} setBattleData={setBattleData} />
           <BattleActions variant="right" auto={auto} setAuto={setAuto} battleData={battleData} setBattleData={setBattleData} />
           <BattleTurnMetter />
           {!resultScreen?.result ? null : <ResultsScreen result={resultScreen?.result} experience={resultScreen?.experience} />}
